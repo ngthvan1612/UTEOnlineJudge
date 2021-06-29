@@ -127,8 +127,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = 'static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend/admin-static'),
-    os.path.join(BASE_DIR, 'frontend/user-static'),
+    os.path.join(BASE_DIR, 'frontend/statics'),
 ]
 
 # Default primary key field type
