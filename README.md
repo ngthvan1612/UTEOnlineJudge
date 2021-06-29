@@ -1,6 +1,12 @@
 # UTE ONLINE JUDGE
 Trình chấm bài online - ute
-#1 Setup
+# Các account hiện tại
+1. user: admin, password: admin123 (admin)
+2. user: abcdef, password: 12345678 (thường)
+3. user: xyz123, password: 1234567890 (thường)
+4. user: hello, password: xinchao123 (thường)
+
+# 1 Setup
 
 ## 1.1 Tạo virtualenv
 ```bash
