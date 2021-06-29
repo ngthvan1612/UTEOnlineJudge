@@ -31,7 +31,7 @@ SUBMISSION_VISIBLE_MODE_CHOICES = (
 
 class ProblemModel(models.Model):
     author = models.ManyToManyField(User, blank=False)
-    publish_date = models.DateTimeField(auto_now_add=True, blank=False)
+    publish_date = models.DateTimeField(blank=False)
     categories = models.ManyToManyField(ProblemCategoryModel, blank=True)
     shortname = models.CharField(max_length=32, unique=True)
     fullname = models.CharField(max_length=255)
