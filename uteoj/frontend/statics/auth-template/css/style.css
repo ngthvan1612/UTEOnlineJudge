@@ -41,7 +41,7 @@ body{
 
 form{
     width: 700px;
-    height: 900px;
+    height: 750px;
 }
 
 form h4{
@@ -182,6 +182,13 @@ a:hover{
 @media screen and (max-width: 1450px){
     .container{
         grid-gap: 5rem;
+    }
+    .img, .img img, .avatar{
+        width: 550px;
+        height: auto;
+    }
+    .login-container{
+        width: 700px;
     }
 }
 
