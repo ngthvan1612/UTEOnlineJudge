@@ -11,7 +11,9 @@ from django.http import HttpResponse
 from django.core import serializers
 
 
-def UserHomeView(request):
-
-    return HttpResponse('WELCOME TO MY WEBSITE</br>This is home page')
-
+def UserProblemView(request, problem_id):
+    problems = ProblemModel.objects.filter(shortname=problem_id)
+    if problems.exists() == False:
+        return HttpResponse(status=404)
+    return HttpResponse(serializers.serialize('json', problems, indent=4),
+        content_type="text/json-comment-filtered")

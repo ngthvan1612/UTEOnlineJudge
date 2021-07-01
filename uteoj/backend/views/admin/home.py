@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
+from backend.views.auth.login import LoginView
 
 
+@staff_member_required(login_url='/login/')
 def AdminHomeView(request):
     list_problems = [
         {
