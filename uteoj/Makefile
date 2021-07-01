@@ -1,13 +1,13 @@
 
 migrate:
-	python manage.py makemigrations
-	python manage.py migrate
+	python3 manage.py makemigrations
+	python3 manage.py migrate
 
 static:
-	python manage.py collectstatic --noinput
+	python3 manage.py collectstatic --noinput
 
 run:
-	python manage.py runserver
+	python3 manage.py runserver
 
 
 deploy:

@@ -12,27 +12,18 @@ body{
     width: 100vw;
     height: 100vh;
     display: grid;
-    grid-template-columns: repeat(2,1fr);
     grid-gap: 7rem;
     padding: 0 2rem;
-}
-
-.img{
-    display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
-    width: 950px;
-}
-
-.img img{
-    width: 950px;
 }
 
 .login-container{
     display: flex;
     width: 800px;
+    grid-gap: 7rem;
     align-items: center;
-    text-align: center;
+    justify-content: center;
 }
 
 .avatar{
@@ -41,7 +32,7 @@ body{
 
 form{
     width: 700px;
-    height: 900px;
+    height: 700px;
 }
 
 form h4{
@@ -56,6 +47,7 @@ form h4{
 .message{
     font-size: 1rem;
     color: red;
+    text-align: center  ;
 }
 
 .input-div{
@@ -179,83 +171,19 @@ a:hover{
     background-position: right;
 }
 
-@media screen and (max-width: 1450px){
-    .container{
-        grid-gap: 5rem;
-    }
-    .img, .img img, .avatar{
-        width: 550px;
-        height: auto;
-    }
-    .login-container{
-        width: 700px;
-    }
-}
-
-@media screen and (max-width: 1000px){
-    .container{
-        grid-template-columns: 1fr;
-    }
-    .img{
-        display: none;
-    }
-    .container{
-        padding-right: 0rem;
-    }
-    
-    .login-container{
-        justify-content: center;
-        width: 800px;
-    }
-
-    .input-div, .btn{
-        margin-left: 120px;
-        width: 500px;
-    }
-
-    a{
-        margin-right: 80px;
-    }
-}
-
-@media screen and (max-height: 800px) {
+@media screen and (max-height: 700px){
     .avatar{
-        width: 380px;
+        width: 300px;
         height: auto;
-    }
-    .img, .img img {
-        width: 540px;
-        height: auto;
+        margin-left: 200px;
     }
     form{
-        height: 580px;
+        height: 500px;
     }
-    .login-container{
-        height: 600px;
+    input{
+        font-size: 0.9rem;
     }
-    .container{
-        height: auto;
-    }
-}
-
-@media screen and (max-width: 800px) {
-    .container{
-        grid-template-columns: 1fr;
-    }
-    .img{
-        display: none;
-    }
-    .login-container{
-        justify-content: center;
-        width: 600px;
-    }
-    form{
-        width: 450px;
-    }
-    .input-div, .btn{
-        margin-left: 50px;
-    }
-    a{
-        margin-right: 0px;
+    h4{
+        font-size: 1.8rem;
     }
 }
