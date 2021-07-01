@@ -54,8 +54,17 @@ class ProblemModel(models.Model):
         return self.shortname + ' - ' + self.fullname
 
 
+class ProblemStatisticsModel(models.Model):
+    problem = models.OneToOneField(ProblemModel, on_delete=models.CASCADE)
+    solvedCount = models.IntegerField(default=0, blank=False)
+
+    def __str__(self):
+        return self.problem.shortname + ' ' + str(self.solvedCount)
+
+
 class ProblemTestCaseModel(models.Model):
     problem = models.ForeignKey(ProblemModel, on_delete=models.CASCADE)
+    test_name = models.CharField(max_length=255, blank=False, null=True)
     time_limit = models.IntegerField(default=1000)
     memory_limit = models.IntegerField(default=65536)
     points = models.FloatField(default=1.0)

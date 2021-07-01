@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from django.contrib.admin.views.decorators import staff_member_required
 from backend.models.problem import ProblemModel
 from backend.models.problem import ProblemCategoryModel
 from django.db.models import Q
@@ -8,8 +7,9 @@ from django.db.models import Q
 from datetime import datetime
 from random import random
 
+from backend.views.admin.require import admin_member_required
 
-@staff_member_required
+@admin_member_required
 def AdminListProblemView(request):
     problem_models_filter = ProblemModel.objects
     if request.method == 'GET':
@@ -32,6 +32,7 @@ def AdminListProblemView(request):
             'publish_date': x.publish_date.strftime("%m/%d/%Y"),
             'categories': ', '.join([y.name for y in x.categories.all()]),
             'difficult': x.difficult,
+            'problem_type': x.get_problem_type_display(),
         } for x in problem_models_filter
     ]
     for it in range(0, len(list_problems), 1):

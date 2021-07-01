@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
-
+from backend.views.settings import REDIRECT_FIELD_NAME
 
 def WhoView(request):
     msg = 'Trang này để test đăng nhập'
@@ -19,7 +19,7 @@ def LoginView(request):
     context = {
         'website_header_title': 'Đăng nhập',
     }
-    if request.method == 'GET' and 'next' in request.GET:
+    if request.method == 'GET' and REDIRECT_FIELD_NAME in request.GET:
         context['login_error'] = 'Vui lòng đăng nhập với quyền admin để tiếp tục'
     if request.method == 'POST':
         list_requirements = ['username', 'password']
