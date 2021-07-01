@@ -16,15 +16,17 @@
             <form action="/login/" method="POST">
                 
                 {% csrf_token %}
-                {% if login_error %}
-                    <script type="text/javascript">
-                        alert('{{login_error}}');
-                    </script>
-                {% endif %}
 
                 <img class = "avatar" src="{% static 'auth-template/img/avatar.png' %}">
                 <h4>HCMUTE Online Judge</h4>
-                <h6 class = "message">Message here<h6>
+
+                {% if login_error %}
+                    <h6 class = "message">Message here<h6>
+                    <script type="text/javascript">
+                        const error = document.querySelectorAll('.message')[0];
+                        error.textContent = '{{login_error}}';
+                    </script>
+                {% endif %}
                 <div class="input-div first">
                     <div class="i">
                         <i class="fas fa-user"></i>
