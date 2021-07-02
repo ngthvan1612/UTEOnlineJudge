@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link
+			href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+			rel="stylesheet"
+		/>
+		<<link rel="stylesheet" href="{% static 'auth-template/css/signup.css' %}" />
+		<title>HCMUTE OJ | Login</title>
+	</head>
+	<body>
+		<!-- Container -->
+		<div class="container" id="container">
+			<!-- Row -->
+			<div class="row">
+				<div class="col align-center flex-col sign-up">
+					<div class="form-wrapper align-center">
+						<form class="form sign-up" >
+							<div class="input-group">
+								<i class="bx bxs-user"></i>
+								<input type="text" placeholder="Username" />
+							</div>
+							<div class="input-group">
+								<i class="bx bx-mail-send"></i>
+								<input type="email" placeholder="Email" />
+							</div>
+							<div class="input-group">
+								<i class="bx bxs-lock-alt"></i>
+								<input type="password" placeholder="Password" />
+							</div>
+							<div class="input-group">
+								<i class="bx bxs-lock-alt"></i>
+								<input type="password" placeholder="Confirm password" />
+							</div>
+							<button>Sign up</button>
+							<p>
+								<span>Already have an account?</span>
+								<b id="sign-in">
+									<a href="/login/">Sign in here</a>
+								</b>
+							</p>
+						</form>
+					</div>
+
+					<div class="form-wrapper">
+						<div class="social-list align-center sign-up">
+							<div class="align-center facebook-bg">
+								<i class="bx bxl-facebook"></i>
+							</div>
+							<div class="align-center google-bg">
+								<i class="bx bxl-google"></i>
+							</div>
+							<div class="align-center twitter-bg">
+								<i class="bx bxl-twitter"></i>
+							</div>
+							<div class="align-center instagram-bg">
+								<i class="bx bxl-instagram-alt"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+            
+			<div class="row content-row">
+				<div class="col align-items flex-col"></div>
+				<div class="col align-items flex-col">
+					<div class="img sign-up">
+						<img src="{%static 'auth-template/img/signup/bg2.svg' %}" alt="" />
+					</div>
+					<div class="text sign-up">
+						<h2>Join with us</h2>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Script -->
+		<script src="{% static 'auth-template/js/signup.js' %}"></script>
+	</body>
+</html>
