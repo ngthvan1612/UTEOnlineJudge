@@ -27,9 +27,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+WEBSITE_HOST_NAME = '127.0.0.1:8000'
+
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_POST = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'uteojsptest@gmail.com'
+EMAIL_HOST_PASSWORD = 'admin123zz'
 
 # Application definition
 
