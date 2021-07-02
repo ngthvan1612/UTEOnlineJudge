@@ -1,57 +1,86 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=ed   ge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'auth-template/css/style.css' %}">
-    <script src="https://kit.fontawesome.com/a81368914c.js"></script>
-</head>
-<body>
-    <div class="container">
-        <div class="login-container">
-            <form action="/login/" method="POST">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link
+			href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="{% static 'auth-template/css/login.css' %}" />
+		<title>HCMUTE OJ | Sign In</title>
+	</head>
+	<body>
+		<!-- Container -->
+		<div class="container" id="container">
+			<!-- Row -->
+			<div class="row">
+				<div class="col align-center flex-col sign-up"> </div>
+				<div class="col align-center flex-col sign-in">
+					<div class="form-wrapper align-center">
+						<form class="form sign-in" action="/login/" method="POST">
+                            {% csrf_token %}
+                            {% if login_error %}
+                                <h6 class = "message">Message here<h6>
+                                <script type="text/javascript">
+                                    const error = document.querySelectorAll('.message')[0];
+                                    error.textContent = '{{login_error}}';
+                                </script>
+                            {% endif %}
+							<div class="input-group">
+								<i class="bx bxs-user"></i>
+								<input type="text" placeholder="Username" name="username"/>
+							</div>
+							<div class="input-group">
+								<i class="bx bxs-lock-alt"></i>
+								<input type="password" placeholder="Password" name="password"/>
+							</div>
+							<button type = "submit">Sign in</button>
+							<p>
+								<b>Forgot password?</b>
+							</p>
+							<p>
+								<span> Don't have an account? </span>
+								<b id="sign-up">
+                                    <a href="/signup/">Sign up here</a>
+                                </b>
+							</p>
+						</form>
+					</div>
+
+					<div class="form-wrapper">
+						<div class="social-list align-center sign-in">
+							<div class="align-center facebook-bg">
+								<i class="bx bxl-facebook"></i>
+							</div>
+							<div class="align-center google-bg">
+								<i class="bx bxl-google"></i>
+							</div>
+							<div class="align-center twitter-bg">
+								<i class="bx bxl-twitter"></i>
+							</div>
+							<div class="align-center instagram-bg">
+								<i class="bx bxl-instagram-alt"></i>
+							</div>
+						</div>
+					</div>
+				</div>
                 
-                {% csrf_token %}
+			</div>
+            
+			<div class="row content-row">
+				<div class="col align-items flex-col">
+					<div class="text sign-in">
+						<h2>Welcome Back</h2>
+					</div>
+					<div class="img sign-in">
+						<img src="{%static 'auth-template/img/login/bg1.svg' %}" alt="" />
+					</div>
+				</div>
+			</div>
+		</div>
 
-                <img class = "avatar" src="{% static 'auth-template/img/avatar.png' %}">
-                <h4>HCMUTE Online Judge</h4>
-
-                {% if login_error %}
-                    <h6 class = "message">Message here<h6>
-                    <script type="text/javascript">
-                        const error = document.querySelectorAll('.message')[0];
-                        error.textContent = '{{login_error}}';
-                    </script>
-                {% endif %}
-                <div class="input-div first">
-                    <div class="i">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div>
-                        <h5>Username</h5>
-                        <input type="text" class="input" name = "username">
-                    </div>
-                </div>
-
-                <div class="input-div second">
-                    <div class="i">
-                        <i class="fas fa-lock"></i>
-                    </div>
-                    <div>
-                        <h5>Password</h5>
-                        <input type="password" class="input" name = "password">
-                    </div>
-                </div>
-                <a href="#">Forgot Password?</a>
-                <input type="submit" class="btn" value="Login" text = "Login">
-            </form>
-        </div>
-    </div>
-
-    <script src="{% static 'auth-template/js/main.js' %}"></script> 
-</body>
+		<script src="{% static 'auth-template/js/login.js' %}"></script>
+	</body>
 </html>
