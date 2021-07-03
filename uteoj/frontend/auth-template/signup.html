@@ -8,8 +8,8 @@
 			href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
 			rel="stylesheet"
 		/>
-		<<link rel="stylesheet" href="{% static 'auth-template/css/signup.css' %}" />
-		<title>HCMUTE OJ | Login</title>
+		<link rel="stylesheet" href="{% static 'auth-template/css/signup.css' %}" />
+		<title>HCMUTE OJ | Sign Up</title>
 	</head>
 	<body>
 		<!-- Container -->
@@ -21,19 +21,19 @@
 						<form class="form sign-up" >
 							<div class="input-group">
 								<i class="bx bxs-user"></i>
-								<input type="text" placeholder="Username" />
+								<input type="text" placeholder="Username" name="username"/>
 							</div>
 							<div class="input-group">
 								<i class="bx bx-mail-send"></i>
-								<input type="email" placeholder="Email" />
+								<input type="email" placeholder="Email" name="email"/>
 							</div>
 							<div class="input-group">
 								<i class="bx bxs-lock-alt"></i>
-								<input type="password" placeholder="Password" />
+								<input type="password" placeholder="Password" name="password1"/>
 							</div>
 							<div class="input-group">
 								<i class="bx bxs-lock-alt"></i>
-								<input type="password" placeholder="Confirm password" />
+								<input type="password" placeholder="Confirm password" name="password2"/>
 							</div>
 							<button>Sign up</button>
 							<p>
