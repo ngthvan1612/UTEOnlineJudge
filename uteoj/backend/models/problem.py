@@ -5,6 +5,7 @@ from django.db.models.query_utils import check_rel_lookup_compatibility
 
 class ProblemCategoryModel(models.Model):
     name = models.CharField(max_length=128, unique=True)
+    description = models.TextField(null=True)
 
     def __str__(self):
         return self.name
@@ -49,6 +50,7 @@ class ProblemModel(models.Model):
 
     checker = models.CharField(max_length=64, blank=True)
     problem_type = models.IntegerField(default=0, choices=PROBLEM_TYPE_CHOICES)
+    submission_visible_mode = models.IntegerField(default=0, choices=SUBMISSION_VISIBLE_MODE_CHOICES)
 
     def __str__(self):
         return self.shortname + ' - ' + self.fullname

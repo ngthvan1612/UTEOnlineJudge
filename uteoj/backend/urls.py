@@ -3,6 +3,7 @@ from django.urls import path
 #admin
 from backend.views.admin.home import AdminHomeView
 from backend.views.admin.problem import AdminListProblemView
+from backend.views.admin.categories import AdminCategoriesView
 
 #authenticate
 from backend.views.auth.login import WhoView
@@ -28,6 +29,7 @@ urlpatterns = [
     path('signup/', SignupView),
     path('admin/problems/', AdminListProblemView),
     path('problems/<str:problem_id>/', UserProblemView),
+    path('admin/categories/', AdminCategoriesView),
 ]
 
 
