@@ -28,3 +28,28 @@ def AdminHomeView(request):
         'list_problems': list_problems,
     }
     return render(request, 'admin-template/index.html', context)
+
+
+@admin_member_required
+def AdminSubmissionStatusView(request):
+
+    return render(request, 'admin-template/Status/status.html')
+
+
+@admin_member_required
+def AdminRankingView(request):
+
+    return render(request, 'admin-template/rank.html')
+
+
+@admin_member_required
+def AdminContactView(request):
+
+    return render(request, 'admin-template/contact.html')
+
+
+@admin_member_required
+def AdminSettingView(request):
+
+
+    return render(request, 'admin-template/Setting/setting.html')

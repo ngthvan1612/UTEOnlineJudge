@@ -39,7 +39,13 @@ def AdminListProblemView(request):
         list_problems[it]['id'] = it + 1
     context = {
         'website_header_title': 'Danh sách bài tập',
-        'list_problems': list_problems,
+        'list_problem': list_problems,
         'list_categories': ['All'] + [x.name for x in ProblemCategoryModel.objects.all()],
     }
     return render(request, 'admin-template/problem/listproblem.html', context)
+
+
+@admin_member_required
+def AdminCreateProblemView(request):
+
+    return render(request, 'admin-template/problem/createproblem.html')
