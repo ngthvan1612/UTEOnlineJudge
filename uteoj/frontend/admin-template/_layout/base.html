@@ -1,13 +1,36 @@
-{% load static %} <!-- Phai co dong nay !!! -->
-
+{% load static %}
+<!-- Phai co dong nay !!! -->
 <html>
-    <head>
-        <title>{{website_header_title}}</title>
-        <link rel="stylesheet" href="{% static 'admin-static/css/main.css'%}">
-        <!-- <meta name="viewport" content="width=device-width"> -->
-    </head>
-    <body>
-        {%block website_content %}
-        {%endblock%}
-    </body>
+	<head>
+		<title>{{website_header_title}}</title>
+		<link
+			rel="stylesheet"
+			href="{% static 'plugins/fontawesome-free/css/all.min.css'%}"
+		/>
+		<link
+			rel="stylesheet"
+			href="{% static 'plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}"
+		/>
+		<link rel="stylesheet" href="{% static 'admin-static/css/base.css'%}" />
+		<!-- <meta name="viewport" content="width=device-width"> -->
+	</head>
+	<body class="hold-transition sidebar-mini">
+		<div class="wrapper">
+			{%include 'admin-template/_layout/navbar.html' %} 
+			{%include 'admin-template/_layout/sidebar.html' %} 
+			{%include 'admin-template/_layout/controlSidebar.html' %} 
+			{%block navbar%} {%endblock%} 
+			{%block sidebar%} {%endblock%}
+			<div class="content-wrapper">
+				<!-- Main content -->
+				{%block website_content%} {%endblock%} 
+				{%block controlSidebar%} {%endblock%}
+			</div>
+		</div>
+
+		<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+		<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+		<script src="{% static 'admin-static/js/base.min.js'%}"></script>
+		<script src="{% static 'plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+	</body>
 </html>
