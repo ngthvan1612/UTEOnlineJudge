@@ -20,9 +20,14 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-6">
-					<div style="height: 50px"">
-						<a class="btn btn-primary" href="#" role="button">Create New Category</a>
+					<div style="height: 50px">
+						<!-- Button trigger modal -->
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCategory">
+							Create New Catagory
+						</button>
 					</div>
+
+
 					<div class="list-group" id="list-tab" role="tablist">
 						{% for x in list_categories %}
 							<a class="list-group-item list-group-item-action" id="list-{{x.name}}-list" data-bs-toggle="list" href="#list-{{x.name}}" role="tab" aria-controls="list-home">{{x.name}}</a>
@@ -34,7 +39,7 @@
 						<div class="card-footer text-center"> 
 							Description 
 						</div>
-						<div class="card-body" style="height: 400px;">
+						<div class="card-body" style="height: 200px;">
 							<div class="tab-content" id="nav-tabContent">
 								{% for x in list_categories %}
 									<div class="tab-pane fade show" id="list-{{x.name}}" role="tabpanel" aria-labelledby="list-{{x.name}}-list">{{x.description}}</div>
@@ -55,6 +60,28 @@
 					</div>
 				</div>
 			</div>
+		</div>
+	</div>
+
+
+	<!-- Modal Create New Category-->
+	<div class="modal fade" id="createCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Create New Category</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			</div>
+			<div class="modal-body">
+				Hello
+			</div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-primary">Create</button>
+			</div>
+		</div>
 		</div>
 	</div>
 
