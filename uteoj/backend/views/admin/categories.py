@@ -10,6 +10,7 @@ def AdminCategoriesView(request):
     context = {
         'list_categories': [
             {
+                'id': x.id,
                 'name': x.name,
                 'description': x.description,
             }
