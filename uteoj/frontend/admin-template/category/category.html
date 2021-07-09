@@ -1,4 +1,5 @@
 {%extends 'admin-template/_layout/base.html' %}
+{% load static %}
 {%block website_content %}
 	<!-- Content Header (Page header) -->
 	<div class="content-header">
@@ -14,4 +15,50 @@
 		</div>
 	</div>
 	<!-- /.content-header -->
+
+	<div class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-6">
+					<div style="height: 50px"">
+						<a class="btn btn-primary" href="#" role="button">Create New Category</a>
+					</div>
+					<div class="list-group" id="list-tab" role="tablist">
+						{% for x in list_categories %}
+							<a class="list-group-item list-group-item-action" id="list-{{x.name}}-list" data-bs-toggle="list" href="#list-{{x.name}}" role="tab" aria-controls="list-home">{{x.name}}</a>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="col-6">
+					<div class="card text-dark bg-light mb-3">
+						<div class="card-footer text-center"> 
+							Description 
+						</div>
+						<div class="card-body" style="height: 400px;">
+							<div class="tab-content" id="nav-tabContent">
+								{% for x in list_categories %}
+									<div class="tab-pane fade show" id="list-{{x.name}}" role="tabpanel" aria-labelledby="list-{{x.name}}-list">{{x.description}}</div>
+								{% endfor %}
+							</div>
+							<div style="position: absolute; bottom: 4rem; left: 1rem" >
+								<a class="btn btn-secondary" href="#" role="button">View Problems</a>
+							</div>
+							<div style="position: absolute; bottom: 4rem; right: 1rem" >
+								<a class="btn btn-secondary" href="#" role="button">Edit Description</a>
+								<a class="btn btn-secondary" href="#" role="button">Delete Description</a>
+							</div>
+							
+						</div>
+						<div class="card-footer text-muted text-center">
+							Update 1 hour ago
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+	<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+	<script src="{% static 'category/js/index.js' %}"></script>
 {%endblock%}
