@@ -18,27 +18,42 @@
 	<div class="content">
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-lg-6">
-				
-					{% for x in list_problem %}    
+				<div class="col-lg-8 col-sm-8">
+					<div class="card-body p-0">
+						<table class="table table-hover table-bordered">
+							<thead>
+								<tr>
+									<th style="width: 20px">#</th>
+									<th style="text-align: center">Name</th>
+									<th style="width: 100px;text-align: center">Difficult</th>
+									<th style="width: 100px;text-align: center">Solved</th>
+									<th style="width: 70px">&nbsp;</th>
+									<th style="width: 60px">&nbsp;</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for x in list_problem %}
 
-					<div class="card">
-						<div class="card-body">
-							<h5 class="card-title">STT : {{x.id}}</h5>
+								<tr>
+									<td><a href="/problems/{{x.shortname}}">{{x.id}}</a></td>
+									<td>
+										<div style="float: left">
+											<a href="/problems/{{x.shortname}}">{{x.fullname}}</a>
+										</div>
+										<div style="float: right; font-size: 0.9rem; color:dimgray; padding-top: 1px">{{x.categories}}</div>
+									</td>
+									<td style="text-align: center">{{x.difficult}}</td>
+									<td style="text-align: center">0</td>
+									<td style="text-align: center;color: red">ACM</td>
+									<td style="text-align: center"><a href=""><i class="fa fa-wrench"></i></a></td>
+								</tr>
 
-							<p class="card-text">Shortname : {{x.shortname}}</p>
-							<p class="card-text">Fullname : {{x.fullname}}</p>
-                            <p class="card-text">Author : {{x.author}}</p>
-                            <p class="card-text">Publish_date : {{x.publish_date}}</p>
-                            <p class="card-text">Categories : {{x.categories}}</p>
-                            <p class="card-text">Difficult : {{x.difficult}}</p>
-
-							<a href="#" class="card-link">Card link</a>
-							<a href="#" class="card-link">Another link</a>
-						</div>
+								{% endfor%}
+							</tbody>
+						</table>
 					</div>
-					{% endfor%}
-					</div>
+					<!-- /.card-body -->
+				</div>
 			</div>
 		</div>
 	</div>
