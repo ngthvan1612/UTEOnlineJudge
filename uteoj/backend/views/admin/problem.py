@@ -11,6 +11,24 @@ from backend.views.admin.require import admin_member_required
 
 @admin_member_required
 def AdminListProblemView(request):
+    '''
+    for i in range(1, 100, 1):
+        num = int(random() * 8) + 1
+        lc = [x.id for x in ProblemCategoryModel.objects.order_by('?').all()[:num]]
+        problem = ProblemModel.objects.create(publish_date=datetime.now(),
+            shortname='BAI_TAP_' + str(i),
+            fullname='Bai tap ' + str(i),
+            difficult=round(random() * 10, 2),
+            points_per_test=random() * 100,
+            statement='bla bla',
+            input_filename='BAI' + str(i) + '.INP',
+            output_filename='BAI' + str(i) + '.OUT',
+            time_limit=int(random() * 10000),
+            memory_limit=int(random() * 1000000),
+            problem_type=int(random() * 2),)
+        problem.categories.set(lc)
+        problem.save()
+    '''    
     problem_models_filter = ProblemModel.objects
     if request.method == 'GET':
         if 'category' in request.GET:
