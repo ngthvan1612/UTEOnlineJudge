@@ -40,7 +40,6 @@ url_patterns_admin = [
     path('admin/', AdminHomeView),
     path('admin/problems/', AdminListProblemView),
     path('admin/problem/create/', AdminCreateProblemView),
-    path('admin/problem/create/', AdminCreateProblemView),
     path('admin/contest/create/', AdminCreateContestView),
     path('admin/contests/', AdminListContestView),
     path('admin/categories/', AdminCategoriesView),

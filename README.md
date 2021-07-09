@@ -1,7 +1,7 @@
 # UTE ONLINE JUDGE
 Trình chấm bài online - ute
 # Các account hiện tại
-1. user: admin, password: admin123 (admin)
+1. user: admin, password: 1234567890 (admin)
 2. user: abcdef, password: 12345678 (thường)
 3. user: xyz123, password: 1234567890 (thường)
 4. user: hello, password: xinchao123 (thường)
@@ -28,55 +28,61 @@ make run # chạy, vào trình duyệt truy cập vào địa chỉ 127.0.0.1:80
 ```
 
 ## 1.4 Note
-Hiện tại chỉ truy cập vào 127.0.0.1:8000/admin
 
 # 2 Frontend & Backend (Address, variable, ...)
 
-## 2.1  Trang đăng nhập: /login
-1. File
-* ***Template: /frontend/auth-template/login.html***
-2. Từ backend gửi qua frontend (nếu đã vào trang login và đăng nhập lỗi mới gửi qua):
-* login_error: lỗi đăng nhập
-3. Từ frontend gửi qua backend:
-* ***cstf_token (thêm dòng {% csrf_token %} vào chung với các thẻ input)***
-* username: tên người dùng
-* password: mật khẩu
+## 2.1 Categories
+> Trước khi gửi mọi POST, yêu cầu phải có hằng CSRF_TOKEN trước khi import js
 ```html
-<form action="/login/" method="POST">
-    {% csrf_token %}
-    {% if login_error %}
-        <script type="text/javascript">
-            alert('{{login_error}}');
-        </script>
-    {% endif %}
-    <label>User name: </label>
-    <input type="text" name="username">
-    <label>Password: </label>
-    <input type="password" name="password">
-    <input type="submit" text="Login">
-</form>
+<!-- just exmplate -->
+<script>
+   var CSRF_TOKEN = '{{ csrf_token }}';
+</script>
+...
+<script type="text/javascript" src="{% static 'admin-static/js/category.js' %}"></script>
 ```
-> Nếu đăng nhập thành công, tự động nhảy qua trang /who để test xem đang đăng nhập với tên gì
-## 2.2 Trang đăng ký: /signup
-1. File
-* ***Template: /frontend/auth-template/signup.html***
-2. Từ backend gửi qua frontend:
-* signup_error: Lỗi khi đăng ký (màu đỏ)
-* signup_success: Khi đăng ký thành công (màu xanh)
-* Note: 2 biến này không thể xuất hiện đồng thời, lỗi thì không thành công, thành công thì không lỗi.
-3. Từ frontend gửi qua backend
-* cstf_token
-* username: tên người dùng
-* email: email đăng ký
-* password1: mật khẩu 1
-* password1: mật khẩu 2
-```html
-{% if signup_error %}
-        <label style="color:red;">{{signup_error}}</label>
-        </br>
-    {% endif %}
-{% if signup_success %}
-        <label style="color:green;">{{signup_success}}</label>
-        </br>
-{%endif %}
+### 2.1.1 Add
+Dùng ajax gửi lên server (method=POST, url=/admin/categories/), thông tin data như sau:
+```js
+data: {
+            method : 'add', //method là add
+            name : 'fftz', //cái tên mới
+            description : '12.fft', //thông tin phụ
+            csrfmiddlewaretoken: CSRF_TOKEN, ///phải có (ở trên)
+},
 ```
+Khi gửi thành công
+```js
+$.ajax({
+        url: '/admin/categories/',
+        type: 'POST',
+        data: {
+              .......
+        },
+        success: function(data) {
+            if (data.status=='success') {
+                ///xử lý message khi thành công - có thể alert ra, có thể cập nhật vào label trong modal (đổi thành màu xanh)
+                console.log("SUCCESS: " + data.message);
+                reloadCurrentSource();
+            }
+            else {
+                ///xử lý message khi lỗi (như trên)
+                console.log("ERROR: " + data.message);
+            }
+        }
+    });
+```
+>> Note: tên không được đặt là 'All'
+
+### 2.1.2 Edit
+Gửi lên server (method=POST, url=/admin/categories/), thông tin data như sau:
+- method: 'edit'
+- old_name: //tên cũ
+- new_name: //tên mới
+- description: //thông tin phụ mới
+> Sau khi thành công, xử lý như Add
+### 2.1.3 Delete
+Gửi lên server (method=POST, url=/admin/categories/), thông tin data như sau:
+- method: 'delete'
+- name: //tên của categories
+> Note: Xác nhận trước khi xóa
