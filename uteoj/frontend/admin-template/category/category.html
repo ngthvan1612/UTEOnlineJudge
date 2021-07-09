@@ -20,8 +20,10 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-6">
-					<div style="height: 50px"">
-						<a class="btn btn-primary" href="#" role="button">Create New Category</a>
+					<div style="height: 50px">
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCategory">
+							Create New Category
+						</button>
 					</div>
 					<div class="list-group" id="list-tab" role="tablist">
 						{% for x in list_categories %}
@@ -34,7 +36,7 @@
 						<div class="card-footer text-center"> 
 							Description 
 						</div>
-						<div class="card-body" style="height: 400px;">
+						<div class="card-body" style="height: 300px;">
 							<div class="tab-content" id="nav-tabContent">
 								{% for x in list_categories %}
 									<div class="tab-pane fade show" id="list-{{x.name}}" role="tabpanel" aria-labelledby="list-{{x.name}}-list">{{x.description}}</div>
@@ -58,6 +60,40 @@
 		</div>
 	</div>
 
+	<!-- Modal -->
+	<div class="modal fade" id="createCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header text-center">
+			<h5 class="modal-title" id="exampleModalLabel">Create Category</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			</div>
+			<div class="modal-body">
+				<form method="POST" url="/admin/categories/"> 
+					<div class="form-group">
+						<label for="inputName">Category Name</label>
+						<input type="email" class="form-control" id="add-nwe" aria-describedby="emailHelp" placeholder="Enter category name">
+						<small id="emailHelp" class="form-text text-muted">Category Name must be different "All"</small>
+					</div>
+					<div class="form-group">
+						<label for="exampleInputPassword1">Description</label>
+						<textarea class="form-control" cols="30" rows="10" id="description"></textarea>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-primary" onclick="addNewCategory()">Save changes</button>
+			</div>
+		</div>
+		</div>
+	</div>
+
+	<script>
+		var CSRF_TOKEN = '{{ csrf_token }}';
+	 </script>
 	<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
 	<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
 	<script src="{% static 'category/js/index.js' %}"></script>
