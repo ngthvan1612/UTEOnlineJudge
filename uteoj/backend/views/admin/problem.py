@@ -30,7 +30,7 @@ def AdminListProblemView(request):
             'fullname': x.fullname,
             'author': ', '.join([y.username for y in x.author.all()]),
             'publish_date': x.publish_date.strftime("%m/%d/%Y"),
-            'categories': ', '.join([y.name for y in x.categories.all()]),
+            'categories': [y.name for y in x.categories.all()],
             'difficult': x.difficult,
             'problem_type': x.get_problem_type_display(),
         } for x in problem_models_filter
