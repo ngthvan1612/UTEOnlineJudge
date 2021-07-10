@@ -30,7 +30,7 @@
 
 					<div class="list-group" id="list-tab" role="tablist">
 						{% for x in list_categories %}
-							<a class="list-group-item list-group-item-action" id="list-{{x.name}}-list" data-bs-toggle="list" href="#list-{{x.id}}" role="tab" aria-controls="list-home">{{x.name}}</a>
+							<a class="list-group-item list-group-item-action" id="{{x.name}}" data-bs-toggle="list" href="#list-{{x.id}}" role="tab" aria-controls="list-home">{{x.name}}</a>
 						{% endfor %}
 					</div>
 				</div>
@@ -42,11 +42,12 @@
 						<div class="card-body" style="height: 200px;">
 							<div class="tab-content" id="nav-tabContent">
 								{% for x in list_categories %}
-									<div class="tab-pane fade show" id="list-{{x.id}}" role="tabpanel" aria-labelledby="list-{{x.name}}-list">{{x.description}}</div>
+									<div class="tab-pane fade show" id="list-{{x.id}}" role="tabpanel" aria-labelledby="{{x.name}}">{{x.description}}</div>
 								{% endfor %}
 							</div>
+							
 							<div style="position: absolute; bottom: 4rem; left: 1rem" >
-								<a class="btn btn-secondary" href="#" role="button">View Problems</a>
+								<a class="btn btn-secondary" role="button" onclick="showProblem()">View Problems</a>
 							</div>
 							<div style="position: absolute; bottom: 4rem; right: 1rem" >
 								<a class="btn btn-secondary" href="#" role="button">Edit Description</a>

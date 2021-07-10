@@ -37,10 +37,14 @@
 								<tr>
 									<td><a href="/problems/{{x.shortname}}">{{x.id}}</a></td>
 									<td>
-										<div style="float: left">
-											<a href="/problems/{{x.shortname}}">{{x.fullname}}</a>
+										<div>
+											<a href="/problems/{{x.shortname}}" style="float: left; font-size: 18px;">{{x.fullname}}</a>
 										</div>
-										<div style="float: right; font-size: 0.9rem; color:dimgray; padding-top: 1px">{{x.categories}}</div>
+										<div>
+										{%for y in x.categories%}
+											<a href="/admin/problems/?category={{y}}" type="button" class= "btn btn-outline-secondary" style="float: right; font-size: 10px; margin-left: 5px; padding: 3px 6px">{{y}}</a>
+										{% endfor %}
+										</div>
 									</td>
 									<td style="text-align: center">{{x.difficult}}</td>
 									<td style="text-align: center">0</td>
