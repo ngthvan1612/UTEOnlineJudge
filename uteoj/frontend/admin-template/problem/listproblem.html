@@ -1,4 +1,5 @@
 {%extends 'admin-template/_layout/base.html' %}
+{%load static %}
 {%block website_content %}
 	<!-- Content Header (Page header) -->
 	<div class="content-header">
@@ -20,7 +21,7 @@
 			<div class="row">
 				<div class="col-lg-8">
 					<div class="card-body p-0">
-						<table class="table table-hover table-bordered">
+						<table class="table table-hover table-bordered" id="table_id">
 							<thead>
 								<tr>
 									<th style="width: 20px">#</th>
@@ -35,7 +36,7 @@
 								{% for x in list_problem %}
 
 								<tr>
-									<td><a href="/problems/{{x.shortname}}">{{x.id}}</a></td>
+									<td id="{{x.fullname}}"><a href="/problems/{{x.shortname}}">{{x.id}}</a></td>
 									<td>
 										<div>
 											<a href="/problems/{{x.shortname}}" style="float: left; font-size: 18px;">{{x.fullname}}</a>
@@ -58,8 +59,15 @@
 					</div>
 					<!-- /.card-body -->
 				</div>
+				<div>
+					<input type="text" id="search" placeholder="Search Problem">
+				</div>
 			</div>
 		</div>
 	</div>
+
+	<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+	<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+	<script src="{% static 'problem/js/index.js' %}"></script>
 	<!-- /.content -->
 {%endblock%}

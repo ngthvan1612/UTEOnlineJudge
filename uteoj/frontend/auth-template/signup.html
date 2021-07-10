@@ -18,7 +18,22 @@
 			<div class="row">
 				<div class="col align-center flex-col sign-up">
 					<div class="form-wrapper align-center">
-						<form class="form sign-up" >
+						<form class="form sign-up" action="/signup" method = "POST">
+							{% csrf_token %}
+							{% if signup_error %}
+                                <h3 class = "message" style="color: red;">Message here<h3>
+                                <script type="text/javascript">
+                                    const error = document.querySelectorAll('.message')[0];
+                                    error.textContent = '{{signup_error}}';
+                                </script>
+                            {% endif %}
+							{% if signup_sucess %}
+                                <h3 class = "message" style="color: green;">Message here<h3>
+                                <script type="text/javascript">
+                                    const error = document.querySelectorAll('.message')[0];
+                                    error.textContent = '{{signup_sucess}}';
+                                </script>
+                            {% endif %}
 							<div class="input-group">
 								<i class="bx bxs-user"></i>
 								<input type="text" placeholder="Username" name="username"/>
