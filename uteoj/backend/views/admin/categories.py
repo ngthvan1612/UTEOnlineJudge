@@ -2,16 +2,15 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from backend.models.problem import ProblemCategoryModel
 from backend.views.admin.require import admin_member_required
-from django.views.decorators.csrf import csrf_exempt
 
 import json
 
-@csrf_exempt
 @admin_member_required
 def AdminCategoriesView(request):
     context = {
         'list_categories': [
             {
+                'id': x.id,
                 'name': x.name,
                 'description': x.description,
             }
