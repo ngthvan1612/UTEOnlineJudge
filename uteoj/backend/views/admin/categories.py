@@ -75,6 +75,7 @@ def AdminCategoriesView(request):
             ProblemCategoryModel.objects.filter(name=name).delete()
             response_data['status'] = 'success'
             response_data['message'] = 'Xóa thành công'
+            return HttpResponse(json.dumps(response_data, indent=4), content_type="application/json")
         else:
             response_data['status'] = 'error'
             response_data['message'] = 'Unknown method'
