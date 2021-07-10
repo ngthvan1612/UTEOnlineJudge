@@ -2,30 +2,17 @@ from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
 from backend.views.auth.login import LoginView
 from backend.views.admin.require import admin_member_required
-
+from backend.models.problem import ProblemModel
+from django.contrib.auth.models import User
 
 @admin_member_required
 def AdminHomeView(request):
-    list_problems = [
-        {
-            'id': 1,
-            'shortname': 'SUMAB',
-            'fullname': 'Tinh tong 2 so nguyen AB'
-        },
-        {
-            'id': 2,
-            'shortname': 'MULAB',
-            'fullname': 'Tinh tich 2 so nguyen AB'
-        },
-        {
-            'id': 3,
-            'shortname': 'POWERAB',
-            'fullname': 'Mu 2 so nguyen AB'
-        },
-    ]
+    list_problems = ProblemModel.objects.order_by('-id').all()[:2]
     context = {
         'website_header_title': 'Trang chu',
         'list_problems': list_problems,
+        'problems_count': ProblemModel.objects.count(),
+        'users_count': User.objects.count(),
     }
     return render(request, 'admin-template/index.html', context)
 

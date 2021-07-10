@@ -4,6 +4,9 @@ from backend.models.problem import ProblemModel
 from backend.models.problem import ProblemCategoryModel
 from django.db.models import Q
 
+from django.core.paginator import Paginator
+
+
 from datetime import datetime
 from random import random
 
@@ -31,21 +34,36 @@ def AdminListProblemView(request):
     '''    
     problem_models_filter = ProblemModel.objects
     if request.method == 'GET':
+        if 'problem_type' in request.GET:
+            problem_type = request.GET['problem_type'].lower()
+            if problem_type == 'acm':
+                problem_models_filter = problem_models_filter.filter(problem_type=0)
+            if problem_type == 'oi':
+                problem_models_filter = problem_models_filter.filter(problem_type=1)
         if 'category' in request.GET:
             category = str(request.GET['category'])
-            if category != 'All':
-                problem_models_filter = problem_models_filter.filter(categories__in=[
-                    z.id for z in ProblemCategoryModel.objects.filter(name=category)
-                ]).distinct()
+            list_categories_filter = category.split(",")
+            if 'All' not in list_categories_filter:
+                for x in list_categories_filter:
+                    problem_models_filter = problem_models_filter.filter(categories__in=[
+                        y.id for y in ProblemCategoryModel.objects.filter(name=x).all()
+                    ]).distinct()
         if 'problemnamelike' in request.GET:
             problemnamelike = request.GET['problemnamelike']
             problem_models_filter = problem_models_filter.filter(Q(shortname__contains=problemnamelike) | Q(fullname__contains=problemnamelike))
+        if 'orderby' in request.GET:
+            orderby_query = request.GET['orderby']
+            field = orderby_query
+            if field[0] == '-':
+                field = field[1:]
+            if field == 'difficult':
+                problem_models_filter = problem_models_filter.order_by(orderby_query)
     problem_models_filter = problem_models_filter.all()
     list_problems = [
         {
             'id': -1,
-            'shortname': x.shortname,
             'fullname': x.fullname,
+            'shortname': x.shortname,
             'author': ', '.join([y.username for y in x.author.all()]),
             'publish_date': x.publish_date.strftime("%m/%d/%Y"),
             'categories': [y.name for y in x.categories.all()],
@@ -55,15 +73,22 @@ def AdminListProblemView(request):
     ]
     for it in range(0, len(list_problems), 1):
         list_problems[it]['id'] = it + 1
+    paginator = Paginator(list_problems, 7)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     context = {
         'website_header_title': 'Danh sách bài tập',
         'list_problem': list_problems,
         'list_categories': ['All'] + [x.name for x in ProblemCategoryModel.objects.all()],
+        'page_obj': page_obj,
     }
+
+
     return render(request, 'admin-template/problem/listproblem.html', context)
-
-
 @admin_member_required
 def AdminCreateProblemView(request):
-
-    return render(request, 'admin-template/problem/createproblem.html')
+    
+    context = {
+        
+    }
+    return render(request, 'admin-template/problem/createproblem.html', context)
