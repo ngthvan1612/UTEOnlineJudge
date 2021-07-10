@@ -49,8 +49,8 @@
 									</div>
 
 									<div style="position: absolute; bottom: 4rem; right: 1rem" >
-										<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editCategory" id="{{x.name}}" onclick="getCategoryInfo()">Edit Description</button>	
-										<a class="btn btn-secondary" href="#" role="button">Delete Description</a>
+										<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editCategory" id="{{x.name}}" onclick="getCategoryInfo(0)">Edit Description</button>	
+										<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#deleteCategory" id="{{x.name}}" onclick="getCategoryInfo(1)">Delete Description</button>	
 									</div>
 
 								{% endfor %}
@@ -124,6 +124,38 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					<button type="button" class="btn btn-primary" onclick="editCategory()">Save changes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal CDelete Category-->
+	<div class="modal fade" id="deleteCategory" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header text-center">
+					<h5 class="modal-title" id="exampleModalLabel">Delete Category</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form method="POST" url="/admin/categories/"> 
+						<p id = "addMessage"></p>
+						<div class="form-group">
+							<label for="inputName">Category Name</label>
+							<input class="form-control" id="inputDeleteName" placeholder="Enter category name">
+							<small id="emailHelp" class="form-text text-muted">Category Name must be different "All"</small>
+						</div>
+						<div class="form-group">
+							<label for="deleteDescription">Description</label>
+							<textarea class="form-control" cols="30" rows="10" id="deleteDescription"></textarea>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" onclick="deleteCategory()">Delete</button>
 				</div>
 			</div>
 		</div>
