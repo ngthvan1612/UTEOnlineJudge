@@ -113,7 +113,7 @@ function deleteCategory() {
         location.reload();
       } else {
         ///xử lý message khi lỗi (như trên)
-        console.log("ERRRRRORR: " + data.message);
+        console.log("ERRRRRORR: " + data);
       }
     }
   });
