@@ -73,16 +73,16 @@ def AdminListProblemView(request):
     ]
     for it in range(0, len(list_problems), 1):
         list_problems[it]['id'] = it + 1
-    paginator = Paginator(list_problems, 7)
+    paginator = Paginator(list_problems, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
         'website_header_title': 'Danh sách bài tập',
-        'list_problem': list_problems,
+        'list_problem': page_obj,
+        'list_categories': ProblemCategoryModel.objects.all(),
         'list_categories': ['All'] + [x.name for x in ProblemCategoryModel.objects.all()],
         'page_obj': page_obj,
     }
-
 
     return render(request, 'admin-template/problem/listproblem.html', context)
 @admin_member_required

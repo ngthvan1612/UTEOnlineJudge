@@ -1,88 +1,38 @@
-# UTE ONLINE JUDGE
-Trình chấm bài online - ute
-# Các account hiện tại
-1. user: admin, password: 1234567890 (admin)
-2. user: abcdef, password: 12345678 (thường)
-3. user: xyz123, password: 1234567890 (thường)
-4. user: hello, password: xinchao123 (thường)
+## Filter
+### 1. Yêu cầu chung
+- Khi có tham số GET sẵn thì tự động update vào form (khi vừa mở web)
+ > Khi truy cập vào http://127.0.0.1:8000/admin/problems/?category=dp,greedy,flows&problem_type=Oi tự động form điền vào categories=dp,greedy,flows và problem_type là OI
+- Khi gửi filter lên server phải gửi luôn cả thông tin đã gửi lần trước (trừ tham số page)
+> Khi truy cập vào http://127.0.0.1:8000/admin/problems/?page=3?category=dp,greedy,flows&problem_type=Oi thì nếu filter lần nữa, ví dụ chọn lại problem_type=ACM thì phải gửi lại category=dp,greedy,flows (page bỏ)
+### 2. Dữ liệu gửi lên SERVER
+- problem_type: ACM hoặc OI (in hoa thường đều được)
+- category: một dãy các category, nếu có nhiều thì nối nhau bởi dấu chấm phẩy (comma)  - Không cần combine giống CF
+- problemnamelike: tên của bài cần search
+- orderby: sắp xếp theo
+1. orderby=difficult: độ khó tăng dần
+2. orderby=-difficult: độ khó giảm dần
+- page: số trang hiện tại
+### 3. Dữ liệu từ SERVER xuống
+- list_categories: danh sách categories
+- page_obj: danh sách bài tập (thay thế cho list_problems cũ)
+- page_obj.number: thứ tự trang hiện tại (mặc định 1)
+- page_obj.paginator.num_pages: tổng số trang
+> Thứ tự được đánh số từ 1 (1-indexed) và 1<=page_obj.number<=page_obj.paginator.num_pages (*)
 
-# 1 Setup
-
-## 1.1 Tạo virtualenv
-```bash
-virtualenv env-ubuntu # Nếu có rồi thì bỏ qua
-source env-ubuntu/bin/activate # Lệnh này phải có
-```
-
-## 1.2 Cài đặt requirements (cho python)
-```bash
-pip install -r requirements.txt # Cập nhật, cài đặt các thư viện cho python
-```
-
-## 1.3 Chạy project
-```bash
-cd uteoj
-make static #lệnh này để cập nhật các file CSS, JS, ... vào static của web
-make migrate # Lệnh này cần thiết khi bên backend vừa có thay đổi models hoặc mới clone git về, các trường hợp còn lại có thể không dùng cũng được.
-make run # chạy, vào trình duyệt truy cập vào địa chỉ 127.0.0.1:8000
-```
-
-## 1.4 Note
-
-# 2 Frontend & Backend (Address, variable, ...)
-
-## 2.1 Categories
-> Trước khi gửi mọi POST, yêu cầu phải có hằng CSRF_TOKEN trước khi import js
-```html
-<!-- just exmplate -->
-<script>
-   var CSRF_TOKEN = '{{ csrf_token }}';
-</script>
-...
-<script type="text/javascript" src="{% static 'admin-static/js/category.js' %}"></script>
-```
-### 2.1.1 Add
-Dùng ajax gửi lên server (method=POST, url=/admin/categories/), thông tin data như sau:
-```js
-data: {
-            method : 'add', //method là add
-            name : 'fftz', //cái tên mới
-            description : '12.fft', //thông tin phụ
-            csrfmiddlewaretoken: CSRF_TOKEN, ///phải có (ở trên)
-},
-```
-Khi gửi thành công
-```js
-$.ajax({
-        url: '/admin/categories/',
-        type: 'POST',
-        data: {
-              .......
-        },
-        success: function(data) {
-            if (data.status=='success') {
-                ///xử lý message khi thành công - có thể alert ra, có thể cập nhật vào label trong modal (đổi thành màu xanh)
-                console.log("SUCCESS: " + data.message);
-                reloadCurrentSource();
-            }
-            else {
-                ///xử lý message khi lỗi (như trên)
-                console.log("ERROR: " + data.message);
-            }
-        }
-    });
-```
->> Note: tên không được đặt là 'All'
-
-### 2.1.2 Edit
-Gửi lên server (method=POST, url=/admin/categories/), thông tin data như sau:
-- method: 'edit'
-- old_name: //tên cũ
-- new_name: //tên mới
-- description: //thông tin phụ mới
-> Sau khi thành công, xử lý như Add
-### 2.1.3 Delete
-Gửi lên server (method=POST, url=/admin/categories/), thông tin data như sau:
-- method: 'delete'
-- name: //tên của categories
-> Note: Xác nhận trước khi xóa
+> Dưới frontend xử lý khúc này bằng javascript (tạo link + function), mỗi lần chuyển sang trang mới (trang cũ +-1 & check khoảng (*)) phải giữ lại filter cũ (category, problemnamelike, problem_type,...) (1)
+## Base (fix)
+- Button logout nhỏ lại (kể cả khi co menu lại), đúng mẫu menu chứa Manage 
+Problem, Manage Users
+## Dashboard (fix)
+- Bài mới chỉ cần hiện lên (shortname, fullname, author) + làm gọn gọn.
+## List problem (fix)
+- Tính cả toàn base.html, sửa lại tránh tràn dữ liệu xuống chân web, set height thành auto.
+- Khi nhấp vào tiêu đề difficult (table) thì tự động sort lại, nếu đang tăng thì giảm (check giống phần (1), mặc định lần đầu là tăng dần.
+- Chỉ cần đưa problemnamelike lên server, không xử lý dưới client, mỗi trang có khoảng 10 bài nên không cần thiết.
+## List category (fix)
+- Thông báo người dùng khi lỗi từ server xuống (bất kì lỗi gì).
+- Edit, delete tag chứ không phải edit, delete description.
+- Delete description chỉ hiện nội dung xác nhận, không hiện ra bất kì điều gì 
+khác.
+- Dùng icon thay cho chữ edit, delete.
+- Xóa "Update 1 hour ago", không cần thiết vì tag dạng bài chỉ quan tâm đến dạng tên gì, admin cũng không quan tâm đến tag đó update khi nào.
