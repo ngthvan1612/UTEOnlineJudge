@@ -19,15 +19,15 @@
 	<div class="content">
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-lg-8">
+				<div class="col-xl-9">
 					<div class="card-body p-0">
-						<table class="table table-hover table-bordered" id="table_id">
+						<table class="table table-hover table-bordered" id="table_id" style="background-color: white;">
 							<thead>
 								<tr>
-									<th style="width: 20px">#</th>
+									<th style="width: 60px; text-align: center">#</th>
 									<th style="text-align: center">Name</th>
-									<th style="width: 100px;text-align: center">Difficult</th>
-									<th style="width: 100px;text-align: center">Solved</th>
+									<th style="width: 100px; text-align: center">Difficult</th>
+									<th style="width: 100px; text-align: center">Solved</th>
 									<th style="width: 70px">&nbsp;</th>
 									<th style="width: 60px">&nbsp;</th>
 								</tr>
@@ -36,7 +36,7 @@
 								{% for x in list_problem %}
 
 								<tr>
-									<td id="{{x.fullname}}"><a href="/problems/{{x.shortname}}">{{x.id}}</a></td>
+									<td id="{{x.fullname}}" style="text-align: center"><a href="/problems/{{x.shortname}}">{{x.id}}</a></td>
 									<td>
 										<div>
 											<a href="/problems/{{x.shortname}}" style="float: left; font-size: 18px;">{{x.fullname}}</a>
@@ -59,8 +59,53 @@
 					</div>
 					<!-- /.card-body -->
 				</div>
-				<div>
-					<input type="text" id="search" placeholder="Search Problem">
+				<div class = "col-xl-3 d-none d-xl-block">
+					<div class="card">
+						<div class="card-header text-center"><b>Filter Problem</b></div>
+						<div class="card-body">
+							<div class="filterByName">
+								<label for="search">Name</label>
+								<span style="float: right; width: 60%">
+									<input type="text" id="search" placeholder="Search Problem" style="width: 100%;"">
+								</span>
+							</div>
+							<div class="filterByDifficult">
+								<label> Difficult:</label>
+								<span style="float: right; width: 67%" >
+									<input type="text" id="maxDifficult" placeholder="Max" style="width: 43%; float: right">
+									<input type="text" id="minDifficult" placeholder="Min" style="width: 43%; margin-right: 8px; float: right">
+								</span>
+							</div>
+							
+							<div class="listType">
+								<label>Type</label>
+								<select id=selectType style="float: right; width: 60%">
+									<option value=""></option>
+									<option value="ACM" title="ACM">ACM </option>
+									<option value="OI" title="OI">OI</option>
+								</select>
+
+							</div>
+
+							<div style="overflow: auto;" class="categoryBoxes">
+								<label>Categories:
+									<div class="listCatgories"></div>
+								</label>
+							</div>
+							<div>
+								<select id="selectCategory" style="display: none; float: right; width: 100%" onchange="chooseCategory()">
+									<option value=""></option>
+									<option value="DP" title="*combine tags by DP">*combine tags by OR </option>
+									<option value="Two Pointer" title="*combine tags by Two Pointer">*combine tags by AND</option>
+									<option value="Binary Search" title="*combine tags by Binary Search">*combine tags by XOR</option>
+									<option value="FFT" title="*combine tags by FFT">*combine tags by NOR</option>
+									<option value="Brute Force" title="*combine tags by brute force">*combine tags by NOR</option>
+								</select>
+								<a id="addCatetory" href="#" style="float: right;" onclick="showSelect()">Add tag</a>
+							</div>
+							<a href="#" class="btn btn-primary" style="margin-top: 10px">Find</a>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
