@@ -3,7 +3,7 @@
 - Khi có tham số GET sẵn thì tự động update vào form (khi vừa mở web)
  > Khi truy cập vào http://127.0.0.1:8000/admin/problems/?category=dp,greedy,flows&problem_type=Oi tự động form điền vào categories=dp,greedy,flows và problem_type là OI
 - Khi gửi filter lên server phải gửi luôn cả thông tin đã gửi lần trước (trừ tham số page)
-> Khi truy cập vào http://127.0.0.1:8000/admin/problems/?page=3?category=dp,greedy,flows&problem_type=Oi thì nếu filter lần nữa, ví dụ chọn lại problem_type=ACM thì phải gửi lại category=dp,greedy,flows (page bỏ)
+> Khi truy cập vào http://127.0.0.1:8000/admin/problems/?page=3&category=dp,greedy,flows&problem_type=Oi thì nếu filter lần nữa, ví dụ chọn lại problem_type=ACM thì phải gửi lại category=dp,greedy,flows (page bỏ)
 ### 2. Dữ liệu gửi lên SERVER
 - problem_type: ACM hoặc OI (in hoa thường đều được)
 - category: một dãy các category, nếu có nhiều thì nối nhau bởi dấu chấm phẩy (comma)  - Không cần combine giống CF
