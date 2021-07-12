@@ -10,6 +10,8 @@ function showSelect() {
 }
 
 function createNewCategory(selectedValue) {
+    var categoryBoxes = document.getElementsByClassName("listCatgories")[0];
+    
     var newBox = document.createElement("div");
     var icon = document.createElement("i");
     var h5 = document.createElement("span");
@@ -83,7 +85,7 @@ function updatePage() {
         if (i == base) liElement.classList.add("active");
         liElement.onclick = function () {
             element = this.children[0];
-            goNewPage(parseInt(element.textContent));
+            goNewPage(parseInt(element.textContent),'');
         }
         liElement.appendChild(aElement);
 
@@ -121,18 +123,33 @@ function updateFilter() {
 
 function previous(){
     var page = parseInt(document.getElementsByClassName("active")[1].children[0].textContent);
-    goNewPage(page-1);
+    goNewPage(page-1,'');
 }
 
 function next(){
     var page = parseInt(document.getElementsByClassName("active")[1].children[0].textContent);
-    goNewPage(page+1);
+    goNewPage(page+1,'');
 }
 
-function goNewPage(page) {
+function difficultFilter(){
+    var urlSearchParams = new URLSearchParams(window.location.search);
+    var params = Object.fromEntries(urlSearchParams.entries())
+    
+    var orderString="";
+    if (params["orderby"]==null || params["orderby"]=="-difficult") {
+        orderString = "orderby=difficult"
+    }
+    else orderString="orderby=-difficult"
+    goNewPage(1,orderString);
+}
+
+function goNewPage(page,orderString) {
     var searchBox = document.getElementById("search");
     var selectedBox = document.getElementById("selectType");
     var categoryAdds = document.getElementsByClassName("categoryAdd");
+
+    var urlSearchParams = new URLSearchParams(window.location.search);
+    var params = Object.fromEntries(urlSearchParams.entries())
 
     /*Cagetory*/
     var category = ""
@@ -151,11 +168,18 @@ function goNewPage(page) {
     var problem_name = "";
     if (searchBox.value != "") problem_name = "problemnamelike=" + searchBox.value;
 
-    /*New String*/
+    /*Order*/
+    var order="";
+    if (params["orderby"]!=null){
+        if (params["orderby"]=="difficult") order = "orderby=difficult"
+        else order="orderby=-difficult"
+    }
     var listQuery = [];
     var query = "";
 
     if (page != 1) listQuery.push("page=" + page.toString());
+    if (orderString!="") listQuery.push(orderString);
+    else if (order!="") listQuery.push(order);
     if (category != "") listQuery.push(category);
     if (problem_type != "") listQuery.push(problem_type);
     if (problem_name != "") listQuery.push(problem_name);

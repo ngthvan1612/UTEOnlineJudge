@@ -22,11 +22,13 @@
 				<div class="col-xl-9">
 					<div class="card-body p-0">
 						<table class="table table-hover table-bordered" id="table_id" style="background-color: white;">
-							<thead>
+							<thead onclick="">
 								<tr>
-									<th style="width: 60px; text-align: center">#</th>
+									<th style="width: 60px; text-align: center" onclick=";">#</th>
 									<th style="text-align: center">Name</th>
-									<th style="width: 100px; text-align: center">Difficult</th>
+									<th style="width: 100px; text-align: center" onclick="difficultFilter(this)">
+										Difficult
+									</th>
 									<th style="width: 100px; text-align: center">Solved</th>
 									<th style="width: 70px">&nbsp;</th>
 									<th style="width: 60px">&nbsp;</th>
@@ -38,12 +40,12 @@
 								<tr>
 									<td id="{{x.fullname}}" style="text-align: center"><a href="/problems/{{x.shortname}}">{{x.id}}</a></td>
 									<td>
-										<div>
+										<div style="height: 100%;">
 											<a href="/problems/{{x.shortname}}" style="float: left; font-size: 18px;">{{x.fullname}}</a>
 										</div>
-										<div>
+										<div style="width: 60%; float: right">
 										{%for y in x.categories%}
-											<a href="/admin/problems/?category={{y}}" type="button" class= "btn btn-outline-secondary" style="float: right; font-size: 10px; margin-left: 5px; padding: 3px 6px">{{y}}</a>
+											<a href="/admin/problems/?category={{y}}" type="button" class= "btn btn-outline-secondary" style="float: right; font-size: 10px; margin-left: 5px; margin-top: 5px;	 padding: 3px 6px">{{y}}</a>
 										{% endfor %}
 										</div>
 									</td>
@@ -117,7 +119,7 @@
 									</select>
 									<a id="addCatetory" href="#" style="float: right;" onclick="showSelect()">Add tag</a>
 								</div>
-								<a class="btn btn-primary" style="margin-top: 10px" onclick="goNewPage(1)">Find</a>
+								<a class="btn btn-primary" style="margin-top: 10px" onclick="goNewPage(1,'')">Find</a>
 							</form>
 						</div>
 					</div>
