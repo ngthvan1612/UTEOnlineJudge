@@ -12,6 +12,10 @@ from backend.models.submission import SubmissionTestcaseResultModel
 
 from backend.models.settings import OJSettingModel
 
+from backend.models.usersetting import UserSetting
+
+from backend.models.filemanager import UserFileManager
+
 #from backend.models.usersetting import ??
 
 admin.site.register(LanguageModel)
@@ -21,5 +25,7 @@ admin.site.register(ProblemTestCaseModel)
 admin.site.register(SubmissionModel)
 admin.site.register(SubmissionTestcaseResultModel)
 admin.site.register(OJSettingModel)
+admin.site.register(UserSetting)
+admin.site.register(UserFileManager)
 
 

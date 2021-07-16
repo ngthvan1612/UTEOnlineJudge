@@ -1,3 +1,5 @@
 static/
 env-ubuntu
 *.pyc
+*.zip
+*.jpg

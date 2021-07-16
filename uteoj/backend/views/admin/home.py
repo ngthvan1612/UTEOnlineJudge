@@ -4,6 +4,11 @@ from backend.views.auth.login import LoginView
 from backend.views.admin.require import admin_member_required
 from backend.models.problem import ProblemModel
 from django.contrib.auth.models import User
+from django.http import HttpResponse
+
+def Error404Page(request, exception):
+
+    return HttpResponse('Not found')
 
 @admin_member_required
 def AdminHomeView(request):

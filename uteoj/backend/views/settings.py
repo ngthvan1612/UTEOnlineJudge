@@ -1,1 +1,1 @@
-REDIRECT_FIELD_NAME = 'next_page'
+REDIRECT_FIELD_NAME = 'next'

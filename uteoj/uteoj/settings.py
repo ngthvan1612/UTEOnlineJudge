@@ -11,10 +11,15 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from .dbutils import *
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+LIST_SUPER_USER = [ 'admin', 'root' ]
+
+CSRF_COOKIE_SECURE = True
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -25,12 +30,17 @@ SECRET_KEY = 'django-insecure-t3wh9u9h4w&8$vn%*bxofwvqy(^*z*!^&u=7ia!^ecj7u^lkh1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+MEDIA_ROOT = 'ADMIN_DATA_MEDIA/'
+MEDIA_URL = '/media/'
+
 ALLOWED_HOSTS = ['*']
 
 WEBSITE_HOST_NAME = '127.0.0.1:8000'
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
+
+#DEFAULT_FILE_STORAGE = 'storages.backends.overwrite.OverwriteStorage'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -49,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'backend.apps.BackendConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -91,8 +102,12 @@ WSGI_APPLICATION = 'uteoj.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': DATABASE_NAME,
+        'USER': DATABASE_USER,
+        'PASSWORD': DATABASE_PASSWORD,
+        'HOST': DATABASE_HOST,
+        'PORT': DATABASE_PORT,
     }
 }
 

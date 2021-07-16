@@ -30,15 +30,20 @@ SUBMISSION_VISIBLE_MODE_CHOICES = (
     (SubmissionVisibleModeType.OnlyMe, "Chỉ mình tôi"),
 )
 
+from datetime import datetime
+
 class ProblemModel(models.Model):
     author = models.ManyToManyField(User, blank=False)
-    publish_date = models.DateTimeField(blank=False)
+    publish_date = models.DateTimeField(blank=False, default=datetime.now())
     categories = models.ManyToManyField(ProblemCategoryModel, blank=True)
     shortname = models.CharField(max_length=32, unique=True)
     fullname = models.CharField(max_length=255)
     difficult = models.FloatField(default=5.0)
     points_per_test = models.FloatField(default=1.0)
     statement = models.TextField(blank=False)
+    input_statement = models.TextField(blank=False, null=True)
+    output_statement = models.TextField(blank=False, null=True)
+    constraints_statement = models.TextField(blank=False, null=True)
 
     input_filename = models.CharField(max_length=32)
     output_filename = models.CharField(max_length=32)
@@ -66,10 +71,13 @@ class ProblemStatisticsModel(models.Model):
 
 class ProblemTestCaseModel(models.Model):
     problem = models.ForeignKey(ProblemModel, on_delete=models.CASCADE)
-    test_name = models.CharField(max_length=255, blank=False, null=True)
+    tag = models.CharField(max_length=255, blank=True, null=True)
     time_limit = models.IntegerField(default=1000)
     memory_limit = models.IntegerField(default=65536)
     points = models.FloatField(default=1.0)
 
+    input_file = models.CharField(max_length=255, blank=False, null=True)
+    output_file = models.CharField(max_length=255, blank=False, null=True)
+
     def __str__(self):
-        return self.problem.shortname
+        return str(self.id) + ' - ' + self.problem.shortname
