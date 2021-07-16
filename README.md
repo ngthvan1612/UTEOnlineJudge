@@ -2,11 +2,24 @@
 ## Quạn trọng
 # 1. Đổi dbms
 Vào file dbutils.py cấu hình lại database với các hằng sau:
+> Hiện tại sẽ dùng mysql
 DATABASE_NAME = 'tên csdl'
 DATABASE_USER = 'tên người dùng'
 DATABASE_PASSWORD = 'mật khẩu'
 DATABASE_HOST = 'host của mysql, localhost hoặc 127.0.0.1'
 DATABASE_PORT = 'cổng mysql, mặc định 3306'
+
+Sau khi đổi, làm 2 việc
+1. Update lại thư viên
+```bash
+pip install -r requirements.txt # ở trong thư mục gốc
+```
+2. Update lại csdl
+```bash
+python manage.py makemigrations
+python manage.py migrate
+# nếu có lỗi xảy ra, xem lại cấu hình dbutils.py
+```
 
 ## 2. Update toàn bộ thông báo lỗi
 1. Tạo trong thư mục admin-template/\_layout/ file **errort\_handle.html** (giống nav.html, ...) gồm nội dung sau (mẫu):
