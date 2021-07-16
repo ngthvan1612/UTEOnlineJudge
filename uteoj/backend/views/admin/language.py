@@ -22,7 +22,17 @@ from backend.models.language import LanguageSerializer
 @admin_member_required
 def AdminListLanguageView(request):
     if request.method == 'GET':
-        list_language = [x for x in LanguageModel.objects.all()]
+        list_language = [{
+                'id': 0,
+                'lang_name': x.name,
+                'lang_ext': x.ext,
+                'lang_description': x.description,
+                'lang_compile_command': x.compile_command,
+                'lang_run_command': x.run_command,
+            }
+            for x in LanguageModel.objects.all()]
+        for id in range(0, len(list_language), 1):
+            list_language[id]['id'] = id + 1
 
         context = {
             'list_language': list_language,
