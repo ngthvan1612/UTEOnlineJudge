@@ -22,7 +22,7 @@
 						<form class="form sign-in" action="/login/" method="POST">
                             {% csrf_token %}
                             {% if login_error %}
-                                <h6 class = "message">Message here<h6>
+                                <h3 class = "message">Message here<h3>
                                 <script type="text/javascript">
                                     const error = document.querySelectorAll('.message')[0];
                                     error.textContent = '{{login_error}}';

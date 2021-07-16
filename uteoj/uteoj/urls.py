@@ -20,3 +20,6 @@ urlpatterns = [
     path('admindjango/', admin.site.urls),
     path('', include('backend.urls')),
 ]
+
+
+#handler404 = 'backend.views.errorhandle.handle.ErrorHandle404'

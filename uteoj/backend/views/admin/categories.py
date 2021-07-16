@@ -17,7 +17,6 @@ def AdminCategoriesView(request):
             for x in ProblemCategoryModel.objects.all()]
     }
     if request.method == 'POST':
-        print(request.POST)
         if 'method' not in request.POST:
             return HttpResponse(status=500)
         method = request.POST['method']
@@ -49,7 +48,7 @@ def AdminCategoriesView(request):
             new_name = request.POST['new_name']
             description = request.POST['description']
             old_name = request.POST['old_name']
-            if ProblemCategoryModel.objects.filter(name=new_name).exists():
+            if new_name != old_name and ProblemCategoryModel.objects.filter(name=new_name).exists():
                 response_data['status'] = 'error'
                 response_data['message'] = 'Tên này đã có'
                 return HttpResponse(json.dumps(response_data, indent=4), content_type="application/json")

@@ -1,3 +1,4 @@
+from rest_framework import serializers
 from django.db import models
 
 class LanguageModel(models.Model):
@@ -5,5 +6,15 @@ class LanguageModel(models.Model):
     ext = models.CharField(max_length=6)
     description = models.TextField()
 
+    compile_command = models.CharField(max_length=255, blank=True)
+    run_command = models.CharField(max_length=255, null=True)
+
     def __str__(self):
         return self.name + ' (' + self.ext + ')'
+
+
+class LanguageSerializer(serializers.Serializer):
+
+    class Meta:
+        model = LanguageModel
+        fields = ('id', 'name', 'ext', 'description', 'compile_command', 'run_command')

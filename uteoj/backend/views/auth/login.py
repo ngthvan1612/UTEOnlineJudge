@@ -1,4 +1,6 @@
 import re
+from django.conf import settings
+from django.contrib import messages
 from django.template.loader import render_to_string
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib.auth.tokens import default_token_generator
@@ -32,8 +34,8 @@ def LoginView(request):
         'website_header_title': 'Đăng nhập',
     }
     if request.method == 'GET' and REDIRECT_FIELD_NAME in request.GET:
-        context['login_error'] = 'Vui lòng đăng nhập với quyền admin để tiếp tục'
-    if request.method == 'POST':
+        messages.add_message(request, messages.ERROR, 'Vui lòng đăng nhập với quyền admin để tiếp tục')
+    elif request.method == 'POST':
         list_requirements = ['username', 'password']
         for x in list_requirements:
             if x not in request.POST:
@@ -43,10 +45,13 @@ def LoginView(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            if REDIRECT_FIELD_NAME in request.POST:
+                print('-------------> ' + request.POST[REDIRECT_FIELD_NAME])
+                return redirect(request.POST[REDIRECT_FIELD_NAME])
             if user.is_staff:
                 return redirect('/admin/')
             return redirect('/who')
-        context['login_error'] = 'Tên đăng nhập hoặc mật khẩu sai'
+        messages.add_message(request, messages.ERROR, 'Tên đăng nhập hoặc mật khẩu sai')
     return render(request, 'auth-template/login.html', context)
 
 
@@ -84,8 +89,8 @@ def ForgotPasswordView(request):
                 }
                 email = render_to_string(email_template, c)
                 try:
-                    EMAIL_HOST_USER = OJSettingModel.get(CHANGE_PASSWORD_EMAIL_HANDLE_SETTING_NAME)
-                    EMAIL_HOST_PASSWORD = OJSettingModel.get(CHANGE_PASSWORD_EMAIL_PASSWORD_SETTING_NAME)
+                    settings.EMAIL_HOST_USER = OJSettingModel.get(CHANGE_PASSWORD_EMAIL_HANDLE_SETTING_NAME)
+                    settings.EMAIL_HOST_PASSWORD = OJSettingModel.get(CHANGE_PASSWORD_EMAIL_PASSWORD_SETTING_NAME)
                     send_mail(subject, email, EMAIL_HOST_USER, [user.email], fail_silently=False)
                 except BadHeaderError:
                     context['error_forgot_password'] = 'Có lỗi trong quá trình xử lý'

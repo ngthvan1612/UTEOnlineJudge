@@ -1,4 +1,5 @@
 {%extends 'admin-template/_layout/base.html' %}
+{%load static %}
 {%block website_content %}
 	<!-- Content Header (Page header) -->
 	<div class="content-header">
@@ -18,31 +19,33 @@
 	<div class="content">
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-lg-8">
+				<div class="col-xl-9">
 					<div class="card-body p-0">
-						<table class="table table-hover table-bordered">
-							<thead>
+						<table class="table table-hover table-bordered" id="table_id" style="background-color: white;">
+							<thead onclick="">
 								<tr>
-									<th style="width: 20px">#</th>
+									<th style="width: 60px; text-align: center" onclick=";">#</th>
 									<th style="text-align: center">Name</th>
-									<th style="width: 100px;text-align: center">Difficult</th>
-									<th style="width: 100px;text-align: center">Solved</th>
+									<th style="width: 100px; text-align: center" onclick="difficultFilter(this)">
+										Difficult
+									</th>
+									<th style="width: 100px; text-align: center">Solved</th>
 									<th style="width: 70px">&nbsp;</th>
 									<th style="width: 60px">&nbsp;</th>
 								</tr>
 							</thead>
 							<tbody>
-								{% for x in list_problem %}
+								{% for x in page_obj %}
 
 								<tr>
-									<td><a href="/problems/{{x.shortname}}">{{x.id}}</a></td>
+									<td id="{{x.fullname}}" style="text-align: center"><a href="/problems/{{x.shortname}}">{{x.id}}</a></td>
 									<td>
-										<div>
+										<div style="height: 100%;">
 											<a href="/problems/{{x.shortname}}" style="float: left; font-size: 18px;">{{x.fullname}}</a>
 										</div>
-										<div>
+										<div style="width: 60%; float: right">
 										{%for y in x.categories%}
-											<a href="/admin/problems/?category={{y}}" type="button" class= "btn btn-outline-secondary" style="float: right; font-size: 10px; margin-left: 5px; padding: 3px 6px">{{y}}</a>
+											<a href="/admin/problems/?category={{y}}" type="button" class= "btn btn-outline-secondary" style="float: right; font-size: 10px; margin-left: 5px; margin-top: 5px;	 padding: 3px 6px">{{y}}</a>
 										{% endfor %}
 										</div>
 									</td>
@@ -55,11 +58,78 @@
 								{% endfor%}
 							</tbody>
 						</table>
+
+						<input type="hidden" id="page_current" value="{{page_obj.number}}">
+						<input type="hidden" id="page_total" value="{{page_obj.paginator.num_pages}}">
+						<nav aria-label="Page navigation example" style="margin-top: 2rem;">
+							<ul class="pagination justify-content-center" id="Pagination">
+								<li class="page-item" id="previous" onclick="previous()">
+									<a class="page-link" href = "javascript:;" tabindex="-1">Previous</a>
+								</li>
+								<li class="page-item" id="next" onclick="next()">
+									<a class="page-link" href="javascript:;">Next</a>
+								</li>
+								</ul>
+						</nav>
+
 					</div>
 					<!-- /.card-body -->
+				</div>
+				<div class = "col-xl-3 d-none d-xl-block">
+					<div class="card">
+						<div class="card-header text-center"><b>Filter Problem</b></div>
+						<div class="card-body">
+							<form>
+								<div class="filterByName">
+									<label for="search">Name</label>
+									<span style="float: right; width: 60%">
+										<input type="text" id="search" placeholder="Search Problem" style="width: 100%;"">
+									</span>
+								</div>
+
+								<div class="filterByDifficult">
+									<label> Difficult:</label>
+									<span style="float: right; width: 67%" >
+										<input type="text" id="maxDifficult" placeholder="Max" style="width: 43%; float: right">
+										<input type="text" id="minDifficult" placeholder="Min" style="width: 43%; margin-right: 8px; float: right">
+									</span>
+								</div>
+								
+								<div class="listType">
+									<label>Type</label>
+									<select id=selectType style="float: right; width: 60%">
+										<option value=""></option>
+										<option value="ACM" title="ACM">ACM </option>
+										<option value="OI" title="OI">OI</option>
+									</select>
+
+								</div>
+
+								<div style="overflow: auto;" class="categoryBoxes">
+									<label>Categories:
+										<div class="listCatgories"></div>
+									</label>
+								</div>
+								<div>
+									<select id="selectCategory" style="display: none; float: right; width: 100%" onchange="chooseCategory()">
+										<option value=""></option>
+										{%for x in list_categories %}
+											<option value="{{x}}" title="{{x}}">{{x}}</option>
+										{% endfor %}
+									</select>
+									<a id="addCatetory" href="#" style="float: right;" onclick="showSelect()">Add tag</a>
+								</div>
+								<a class="btn btn-primary" style="margin-top: 10px" onclick="goNewPage(1,'')">Find</a>
+							</form>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+
+	<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+	<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+	<script src="{% static 'problem/js/index.js' %}"></script>
 	<!-- /.content -->
 {%endblock%}
