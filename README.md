@@ -9,7 +9,9 @@ DATABASE_PASSWORD = 'mật khẩu'
 DATABASE_HOST = 'host của mysql, localhost hoặc 127.0.0.1'
 DATABASE_PORT = 'cổng mysql, mặc định 3306'
 
-Sau khi đổi, làm 2 việc
+> Lưu ý trong quá trình comit, push sẽ không có file dbutils.py tham gia vào, vì đã ignore rồi
+
+Sau khi đổi, làm 3 việc
 1. Update lại thư viên
 ```bash
 pip install -r requirements.txt # ở trong thư mục gốc
@@ -18,6 +20,20 @@ pip install -r requirements.txt # ở trong thư mục gốc
 ```bash
 python manage.py makemigrations
 python manage.py migrate
+```
+3. Tạo người dùng admin
+```bash
+python manage.py createsuperuser
+# bắt đầu nhập vào username
+admin
+# email bỏ cũng được
+qwert@gmail.com
+# password, mật khẩu khác cũng được
+1234567890
+# nhập lại
+1234567890
+#django có hỏi gì thì chọn y ---> OK
+```
 # nếu có lỗi xảy ra, xem lại cấu hình dbutils.py
 ```
 

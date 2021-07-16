@@ -3,3 +3,4 @@ env-ubuntu
 *.pyc
 *.zip
 *.jpg
+uteoj/uteoj/dbutils.py
