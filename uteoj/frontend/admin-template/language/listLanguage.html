@@ -1,0 +1,40 @@
+{%extends 'admin-template/_layout/base.html' %}
+{%block website_content %}
+	<!-- Content Header (Page header) -->
+	<div class="content-header">
+		<div class="container-fluid">
+			<div class="row mb-2">
+				<div class="col-sm-6">
+					<ol class="breadcrumb float-sm-left">
+						<li class="breadcrumb-item"><a href="#">Home</a></li>
+						<li class="breadcrumb-item active">Tag</li>
+                        <li class="breadcrumb-item active"> Id = 1e8 </li>
+					</ol>
+				</div>
+			</div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Extension</th>
+                        <th scope="col">Compile command</th>
+                        <th scope="col">Run command</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for x in list_language %}
+                    <tr>
+                        <td>{{x.id}}</td>
+                        <td><a href="edit/{{x.id}}">{{x.lang_name}}</a></td>
+                        <td>{{x.lang_ext}}</td>
+                        <td>{{x.lang_compile_command}}</td>
+                        <td>{{x.lang_run_command}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+		</div>
+	</div>
+	<!-- /.content-header -->
+{%endblock%}

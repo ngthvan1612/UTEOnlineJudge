@@ -1,0 +1,93 @@
+{%extends 'admin-template/problem/_layout/base.html'%}
+{%block problem_header %}
+    <a href="details" class="nav-link">Details</a>
+    <a href="problemsetter" class="nav-link">Problemsetter</a>
+    <a href="testcases" class="nav-link active">Testcases</a>
+    <a href="languages" class="nav-link">Languages</a>
+    <a href="settings" class="nav-link">Settings</a>
+    <a href="customchecker" class="nav-link">Custom checker</a>
+{%endblock%}
+{%block problem_details%}
+<div class="row" id="frm-testcase">
+    <div class="col-12 mb-3">
+        <table class="table table-bordered border-primary">
+            <thead>
+                <tr class="text-danger">
+                    <th>Test case #</th>
+                    <th>Input</th>
+                    <th>Output</th>
+                    <th>Time limit</th>
+                    <th>Memory limit</th>
+                    <th>Points</th>
+                    <th>Tag</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {%for testcase in list_testcases%}
+                    <tr>
+                        <td>{{testcase.id}}</td>
+                        <td><a target="_blank" href="{{testcase.input_file}}">Input#{{testcase.id}}</a></td>
+                        <td><a target="_blank" href="{{testcase.output_file}}">Output#{{testcase.id}}</a></td>
+                        <td><p id="time_limit_{{testcase.id}}">{{testcase.time_limit}}</p></td>
+                        <td><p id="memory_limit_{{testcase.id}}">{{testcase.memory_limit}}</p></td>
+                        <td><p id="points_{{testcase.id}}">{{testcase.points}}</p></td>
+                        <td><p id="tag_{{testcase.id}}">{{testcase.tag}}</p></td>
+                        <td>
+                            <div class="input-group">
+                                <a target="_blank" href="testcases/edit/{{testcase.pk}}" class="btn btn-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button target="_blank" onclick="onDelete('{{problem.shortname}}',{{testcase.pk}})" type="button" class="btn btn-primary">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function onDelete(shortname, testpk) {
+        if (confirm('Are you sure')) {
+            $.ajax({
+                url: '/admin/problems/edit/' + shortname + '/testcases/delete/' + testpk.toString() + '/',
+                method: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{csrf_token}}',
+                },
+                success: function(data) {
+                    //location.reload(true);
+                    $("#frm-testcase").load(location.href + " #frm-testcase");
+                }
+            });
+            
+        }
+    }
+    function onEditTestcase(testid, testpk) {
+        $('#exampleModalLabel').text('Test #' + testid.toString());
+        $('#modal-time-limit').val($('#' + 'time_limit_' + testid.toString()).text());
+        $('#modal-memory-limit').val($('#' + 'memory_limit_' + testid.toString()).text());
+        $('#modal-points').val($('#' + 'points_' + testid.toString()).text());
+        $('#modal-tag').val($('#' + 'tag_' + testid.toString()).text());
+        $('#exampleModal').modal('toggle');
+    }
+</script>
+{%endblock%}

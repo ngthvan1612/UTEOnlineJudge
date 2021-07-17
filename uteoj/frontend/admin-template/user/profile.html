@@ -1,18 +1,92 @@
 {%extends 'admin-template/_layout/base.html' %}
 {%block website_content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 	<!-- Content Header (Page header) -->
 	<div class="content-header">
 		<div class="container-fluid">
-			<div class="row mb-2">
-				<div class="col-sm-6">
-					<ol class="breadcrumb float-sm-left">
-						<li class="breadcrumb-item"><a href="#">Home</a></li>
-						<li class="breadcrumb-item active">User</li>
-                        <li class="breadcrumb-item active"> ID = 1e9 </li>
-					</ol>
+			{% include 'admin-template/_layout/error_handle.html' %}
+			<form method="post" id="delete-user-form" action="/admin/users/delete/{{username}}/">
+				{% csrf_token %}
+			</form>
+			<form method="post" action="" enctype="multipart/form-data">
+				{% csrf_token %}
+				<div class="row g-3">
+					<div class="col-8">
+						<div class="row g-3">
+							<div class="col-12">
+								<label class="form-label">User name</label>
+								<input type="text" class="form-control" value={{username}} readonly>
+							</div>
+								<div class="col-md-6">
+									<label class="form-label">First name</label>
+									<input type="text" class="form-control" value="{{first_name}}" name="first_name">	
+								</div>
+								<div class="col-md-6">
+									<label class="form-label">Last name</label>
+									<input type="text" class="form-control" value="{{last_name}}" name="last_name">
+								</div>
+							<div class="col-12">
+								<label class="form-label">Job</label>
+								<input type="text" class="form-control" value="{{job}}" name="user_job">
+							</div>
+							<div class="col-12">
+								<label class="form-label">Email</label>
+								<input type="text" class="form-control" value="{{email}}" name="email">
+							</div>
+							<div class="col-12">
+								<label class="form-label">Date Joined</label>
+								<input type="text" class="form-control" value="{{date_joined}}" readonly>
+							</div>
+							<div class="col-12">
+								<div class="form-check form-switch">
+									<input class="form-check-input" type="checkbox" {%if is_admin%}checked{%endif%} name="is_admin"/>
+									<label class="form-check-label">
+										Is admin
+									</label>
+								</div>
+							</div>
+							<div class="col-12">
+								<div class="form-check form-switch">
+									<input class="form-check-input" type="checkbox" {%if is_active%}checked{%endif%} name="is_active"/>
+									<label class="form-check-label">
+										Is active
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-4">
+						{% if avatar %}
+							<img id="user_avatar_preview" src="{{avatar}}" alt="" style="display:block;margin:auto;max-width:100%;height:auto;"/>
+						{% else %}
+							<img id="user_avatar_preview" src="#" alt="" style="display:block;margin:auto;max-width:100%;height:auto;"/>
+						{% endif %}
+						<div class="mb-3" style="margin-top:10px;">
+							<input class="form-control" type="file" id="user_avatar" name="user_avatar" onchange="updateImage()">
+						</div>
+					</div>
 				</div>
-			</div>
+				<div class="row g-3" style="margin-top:5px;">
+					<div class="col-12">
+						<div class="text-center">
+							<input class="btn btn-primary" role="button" type="submit" value="Save change">
+							<button class="btn btn-danger" role="button" type="button" onclick="deleteUser('{{username}}')">Delete user</button>
+						</div>
+					</div>
+				</div>
+			</form>
 		</div>
 	</div>
+	<script>
+		function updateImage() {
+			$('#user_avatar_preview').attr('src', URL.createObjectURL(event.target.files[0]));
+		}
+
+		function deleteUser(user_name) {
+			if (confirm('Are you sure?')) {
+				document.getElementById('delete-user-form').submit();
+			}
+		}
+	</script>
 	<!-- /.content-header -->
 {%endblock%}

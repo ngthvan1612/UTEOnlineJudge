@@ -1,0 +1,47 @@
+version: '3.7'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: 'Dockerfile.prod'
+    command: >
+      bash -c "./entrypoint.prod.sh
+      && python manage.py makemigrations
+      && python manage.py migrate
+      && python manage.py initadmin
+      && gunicorn uteoj.wsgi:application --bind 0.0.0.0:8000
+      "
+    expose:
+      - 8000
+    depends_on:
+      - db
+  # db:
+  #   image: postgres
+  #   volumes:
+  #     - ./data/db:/var/lib/postgresql/data
+  #   environment:
+  #     - POSTGRES_DB='uteoj_test'
+  #     - POSTGRES_USER='abc'
+  #     - POSTGRES_PASSWORD='1234567890'
+  db:
+    image: mysql:5.7
+    ports:
+      - '3309:3309'
+    environment:
+       MYSQL_DATABASE: 'uteoj_test'
+       MYSQL_ROOT_PASSWORD: 'abc1234567890'
+    volumes:
+      - production_db_volume:/var/lib/mysql
+  nginx:
+    build: ./nginx
+    ports:
+      - 1337:80
+    volumes:
+      - web
+      - ./static:/code/static/
+    depends_on:
+      - web
+volumes:
+  postgres_data:
+  production_db_volume:

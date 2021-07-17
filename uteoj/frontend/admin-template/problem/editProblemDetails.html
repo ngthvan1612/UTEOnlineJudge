@@ -1,0 +1,53 @@
+{%extends 'admin-template/problem/_layout/base.html'%}
+{%block problem_header %}
+    <a href="details" class="nav-link active">Details</a>
+    <a href="problemsetter" class="nav-link">Problemsetter</a>
+    <a href="testcases" class="nav-link">Testcases</a>
+    <a href="languages" class="nav-link">Languages</a>
+    <a href="settings" class="nav-link">Settings</a>
+    <a href="customchecker" class="nav-link">Custom checker</a>
+{%endblock%}
+{%block problem_details%}
+<div class="row">
+    <div class="input-group mb-3" style="margin-top:15px;">
+        <span class="input-group-text">Problem name</span>
+        <input type="text" class="form-control" placeholder="Problem name" value="{{problem.fullname}}" name="fullname">
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Short name</span>
+        <input type="text" class="form-control" placeholder="Short name" value="{{problem.shortname}}" name="shortname">
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Difficult</span>
+        <input type="text" class="form-control" placeholder="5.0" value="{{problem.difficult}}" name="difficult">
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Points per test</span>
+        <input type="text" class="form-control" placeholder="1.0" value="{{problem.points_per_test}}" name="points_per_test">
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Statement</span>
+        <textarea class="form-control" placeholder="Statment" style="height:150px;" name="statement">{{problem.statement}}</textarea>
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Input</span>
+        <textarea id="test-textarea" class="form-control" placeholder="Input statment" name="input_statement" style="height:150px;">{{problem.input_statement}}</textarea>
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Constraints</span>
+        <textarea class="form-control" placeholder="Constraints statment" style="height:150px;" name="constraints_statement">{{problem.constraints_statement}}</textarea>
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Output</span>
+        <textarea class="form-control" placeholder="Output statment" style="height:150px;" name="output_statement">{{problem.output_statement}}</textarea>
+    </div>
+    <div>
+        {%for cate in list_categories %}
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="{{cate}}" name="list_categories[]" {% if cate in problem.categories%}checked{%endif%}>
+            <label class="form-check-label">{{cate}}</label>
+        </div>
+        {%endfor%}
+    </div>
+</div>
+{%endblock%}

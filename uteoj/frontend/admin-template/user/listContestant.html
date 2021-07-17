@@ -3,13 +3,35 @@
 	<!-- Content Header (Page header) -->
 	<div class="content-header">
 		<div class="container-fluid">
-			<div class="row mb-2">
-				<div class="col-sm-6">
-					<ol class="breadcrumb float-sm-left">
-						<li class="breadcrumb-item"><a href="#">Home</a></li>
-						<li class="breadcrumb-item active">User</li>
-                        <li class="breadcrumb-item active">Contestant</li>
-					</ol>
+			<div class="row">
+				<div class="col-12 mb-3">
+					{% include 'admin-template/_layout/error_handle.html' %}
+				</div>
+				<div class="col-12 mb-3">
+					<table class="table">
+						<thead>
+							<tr>
+								<th scope="col">#</th>
+								<th scope="col">Username</th>
+								<th scope="col">First name</th>
+								<th scope="col">Last name</th>
+								<th scope="col">Date joined</th>
+								<th scope="col">Is active</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for u in page_obj %}
+								<tr {%if not u.is_active %}class="text-danger font-weight-bold"{%endif%}>
+									<th scope="row">{{u.id}}</th>
+									<td><a href="/admin/users/edit/{{u.username}}">{{u.username}}</a></td>
+									<td>{{u.first_name}}</td>
+									<td>{{u.last_name}}</td>
+									<td>{{u.date_joined}}</td>
+									<td>{{u.is_active}}</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>

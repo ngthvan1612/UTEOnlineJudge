@@ -1,16 +1,78 @@
 {%extends 'admin-template/_layout/base.html' %}
 {%block website_content %}
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 	<!-- Content Header (Page header) -->
 	<div class="content-header">
 		<div class="container-fluid">
 			<div class="row mb-2">
-				<div class="col-sm-6">
-					<ol class="breadcrumb float-sm-left">
-						<li class="breadcrumb-item"><a href="#">Home</a></li>
-						<li class="breadcrumb-item active">Problem</li>
-                        <li class="breadcrumb-item active">Create</li>
-					</ol>
-				</div>
+				<form >
+					<nav>
+						<div class="nav nav-tabs" id="nav-tab" role="tablist">
+							<button class="nav-link active" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Details</button>
+							<button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-problemsetter" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Problemsetter</button>
+							<button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-testcases" type="button" role="tab" aria-controls="nav-testcases" aria-selected="false">Testcases</button>
+							<button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-languages" type="button" role="tab" aria-controls="nav-languages" aria-selected="false">Languages</button>
+							<button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-setting" type="button" role="tab" aria-controls="nav-setting" aria-selected="false">Setting</button>
+							<button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-custom-checker" type="button" role="tab" aria-controls="nav-custom-checker" aria-selected="false">Custom checker</button>
+						</div>
+					</nav>
+					<div class="tab-content" id="nav-tabContent" style="overflow-y: scroll;height:400px;">
+						<div class="tab-pane fade show active" id="nav-home">
+							<div class="container">
+								<div class="row">
+									<div class="input-group mb-3" style="margin-top:15px;">
+										<span class="input-group-text">Problem name</span>
+										<input type="text" class="form-control" placeholder="Problem name">
+									</div>
+									<div class="input-group mb-3">
+										<span class="input-group-text">Short name</span>
+										<input type="text" class="form-control" placeholder="Short name">
+									</div>
+									<div class="input-group mb-3">
+										<span class="input-group-text">Difficult</span>
+										<input type="text" class="form-control" placeholder="5.0">
+									</div>
+									<div class="input-group mb-3">
+										<span class="input-group-text">Points per test</span>
+										<input type="text" class="form-control" placeholder="1.0">
+									</div>
+									<div class="input-group mb-3">
+										<span class="input-group-text">Statement</span>
+										<textarea class="form-control" placeholder="Statment" style="height:150px;"></textarea>
+									</div>
+									<div class="input-group mb-3">
+										<span class="input-group-text">Input</span>
+										<textarea class="form-control" placeholder="Input statment" style="height:150px;"></textarea>
+									</div>
+									<div class="input-group mb-3">
+										<span class="input-group-text">Constraints</span>
+										<textarea class="form-control" placeholder="Constraints statment" style="height:150px;"></textarea>
+									</div>
+									<div class="input-group mb-3">
+										<span class="input-group-text">Output</span>
+										<textarea class="form-control" placeholder="Output statment" style="height:150px;"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="nav-problemsetter">
+							Problem Setter
+						</div>
+						<div class="tab-pane fade" id="nav-testcases">
+							Testcases
+						</div>
+						<div class="tab-pane fade" id="nav-languages">
+							Languages
+						</div>
+						<div class="tab-pane fade" id="nav-setting">
+							Setting
+						</div>
+						<div class="tab-pane fade" id="nav-custom-checker">
+							Custom checker
+						</div>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>

@@ -1,0 +1,67 @@
+{%extends 'admin-template/_layout/base.html' %}
+{%block website_content %}
+    <script type="text/javascript">
+        function reload() {
+            window.location.reload();
+        }
+
+        function onDelete(lang_id) {
+            document.getElementById('delete-lang').submit();
+        }
+    </script>
+	<!-- Content Header (Page header) -->
+	<div class="content-header">
+		<div class="container-fluid">
+            <div>
+                {% include 'admin-template/_layout/error_handle.html' %}
+                <form hidden id="delete-lang" action="/admin/language/delete/{{lang_id}}/" method="post">
+                    {% csrf_token %}
+                    <input type="submit">
+                </form>
+                <form action="" method="post">
+                    <input type="hidden" name="_method" value="put" />
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">Language name</span>
+                                <input type="text" class="form-control" placeholder="Language name" value="{{lang_name}}" name="lang_name">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">Extension</span>
+                                <input type="text" class="form-control" placeholder=".ext" value="{{lang_ext}}" name="lang_ext">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">Description</span>
+                                <input type="text" class="form-control" placeholder=".ext" value="{{lang_description}}" name="lang_description">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">Compile command</span>
+                                <input type="text" class="form-control" placeholder=".ext" value="{{lang_compile_command}}" name="lang_compile_command" id="lang_compile_command">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">Run command</span>
+                                <input type="text" class="form-control" placeholder=".ext" value="{{lang_run_command}}" name="lang_run_command">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="text-center">
+                                <input class="btn btn-primary" value="Save change" type="submit">
+                                <input class="btn btn-danger" type="button" value="Delete" onclick="onDelete({{lang_id}})">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+		</div>
+	</div>
+	<!-- /.content-header -->
+{%endblock%}
