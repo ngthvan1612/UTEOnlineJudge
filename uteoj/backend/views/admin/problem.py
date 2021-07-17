@@ -19,7 +19,7 @@ from backend.views.admin.require import admin_member_required
 
 @admin_member_required
 def AdminEditProblemDeatailsview(request, problem_short_name):
-    filter_problem = ProblemModel.objects.select_for_update().filter(shortname=problem_short_name)
+    filter_problem = ProblemModel.objects.filter(shortname=problem_short_name)
     if not filter_problem.exists():
         return HttpResponse(status=404)
     #edit
@@ -114,7 +114,7 @@ def AdminEditProblemDeatailsview(request, problem_short_name):
 
 @admin_member_required
 def AdminEditProblemProblemSetterview(request, problem_short_name):
-    filter_problem = ProblemModel.objects.select_for_update().filter(shortname=problem_short_name)
+    filter_problem = ProblemModel.objects.filter(shortname=problem_short_name)
     if not filter_problem.exists():
         return HttpResponse(status=404)
     problem = filter_problem[0]

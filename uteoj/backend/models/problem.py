@@ -30,11 +30,11 @@ SUBMISSION_VISIBLE_MODE_CHOICES = (
     (SubmissionVisibleModeType.OnlyMe, "Chỉ mình tôi"),
 )
 
-from datetime import datetime
+import django
 
 class ProblemModel(models.Model):
     author = models.ManyToManyField(User, blank=False)
-    publish_date = models.DateTimeField(blank=False, default=datetime.now())
+    publish_date = models.DateTimeField(blank=False, default=django.utils.timezone.now)
     categories = models.ManyToManyField(ProblemCategoryModel, blank=True)
     shortname = models.CharField(max_length=32, unique=True)
     fullname = models.CharField(max_length=255)

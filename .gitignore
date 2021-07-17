@@ -1,6 +1,9 @@
 static/
+ADMIN_DATA_MEDIA/
 env-ubuntu
 *.pyc
 *.zip
 *.jpg
 uteoj/uteoj/dbutils.py
+dbutils.py
+
