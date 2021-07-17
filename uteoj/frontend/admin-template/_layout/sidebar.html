@@ -24,7 +24,7 @@
 
 		<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" style="margin-bottom: 1rem;">
 			<li class="nav-item">
-				<a href="#" class="nav-link" style="background-color:#DC3545; color: white">
+				<a href="/logout/" class="nav-link" style="background-color:#DC3545; color: white">
 					<i class="nav-icon fas fa-sign-out-alt"></i>
 					<p>Log out</p>
 				</a>
@@ -114,50 +114,53 @@
 				</li>
 				<li class="nav-item">
 					<a href="#" class="nav-link"  style="background-color: #E5AD06; color: white">
-						<i class="nav-icon fa fa-tags"></i>
+						<i class="nav-icon fa fa-language"></i>
 						<p>
-							Manage Categories
+							Manage Languages
 							<i class="fas fa-angle-left right"></i>
 						</p>
 					</a>
 					<ul class="nav nav-treeview">
 						<li class="nav-item">
-							<a href="/admin/categories/" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>List Categories</p>
+							<a href="/admin/language/create/" class="nav-link">
+								<i class="fa fa-user-circle nav-icon"></i>
+								<p>Create New Language</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="/admin/categories/<categories>/" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Edit Category</p>
+							<a href="/admin/language/" class="nav-link">
+								<i class="fa fa-users nav-icon"></i>
+								<p>List Languages</p>
 							</a>
 						</li>
 					</ul>
 				</li>
 				<li class="nav-item">
-					<a href="#" class="nav-link"  style="background-color: #DC3545; color: white">
+					<a href="/admin/categories" class="nav-link"  style="background-color: #D20AE4; color: white">
+						<i class="nav-icon fa fa-tags"></i>
+						<p>
+							Manage Categories
+						</p>
+					</a>
+				</li>
+				
+				<li class="nav-item">
+					<a href="/admin/status/" class="nav-link"  style="background-color: #DC3545; color: white">
 						<i class="nav-icon fas fa-table"></i>
 						<p>
 							Manage Submissions
-							<i class="fas fa-angle-left right"></i>
 						</p>
 					</a>
-					<ul class="nav nav-treeview">
-						<li class="nav-item">
-							<a href="/admin/status/" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Current Submissions</p>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a href="/admin/setting/" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Setting</p>
-							</a>
-						</li>
-					</ul>
 				</li>
+				<li class="nav-item">
+					<a href="/admin/setting/" class="nav-link"  style="background-color: #867f80; color: white">
+						<i class="nav-icon fa fa-cogs"></i>
+						<p>
+							Setting
+						</p>
+					</a>
+				</li>
+
 				<li class="nav-header">LABELS</li>
 				<li class="nav-item">
 					<a href="#" class="nav-link">

@@ -1,6 +1,7 @@
 {%extends 'admin-template/_layout/base.html' %}
 {%block website_content %}
     <!-- Main content -->
-    
+    {%include 'admin-template/_layout/error_handle.html' %} 
+	{%block error_handle %}{%endblock%}
     <!-- /.content -->
 {%endblock%}
