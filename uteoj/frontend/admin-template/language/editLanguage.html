@@ -1,20 +1,86 @@
 {%extends 'admin-template/_layout/base.html' %}
+{%load static%}
 {%block website_content %}
-	<!-- Content Header (Page header) -->
-	<div class="content-header">
-		<div class="container-fluid">
-			<div class="row mb-2">
-				<div class="col-sm-6">
-					<ol class="breadcrumb float-sm-left">
-						<li class="breadcrumb-item"><a href="#">Home</a></li>
-						<li class="breadcrumb-item active">Tag</li>
-                        <li class="breadcrumb-item active"> Id = 1e8 </li>
-					</ol>
-				</div>
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+	<div class="container-fluid">
+		<div class="row mb-2">
+			<div class="col-sm-6">
+				<ol class="breadcrumb float-sm-left">
+					<li class="breadcrumb-item"><a href="/admin/">Home</a></li>
+					<li class="breadcrumb-item active"><a href="/admin/language/">Language</a></li>
+					<li class="breadcrumb-item active">Edit</li>
+				</ol>
 			</div>
-			{%include 'admin-template/_layout/error_handle.html' %} 
-			{%block error_handle %}{%endblock%}
+		</div>
+		{%include 'admin-template/_layout/error_handle.html' %} 
+		{%block error_handle %}{%endblock%}
+	</div>
+</div>
+<!-- /.content-header -->
+<div class="content">
+	<div class="container-fluid">
+		<div class="row justify-content-xl-center">
+			<div class="col-xl-7">
+				<span style="font-size: 32px; justify-content: center">Edit Language</span>
+				<form method="POST" url="">
+					{% csrf_token %}
+					<div class="form-group">
+						<label for="lang_name">Language Name:</label>
+						<input type="text" class="form-control" id="lang_name" name="lang_name" placeholder="Python" value={{lang_name}} />
+					</div>
+					<div class="form-group">
+						<label for="lang_ext">Language Extension</label>
+						<input type="text" class="form-control" id="lang_ext" name="lang_ext" placeholder="py" value = {{lang_ext}} />
+					</div>
+					<div class="form-group">
+						<label for="lang_description">Language Description</label>
+						<textarea class="form-control" id="lang_description" name="lang_description" rows="5" >{{lang_description}}</textarea>
+					</div>
+					<div class="form-group">
+						<label for="lang_compile_command">Language Compile Command</label>
+						<code><input type="text" class="form-control"  id="lang_compile_command" name ="lang_compile_command" value={{lang_compile_command}} /></code>
+					</div>
+					<div class="form-group">
+						<label for="lang_run_command">Language Run Command</label>
+						<code><input type="text" class="form-control" id="lang_run_command" name ="lang_run_command" value={{lang_run_command}} /></code>
+					</div>
+					<button class="btn btn-primary float-right" type="submit">Save</button>
+					<a class="btn btn-danger float-right" data-toggle="modal" data-target="#deleteLanguage" id="{{x.name}}" style="margin-right: 20px;">Delete</a>
+				</form>
+			</div>
 		</div>
 	</div>
-	<!-- /.content-header -->
+</div>
+
+<div class="modal fade" id="deleteLanguage" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header text-center">
+				<h5 class="modal-title" id="exampleModalLabel">Delete Language</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>Do you want to delete this Language?</p>
+				<p style="color: red;"">Note: This action can delete all submission of users that used this language. Thinking carefully before delete !!</p>
+				<form hidden id="delete-lang" action="/admin/language/delete/{{lang_id}}/" method="post">
+					{% csrf_token %}
+					<p id = "addMessage"></p>
+					<div class="form-group">
+						<input class="form-control" id="inputDeleteName" placeholder="Enter category name" style="display: none;">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-danger" onclick="deleteLanguage()">Delete</button>
+			</div>
+		</div>
+	</div>
+
+
+<script src="{% static 'language/js/editLanguage.js' %}"></script>
 {%endblock%}
