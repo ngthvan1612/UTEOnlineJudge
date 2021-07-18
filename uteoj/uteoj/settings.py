@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-t3wh9u9h4w&8$vn%*bxofwvqy(^*z*!^&u=7ia!^ecj7u^lkh1
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 SESSION_COOKIE_SECURE = False
 
@@ -105,23 +105,23 @@ WSGI_APPLICATION = 'uteoj.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': DATABASE_NAME,
-#         'USER': DATABASE_USER,
-#         'PASSWORD': DATABASE_PASSWORD,
-#         'HOST': DATABASE_HOST,
-#         'PORT': DATABASE_PORT,
-#     }
-# }
-
 DATABASES = {
-     'default': {
-         'ENGINE': 'django.db.backends.sqlite3',
-         'NAME': BASE_DIR / DATABASE_NAME,
-     }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': DATABASE_NAME,
+        'USER': DATABASE_USER,
+        'PASSWORD': DATABASE_PASSWORD,
+        'HOST': DATABASE_HOST,
+        'PORT': DATABASE_PORT,
+    }
 }
+
+# DATABASES = {
+#      'default': {
+#          'ENGINE': 'django.db.backends.sqlite3',
+#          'NAME': BASE_DIR / DATABASE_NAME,
+#      }
+# }
 
 
 # Password validation
