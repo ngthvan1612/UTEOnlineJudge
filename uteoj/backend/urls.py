@@ -120,6 +120,12 @@ url_patterns_user = [
     path('problems/<str:problem_id>/', UserProblemView),
 ]
 
+from backend.views.random.user import CreateRandomUser
+
+url_pattern_random = [
+    path('random/user', CreateRandomUser)
+]
+
 from django.conf.urls import url
 import re
 
@@ -132,6 +138,6 @@ urlpatterns = [
     path('who/', WhoView),
     #url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}), 
     #url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}), 
-] + url_patterns_admin + url_patterns_auth + url_patterns_user + merge_static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + url_pattern_random + url_patterns_admin + url_patterns_auth + url_patterns_user + merge_static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

@@ -48,7 +48,7 @@ def CheckLanguageRequire(name, ext, desc, compile_command, run_command, check_na
         return ['error', 'Tên không được trống']
     if check_name_existed == True:
         if LanguageModel.objects.filter(name=name).exists():
-            return [ 'error', 'Tên này đã có']
+            return [ 'error', 'Tên này đã tồn tại']
     if len(ext) == 0 or not ext:
         return ['error', 'Ext không được trống']
     if len(desc) == 0 or not desc:
@@ -116,7 +116,7 @@ def AdminEditLanguageView(request, lang_id):
         lang_run_command = request.POST['lang_run_command']
         
         if lang_name != lang.name and LanguageModel.objects.filter(name=lang_name).exists():
-            messages.add_message(request, messages.ERROR, 'Tên này đã có')
+            messages.add_message(request, messages.ERROR, 'Tên này đã tồn tại')
         else:
             status, message = CheckLanguageRequire(lang_name, lang_ext, lang_description,
                 lang_compile_command, lang_run_command, False)
