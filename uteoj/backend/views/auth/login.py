@@ -18,6 +18,7 @@ from uteoj.settings import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 
 
 def WhoView(request):
+    print('cnt user = {}'.format(User.objects.count()))
     msg = 'Trang này để test đăng nhập'
     per = 'Người dùng thường'
     if request.user.is_staff:
