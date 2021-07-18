@@ -21,13 +21,6 @@
 					<div class="form-wrapper align-center">
 						<form class="form sign-in" action="/login/" method="POST">
                             {% csrf_token %}
-                            {% if login_error %}
-                                <h3 class = "message">Message here<h3>
-                                <script type="text/javascript">
-                                    const error = document.querySelectorAll('.message')[0];
-                                    error.textContent = '{{login_error}}';
-                                </script>
-                            {% endif %}
 							<div class="input-group">
 								<i class="bx bxs-user"></i>
 								<input type="text" placeholder="Username" name="username"/>
