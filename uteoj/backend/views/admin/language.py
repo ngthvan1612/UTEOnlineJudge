@@ -24,6 +24,7 @@ def AdminListLanguageView(request):
     if request.method == 'GET':
         list_language = [{
                 'id': 0,
+                'lang_id': x.id,
                 'lang_name': x.name,
                 'lang_ext': x.ext,
                 'lang_description': x.description,
