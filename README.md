@@ -63,3 +63,4 @@ Gửi lên server: **(method=post,url="",enctype="multipart/form-data")**
 - is_admin (làm giống như make_user_admin, dùng checkbox)
 - is_active (làm giống is_admin)
 - **user_avatar** file ảnh, dùng <input type="file"..>, mỗi khi up ảnh lên (vừa chọn xong) thì phải show ra cho người dùng thấy trước khi up lên server
+- **user_avatar** xu ly truoc khi dua len server
