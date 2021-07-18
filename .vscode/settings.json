@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "env-ubuntu/bin/python"
+    "python.pythonPath": "env-ubuntu/bin/python",
+    "liveServer.settings.port": 5501
 }
