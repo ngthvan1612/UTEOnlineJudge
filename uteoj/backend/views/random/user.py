@@ -31,7 +31,8 @@ def CreateRandomUser(request):
     with transaction.atomic():
         for x in range(0, count, 1):
             try:
-                user = User.objects.create_user(username=startwith + str(x),password='12345678')
+                user = User.objects.create_user(username=startwith + str(x), password='12345678',
+                    first_name = startwith, last_name = str(x))
                 user.is_staff = isadmin
                 user.save()
             except:
