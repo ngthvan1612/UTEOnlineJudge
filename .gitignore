@@ -6,4 +6,4 @@ env-ubuntu
 *.jpg
 uteoj/uteoj/dbutils.py
 dbutils.py
-
+uteoj/ADMIN_DATA_MEDIA
