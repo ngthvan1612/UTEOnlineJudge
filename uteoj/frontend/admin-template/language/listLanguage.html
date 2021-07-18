@@ -6,8 +6,8 @@
 			<div class="row mb-2">
 				<div class="col-sm-6">
 					<ol class="breadcrumb float-sm-left">
-						<li class="breadcrumb-item"><a href="#">Home</a></li>
-						<li class="breadcrumb-item active">Language</li>
+						<li class="breadcrumb-item"><a href="/admin/">Home</a></li>
+						<li class="breadcrumb-item active"><a href="/admin/language/">Language</a></li>
 					</ol>
 				</div>
 			</div>
@@ -16,4 +16,47 @@
 		</div>
 	</div>
 	<!-- /.content-header -->
+	<div class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xl-12">
+					<div style="height: 60px">
+						<!-- Button trigger modal -->
+						<a type="button" class="btn btn-primary float-right" href="/admin/language/create/" style="font-size: 16px;">Create New Language</a>
+					</div>
+
+					<div class="card-body p-0">
+						<table class="table table-hover table-bordered" id="table_id" style="background-color: white;">
+							<thead onclick="">
+								<tr>
+									<th style="width: 60px;  text-align: center" onclick=";">#</th>
+									<th style="width: 150px; text-align: center">Name</th>
+									<th style="width: 150px; text-align: center">Extension</th>
+									<th style="width: 25%; text-align: center">Language Compile Command</th>
+									<th style="width: 25%; text-align: center">Language Run Command</th>
+									<th style="width: 60px;  text-align: center">&nbsp;</th>
+									<th style="width: 60px;  text-align: center">&nbsp;</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for x in list_language %}
+
+								<tr>
+									<td style="text-align: center">{{x.id}}</td>
+									<td style="text-align: center">{{x.lang_name}}</td>
+									<td style="text-align: center">{{x.lang_ext}}</td>
+									<td style="text-align: center"><kbd>{{x.lang_compile_command}}</kbd></td>
+									<td style="text-align: center"><kbd>{{x.lang_run_command}}</kbd></td>
+									<td style="text-align: center"><a href="/admin/language/edit/{{x.lang_id}}/"><i class="fa fa-wrench"></i></a></td>
+									<td style="text-align: center"><a href="/admin/language/edit/{{x.lang_id}}/"><i class="fa fa-trash"></i></a></td>
+								</tr>
+
+								{% endfor%}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 {%endblock%}

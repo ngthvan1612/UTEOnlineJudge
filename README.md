@@ -1,6 +1,6 @@
 # Fix & update
 ## Quạn trọng
-# 1. Đổi dbms
+# 1. Đổi dbms   (DONE)
 Vào file dbutils.py cấu hình lại database với các hằng sau:
 > Hiện tại sẽ dùng mysql
 DATABASE_NAME = 'tên csdl'
@@ -34,7 +34,7 @@ qwert@gmail.com
 1234567890
 #django có hỏi gì thì chọn y ---> OK
 ```
-# nếu có lỗi xảy ra, xem lại cấu hình dbutils.py
+# nếu có lỗi xảy ra, xem lại cấu hình dbutils.py (DONE)
 ```
 
 ## 2. Update toàn bộ thông báo lỗi
@@ -119,7 +119,7 @@ qwert@gmail.com
 ```
 ## 3. Các page mới
 ### 3.1.Thêm menu ngôn ngữ code (language) giống category:
-#### 3.1.1 Tạo ngôn ngữ mới:
+#### 3.1.1 Tạo ngôn ngữ mới:    (DONE)
 
 **a) Frontend**
 - Template: admin-template/language/createNewLanguage.html
@@ -132,7 +132,7 @@ qwert@gmail.com
 -- lang_compile_command: lệnh biên dịch - có thể trống (ex: python khỏi biên dịch)
 -- lang_run_command: lệnh chạy - không được trống (biên dịch hay không gì cũng phải chạy)
 
-#### 3.1.2 Chỉnh sửa ngôn ngữ:
+#### 3.1.2 Chỉnh sửa ngôn ngữ:   (DONE)
 **a)Frontend**
 - Template: admin-template/language/editLanguage.html, thiết kế khá giống
 - Address: /admin/language/edit/{{lang\_id}}/ (lang\_id xem ở mục 3.1.3)
@@ -155,11 +155,12 @@ qwert@gmail.com
 -- lang\_compile\_command: lệnh biên dịch
 -- lang\_run\_command: lệnh chạy
 
-#### 3.1.3 Danh sách ngôn ngữ
+#### 3.1.3 Danh sách ngôn ngữ (DONE)
 **a)Frontend**
 - Template: admin-template/language/listLanguage.html
 - Address: /admin/language/
-- Thiết kế show ra từng ngôn ngữ theo từng hàng, cuối hàng có nút edit/xóa (không được thêm nút delete vô đây :))), phải để admin vào chỉnh sửa mới delete được, vì có khả năng ấn nhầm delete thì xong - cái này quan trong hợn categories nhiều), tức là chuyển vào trang /admin/language/edit/{{lang_id}}/
+- Thiết kế show ra từng ngôn ngữ theo từng hàng, cuối hàng có nút edit/xóa (không được thêm nút delete vô đây :))), phải để admin vào chỉnh sửa mới delete được, vì có khả năng ấn nhầm delete thì xong - cái này quan trong hợn categories nhiều), tức là chuyển vào trang /admin/language/edit/{{lang_id}}/ 
+
 **b)Backend**
 - Gửi về frontend list_language: một mảng ngôn ngữ, mà mỗi phần tử đều có dạng sau:
 -- id: số thứ tự, ***lang_id khác hoàn toàn id***
