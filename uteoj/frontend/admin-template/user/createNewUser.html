@@ -1,0 +1,70 @@
+{%extends 'admin-template/_layout/base.html' %}
+{%load static%}
+{%block website_content %}
+    <link rel="stylesheet" href="{% static 'user/css/createUser.css' %}">
+	<!-- Content Header (Page header) -->
+	<div class="content-header">
+		<div class="container-fluid">
+			<div class="row mb-2">
+				<div class="col-sm-6">
+					<ol class="breadcrumb float-sm-left">
+						<li class="breadcrumb-item"><a href="/admin/">Home</a></li>
+						<li class="breadcrumb-item active"><a href="/admin/users/">User</a></li>
+                        <li class="breadcrumb-item active"><a href="/admin/users/create/">Create</a></li>
+					</ol>
+				</div>
+            </div>
+            {%include 'admin-template/_layout/error_handle.html' %} 
+            {%block error_handle %}{%endblock%}
+		</div>
+	</div>
+	<!-- /.content-header -->
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row justify-content-xl-center">
+                <div class="col-xl-7">
+                    <span style="font-size: 32px; justify-content: center">Create New User</span>
+                    <form method="POST" url="">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="lang_name">User Name:</label>
+                            <input type="text" class="form-control" id="lang_name" name="user_name" placeholder="Username"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="first_name">First Name:</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="First name"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Last Name:</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last name"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Password:</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password"/>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="gridCheck" onclick="showPassword()">
+                                <label class="form-check-label" for="gridCheck">Show Password</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="UTEJudge@gmail.com"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="job">Job:</label>
+                            <input type="text" class="form-control" id="job" name="job" placeholder="Student"/>
+                        </div>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="make_user_admin" name="make_user_admin">
+                            <label class="custom-control-label" for="make_user_admin">Is admin</label>
+                          </div>
+                        <button class="btn btn-primary float-right" type="submit">Create New</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'user/js/createUser.js' %}"></script>
+{%endblock%}

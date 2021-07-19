@@ -1,11 +1,11 @@
-# 1. API
+# 1. API (DONE)
 ## Sinh random user
 - http://127.0.0.1:8000/random/user?startwith=<tên bắt đầu>&count=<số lượng>&isadmin=<True nếu là admin>   (pass mặc định là 12345678)
 - Tạo ra **count** user với tên bắt đầ với **startwith** có pass là **12345678**, first name là **startwith** còn last name là số thứ tự (tính từ 0)
 > Ex http://127.0.0.1:8000/random/user?startwith=abc&count=4&isadmin=True
 Tạo 10 user lần lượt là abc0, abc1, abc2, abc3 với mật khẩu là 12345678, là mặc định là quyền admin
 # 2. Page
-## 1. List admin
+## 2,1. List admin            (DONE)
 Address: /admin/users/administrators/
 ### a) Backend:
 Gửi xuống client:
@@ -17,10 +17,10 @@ Gửi lên server (mục đích chỉ để filter):
 - search: tên của user (giống filter problem name)
 - page: thứ tự trang hiện tại (giống list problem)
 Yêu cầu cuối mỗi hàng có link edit user (hoặc link ngay user) có trỏ đến ***/admin/users/edit/{{u.username}}*** (u là tên biến chạy)
-## 2. List contestants
+## 2.2. List contestants      (DONE)
 Address: /admin/users/contestants/
 - Làm giống y như list admin
-## 3. Tạo user mới
+## 2.3. Tạo user mới          (DONE)
 Address: /admin/users/create/
 ### a) Frontend:
 Gửi lên server: **(method=post, url="")**
@@ -32,7 +32,7 @@ Gửi lên server: **(method=post, url="")**
 - make_user_admin: Có tạo user này thành admin không, chỉ cần có tên biến gửi lên server là coi như có (<input ... type="checkbox" ... name="make_user_admin">)
 - job: công việc
 Yêu cầu: xử lý luôn messages (giống như mọi trang khác, include 1 dòng error_handle ở đầu)
-## 4. Chỉnh sửa user
+## 4. Chỉnh sửa user          (DONE)
 Address: /admin/users/edit/{user name nao do}/
 ### a) Backend:
 Gửi xuống client:

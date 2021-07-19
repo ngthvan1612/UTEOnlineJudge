@@ -1,4 +1,5 @@
 {%extends 'admin-template/_layout/base.html' %}
+{%load static%}
 {%block website_content %}
 	<!-- Content Header (Page header) -->
 	<div class="content-header">
@@ -8,10 +9,90 @@
 					<ol class="breadcrumb float-sm-left">
 						<li class="breadcrumb-item"><a href="/admin/">Home</a></li>
 						<li class="breadcrumb-item active"><a href="/admin/users/">Users</a></li>
+						<li class="breadcrumb-item active"><a href="/admin/users/edit/{{username}}">{{username}}</a></li>
 					</ol>
 				</div>
 			</div>
+			{%include 'admin-template/_layout/error_handle.html' %} 
+			{%block error_handle %}{%endblock%}
 		</div>
 	</div>
 	<!-- /.content-header -->
+	<div class="content">
+        <div class="container-fluid">
+            <form method="POST" url="" enctype="multipart/form-data">
+				{% csrf_token %}
+				<div class="row justify-content-xl-center">
+					<div class="col-xl-7">
+                        <div class="form-group">
+                            <label for="lang_name">User Name:</label>
+                            <input type="text" class="form-control" id="lang_name" name="user_name" value="{{username}}" readonly />
+                        </div>
+						
+						<div class="row">
+							<div class="col-6">
+								<div class="form-group">
+									<label for="first_name">First Name:</label>
+									<input type="text" class="form-control" id="first_name" name="first_name" value="{{first_name}}" />
+								</div>
+							</div>
+							<div class="col-6">
+								<div class="form-group">
+									<label for="last_name">Last Name:</label>
+									<input type="text" class="form-control" id="last_name" name="last_name" value="{{last_name}}" />
+								</div>
+							</div>
+						</div>
+                        
+						<div class="form-group">
+                            <label for="last_name">Date Joined:</label>
+                            <input type="text" class="form-control" id="date_joined" name="date_joined" value="{{date_joined}}" readonly/>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{email}}" />
+                        </div>
+                        <div class="form-group">
+                            <label for="job">Job:</label>
+                            <input type="text" class="form-control" id="job" name="user_job" value="{{job}}" />
+                        </div>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="is_admin" {%if is_admin%} checked {%endif%} name="is_admin">
+                            <label class="custom-control-label" for="is_admin">Is admin</label>
+                        </div>
+						<div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="is_active" {%if is_active%} checked {%endif%} name="is_active">
+                            <label class="custom-control-label" for="is_active">Is active</label>
+                        </div>
+					</div>
+
+					<div class="col-xl-5">
+						{% if avatar %}
+							<img id="user_avatar_preview" src="{{avatar}}" alt="" style="display:block;margin:auto;max-width:100%;height:auto;"/>
+						{% else %}
+							<img id="user_avatar_preview" src="#" alt="" style="display:block;margin:auto;max-width:100%;height:auto;"/>
+						{% endif %}
+						<div class="custom-file" style="margin-top: 10px;">
+							<input type="file" class="custom-file-input" id="user_avatar" name="user_avatar" onchange="updateImage()">
+							<label class="custom-file-label" for="customFile">Choose file</label>
+						  </div>
+					</div>
+				</div>
+
+				<div class="row" style="margin-top:5px;">
+					<div class="col-12">
+						<div class="text-center">
+							<input class="btn btn-primary" role="button" type="submit" value="Save change">
+							<button class="btn btn-danger" role="button" type="button" onclick="deleteUser()">Delete user</button>
+						</div>
+					</div>
+				</div>
+			</form>
+			<form method="post" id="delete-user" action="/admin/users/delete/{{username}}/">
+				{% csrf_token %}
+			</form>
+        </div>
+    </div>
+
+	<script src="{% static 'user/js/profile.js' %}"></script>
 {%endblock%}

@@ -16,14 +16,14 @@
 		<link rel="stylesheet" href="{% static 'admin-static/css/base.css'%}" />
 		<!-- <meta name="viewport" content="width=device-width"> -->
 	</head>
-	<body class="hold-transition sidebar-mini"> 
+	<body class="sidebar-mini layout-fixed sidebar-collapse sidebar-closed"> 
 		<div class="wrapper">
 			{%include 'admin-template/_layout/navbar.html' %} 
 			{%include 'admin-template/_layout/sidebar.html' %}
 			{%include 'admin-template/_layout/controlSidebar.html' %} 
 			{%block navbar%} {%endblock%} 
 			{%block sidebar%} {%endblock%}
-			<div class="content-wrapper">
+			<div class="content-wrapper" style="height: auto;">
 				<!-- Main content -->
 					{%block website_content%} {%endblock%} 
 					{%block controlSidebar%} {%endblock%}

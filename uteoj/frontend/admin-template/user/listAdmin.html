@@ -1,4 +1,5 @@
 {%extends 'admin-template/_layout/base.html' %}
+{%load static%}
 {%block website_content %}
 	<!-- Content Header (Page header) -->
 	<div class="content-header">
@@ -12,7 +13,98 @@
 					</ol>
 				</div>
 			</div>
+			{%include 'admin-template/_layout/error_handle.html' %} 
+			{%block error_handle %}{%endblock%}
 		</div>
 	</div>
 	<!-- /.content-header -->
+	<div class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xl-9">
+					<div class="card-body">
+						<table class="table table-hover table-bordered" id="table_id" style="background-color: white;">
+							<thead onclick="">
+								<tr>
+									<th style="width: 60px; text-align: center">#</th>
+									<th style="text-align: center">UserName</th>
+									<th style="width: 200px; text-align: center">First Name</th>
+									<th style="width: 200px; text-align: center">Last Name</th>
+									<th style="width: 250px; text-align: center">Date Joined</th>
+									<th style="width: 100px; text-align: center">Is Actived</th>
+									<th style="width: 100px; text-align: center">&nbsp;</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for x in page_obj %}
+
+								<tr>
+									<td id="{{x.fullname}}" style="text-align: center"><a href="/admin/users/edit/{{x.username}}/">{{x.id}}</a></td>
+									<td style="text-align: center"><a href="/admin/users/edit/{{x.username}}/" style="float: left; font-size: 18px;">{{x.username}}</a></td>
+									<td style="text-align: center">{{x.first_name}}</td>
+									<td style="text-align: center">{{x.last_name}}</td>
+									<td style="text-align: center;color: darkgrey">{{x.date_joined}}</td>
+									<td style="text-align: center">
+										{% if x.is_active %} <p style="color: blueviolet">{{x.is_active}}</p>
+										{% else %} <p style="color: red;">{{x.is_active}}</p>
+										{% endif %}
+									</td>
+									<td style="text-align: center;"><a href=""><i class="fa fa-wrench"></i></a></td>
+								</tr>
+
+								{% endfor%}
+							</tbody>
+						</table>
+
+						<input type="hidden" id="page_current" value="{{page_obj.number}}">
+						<input type="hidden" id="page_total" value="{{page_obj.paginator.num_pages}}">
+						<nav aria-label="Page navigation example" style="margin-top: 2rem;">
+							<ul class="pagination justify-content-center" id="Pagination">
+								<li class="page-item" id="previous" onclick="previous()">
+									<a class="page-link" href = "javascript:;" tabindex="-1">Previous</a>
+								</li>
+								<li class="page-item" id="next" onclick="next()">
+									<a class="page-link" href="javascript:;">Next</a>
+								</li>
+								</ul>
+						</nav>
+
+					</div>
+					<!-- /.card-body -->
+				</div>
+
+				<div class = "col-xl-3 d-none d-xl-block">
+					<div class="card">
+						<div class="card-header text-center"><b>Filter Admin</b></div>
+						<div class="card-body">
+							<form>
+								<div class="filterByName">
+									<label for="search">User Name</label>
+									<span style="float: right; width: 50%">
+										<input type="text" id="search" placeholder="User Name" style="width: 100%;">
+									</span>
+								</div>
+								
+								<div id = "listNumber">
+									<label>Number Users:</label>
+									<select class="custom-select float-right" style="width: 50%; font-size: 14px; height: 32px">
+										<option selected value="0"> 10 Users</option>
+										<option value="1">15 Users</option>
+										<option value="2">20 Users</option>
+										<option value="3">25 Users</option>
+										<option value="4">30 Users</option>
+									</select>
+								</div>
+								<a class="btn btn-primary" style="margin-top: 10px" onclick="goNewPage(1)">Find</a>
+							</form>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	
+	<script src="{% static 'user/js/listAdmin.js' %}"></script>
+	<!-- /.content -->
 {%endblock%}
