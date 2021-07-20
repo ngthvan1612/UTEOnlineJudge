@@ -1,5 +1,13 @@
 ## Note: Không commit file dbutil.py
-> Note: Các Address dưới đây đều không có dấu / ở phía sau link để tiện cho việc chuyển qua lại giữa các trang, ví dụ đang ở trang details muốn qua testcases của cùng một bài thì chỉ cần gắn thẻ a với href="testcases" là đủ
+> Note: Các Address dưới đây đều không có dấu / ở phía sau link để tiện cho việc chuyển qua lại giữa các trang, ví dụ đang ở trang details muốn qua testcases của cùng một bài thì chỉ cần gắn thẻ a với href="testcases" là đủ.
+
+>Yêu cầu thiết kế: Dùng tabcontrol cho tất cả link sau.
+
+![image](https://i.ibb.co/9sgkYd7/Screenshot-from-2021-07-20-15-22-54.png)
+
+
+![image](https://i.ibb.co/R2grkMw/Screenshot-from-2021-07-20-15-24-00.png)
+
 # Edit problem:
 ## 1. Details
 Template: ***admin-template/problem/editProblemDetails.html***
@@ -66,12 +74,43 @@ Address: ***/admin/problems/edit/{{shortname}}/testcases***
 - time_limit: Thời gian chạy 
 - memory_limit: Giới hạn bộ nhớ
 - points: Điểm của test
+3. list_formats: danh sách format được chấp nhận khi upload testcases, mỗi format gồm:
+- value: value gửi lên lại server
+- display: tên hiện ra cho người dùng xem
+
+> Dưới client dùng select/option với value của option=value của test, và name của select="filetype"
+
 ### b) Frontend:
-#### Gửi lên server:
-Không có
+#### Gửi lên server (method=post, url=testcases/uploadzip/) - url không bao gồm /admin/... nhưng trình duyệt sẽ tự làm điều này:
+Nếu người dùng chọn upload toàn bộ testcases lên thì gửi lên server:
+- zip_testcases: file zip gửi lên
+- filetype: (select/option) chứa tên của format gửi lên 
 #### Thiết kế một nút edit, một nút delete ở cuối hàng trỏ về:
 - Edit: testcases/edit/{{testcase.pk}} // Lưu ý không có / ở đầu (xem đầu file readme.md này)
 - Delete: HỎi lại user + dùng ajax gửi csrf_token về địa chỉ này: ***'/admin/problems/edit/{{shortname}}/testcases/delete/{{testcase.pk}}/'***
 
-## 4. Testcase edit
-> To be Continue
+## 4. Edit testcase
+
+Template: ***../problem/editProblemTestcasesEdit.html***
+
+Address: ***/admin/problems/edit/{{shortname}}/testcases/edit/{{testcase.pk}}/***
+
+### a) Backend:
+Gửi xuống client:
+- testcase.time_limit:
+- testcase.memory_limit:
+- testcase.points
+- testcase.tag
+
+### b) Frontend:
+Gửi lên lại server (method=post, url=""):
+
+**b.1 Phải có**
+- time_limit
+- memory_limit
+- points
+- tag
+
+**b.2 Có hay không cũng được**
+- input_file: file input mới
+- output_file: file output mới

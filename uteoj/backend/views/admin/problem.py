@@ -219,15 +219,15 @@ def AdminEditProblemTestcasesEditView(request, problem_short_name, testcase_pk):
 
         if 'input_file' in request.FILES:
             input_file = request.FILES['input_file']
-            input_file_path = 'problems/{}/tests/input{}.txt'.format(problem.id,str(test.id).zfill(3))
-            test.input_file = input_file_path
-            file_manager.save(input_file_path, input_file)
+            #input_file_path = 'problems/{}/tests/input{}.txt'.format(problem.id,str(test.id).zfill(3))
+            #test.input_file = input_file_path
+            file_manager.save(test.input_file, input_file)
         
         if 'output_file' in request.FILES:
             output_file = request.FILES['output_file']
-            output_file_path = 'problems/{}/tests/output{}.txt'.format(problem.id,str(test.id).zfill(3))
-            test.output_file = output_file_path
-            file_manager.save(output_file_path, output_file)
+            #output_file_path = 'problems/{}/tests/output{}.txt'.format(problem.id,str(test.id).zfill(3))
+            #test.output_file = output_file_path
+            file_manager.save(test.output_file, output_file)
 
         test.save()
 
@@ -401,10 +401,24 @@ def AdminEditProblemTestcasesview(request, problem_short_name):
             } for x in problem.problemtestcasemodel_set.all()]
         for id in range(0, len(list_testcases), 1):
             list_testcases[id]['id'] = id + 1
-        print('------------> len = ' + str(len(list_testcases)))
+        list_allow_format = [
+            {
+                'value': 'themis',
+                'display': 'Themis format',
+            },
+            {
+                'value': 'pc2',
+                'display': 'PC^2 format',
+            },
+            {
+                'value': 'combine',
+                'display': 'Combine format'
+            }
+        ]
         context = {
             'list_testcases': list_testcases,
             'problem': problem,
+            'list_formats': list_allow_format,
         }
         return render(request, 'admin-template/problem/editProblemTestcases.html', context)
     else:
