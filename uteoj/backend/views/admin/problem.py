@@ -85,14 +85,6 @@ def AdminEditProblemDeatailsview(request, problem_short_name):
         return redirect('/admin/problems/edit/{}/'.format(problem_short_name))
     elif request.method == 'GET':
         problem = filter_problem[0]
-        list_checked_problem_categories = [x.name for x in problem.categories.all()]
-        problem_categories = [
-            {
-                'name': x.name,
-                'checked': True if x.name in list_checked_problem_categories else False,
-            }
-            for x in ProblemCategoryModel.objects.all()
-        ]
         problem_context = {
             'shortname': problem.shortname,
             'fullname': problem.fullname,
