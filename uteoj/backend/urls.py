@@ -121,9 +121,11 @@ url_patterns_user = [
 ]
 
 from backend.views.random.user import CreateRandomUser
+from backend.views.random.problem import CreateRandomProblem
 
 url_pattern_random = [
-    path('random/user', CreateRandomUser)
+    path('random/user', CreateRandomUser),
+    path('random/problem', CreateRandomProblem),
 ]
 
 from django.conf.urls import url
