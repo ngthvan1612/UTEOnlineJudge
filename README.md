@@ -78,6 +78,8 @@ Address: ***/admin/problems/edit/{{shortname}}/testcases***
 - value: value gửi lên lại server
 - display: tên hiện ra cho người dùng xem
 
+> Hiện tại chỉ có themis dùng được
+
 > Dưới client dùng select/option với value của option=value của test, và name của select="filetype"
 
 ### b) Frontend:
