@@ -9,7 +9,9 @@
 ![image](https://i.ibb.co/R2grkMw/Screenshot-from-2021-07-20-15-24-00.png)
 
 # Edit problem:
-## 1. Details
+
+
+## 1. Details           (DONE)
 Template: ***admin-template/problem/editProblemDetails.html***
 
 Address: ***/admin/problems/edit/{{shortname}}/details***
@@ -44,7 +46,7 @@ Gửi xuống client:
 - Với categories chỉ cần đặt tên của mỗi checkbox là name="list_categories[]" là được.
 #### + Yêu cầu thêm (nếu cần): Dùng plugin JS edit cho markdown (statement, input_statement,...)
 
-## 2. Problemsetter
+## 2. Problemsetter     (DONE)
 Template: ***../problem/editProblemProblemSetter.html***
 
 Address: ***admin/problems/edit/{{shortname}}/problemsetter***
@@ -57,7 +59,7 @@ Gửi lên server (method="post", url="")
 - Với mỗi author trong list_author, tạo một input vớiname="list_author[]" là đủ, sau đỏ submit toàn bộ form gửi lên.
 - Edit, delete làm dưới frontend, không cần kiểm tra có người dùng đó hay không, chỉ cần gửi lên server là được (tham khảo trên admin - hackerank)
 
-## 3. Testcase
+## 3. Testcase          (DONE)
 Template: ***../problem/editProblemTestcases.html***
 
 Address: ***/admin/problems/edit/{{shortname}}/testcases***
@@ -91,7 +93,7 @@ Nếu người dùng chọn upload toàn bộ testcases lên thì gửi lên ser
 - Edit: testcases/edit/{{testcase.pk}} // Lưu ý không có / ở đầu (xem đầu file readme.md này)
 - Delete: HỎi lại user + dùng ajax gửi csrf_token về địa chỉ này: ***'/admin/problems/edit/{{shortname}}/testcases/delete/{{testcase.pk}}/'***
 
-## 4. Edit testcase
+## 4. Edit testcase     (DONE)
 
 Template: ***../problem/editProblemTestcasesEdit.html***
 
