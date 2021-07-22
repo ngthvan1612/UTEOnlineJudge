@@ -91,6 +91,7 @@ def AdminEditProblemDeatailsview(request, problem_short_name):
             'difficult': problem.difficult,
             'categories': [x.name for x in problem.categories.all()],
             'points_per_test': problem.points_per_test,
+            'publish_date': problem.publish_date,
             'statement': problem.statement if problem.statement and len(problem.statement) != 0 else '',
             'input_statement': problem.input_statement if problem.input_statement and len(problem.input_statement) != 0 else '',
             'output_statement': problem.output_statement if problem.output_statement and len(problem.output_statement) != 0 else '',
@@ -100,7 +101,7 @@ def AdminEditProblemDeatailsview(request, problem_short_name):
             'problem': problem_context,
             'list_categories': [x.name for x in ProblemCategoryModel.objects.all()],
         }
-        return render(request, 'admin-template/problem/editProblemDetails.html', context)
+        return render(request, 'admin-template/problem/edit/details.html', context)
     else:
         return HttpResponse(status=405)
 
@@ -140,7 +141,7 @@ def AdminEditProblemProblemSetterview(request, problem_short_name):
         context = {
             'list_authors': [x.username for x in problem.author.all()]
         }
-        return render(request, 'admin-template/problem/editProblemProblemSetter.html', context)
+        return render(request, 'admin-template/problem/edit/problemsetter.html', context)
 
 from backend.models.filemanager import OverwriteStorage
 
@@ -246,7 +247,7 @@ def AdminEditProblemTestcasesEditView(request, problem_short_name, testcase_pk):
                 'tag': test.tag if test.tag and len(test.tag) != 0 else '',
             }
         }
-        return render(request, 'admin-template/problem/editProblemTestcasesEdit.html', context)
+        return render(request, 'admin-template/problem/edit/edittestcase.html', context)
     else:
         return HttpResponse(status=405)
 
@@ -421,24 +422,52 @@ def AdminEditProblemTestcasesview(request, problem_short_name):
             'problem': problem,
             'list_formats': list_allow_format,
         }
-        return render(request, 'admin-template/problem/editProblemTestcases.html', context)
+        return render(request, 'admin-template/problem/edit/listtestcase.html', context)
     else:
         return HttpResponse(status=405)
 
 @admin_member_required
 def AdminEditProblemLanguagesview(request, problem_short_name):
     
-    return render(request, 'admin-template/problem/editProblemLanguages.html')
+    return render(request, 'admin-template/problem/edit/languages.html')
 
 @admin_member_required
 def AdminEditProblemSettingsview(request, problem_short_name):
 
-    return render(request, 'admin-template/problem/editProblemSettings.html')
+    return render(request, 'admin-template/problem/edit/settings.html')
 
 @admin_member_required
 def AdminEditProblemCustomCheckerview(request, problem_short_name):
+    filter_problem = ProblemModel.objects.filter(shortname=problem_short_name)
+    if not filter_problem.exists():
+        return HttpResponse(status=404)
+    problem = filter_problem[0]
 
-    return render(request, 'admin-template/problem/editProblemCustomChecker.html')
+    #edit
+    if request.method == 'POST':
+        list_requirements = ['checker_source']
+        for x in list_requirements:
+            if x not in request.POST:
+                return HttpResponse(status=500)
+        use_checker = True if 'use_checker' in request.POST else False
+        checker_source = str(request.POST['checker_source'])
+
+        problem.use_checker = use_checker
+        problem.checker = checker_source
+        problem.save()
+
+        messages.add_message(request, messages.SUCCESS, 'Cập nhật thành công')
+
+        return HttpResponseRedirect(request.path_info)
+
+    elif request.method == 'GET':
+        context = {
+            'use_checker': problem.use_checker,
+            'checker_source': problem.checker,
+        }
+        return render(request, 'admin-template/problem/edit/checker.html', context)
+    else:
+        return HttpResponse(status=405)
 
 
 from time import time
@@ -489,7 +518,7 @@ def AdminListProblemView(request):
                 'fullname': x.fullname,
                 'shortname': x.shortname,
                 'publish_date': x.publish_date.strftime("%m/%d/%Y"),
-                'categories': [tmp_categories[int(y)] for y in x.categories_str.split(',')],
+                'categories': [tmp_categories[int(y)] for y in x.categories_str.split(',')] if x.categories_str is not None else [],
                 'difficult': x.difficult,
                 'problem_type': x.get_problem_type_display(),
             } for x in problem_models_filter

@@ -54,7 +54,8 @@ class ProblemModel(models.Model):
     time_limit = models.IntegerField(default=1000)
     memory_limit = models.IntegerField(default=65536)
 
-    checker = models.CharField(max_length=64, blank=True)
+    use_checker = models.BooleanField(default=False)
+    checker = models.TextField(blank=True,null=True)
     problem_type = models.IntegerField(default=0, choices=PROBLEM_TYPE_CHOICES)
     submission_visible_mode = models.IntegerField(default=0, choices=SUBMISSION_VISIBLE_MODE_CHOICES)
 
