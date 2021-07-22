@@ -1,0 +1,153 @@
+{%extends 'admin-template/_layout/base.html' %}
+{%load static %}
+{%block website_content %}
+	<!-- Content Header (Page header) -->
+	<div class="content-header">
+		<div class="container-fluid">
+			<div class="row mb-2">
+				<div class="col-sm-6">
+					<ol class="breadcrumb float-sm-left">
+						<li class="breadcrumb-item"><a href="/admin/">Home</a></li>
+						<li class="breadcrumb-item active"><a href="/admin/problems/">Problems</a></li>
+                        <li class="breadcrumb-item active"><a href="details">Edit</a></li>
+					</ol>
+				</div>
+			</div>
+			{%include 'admin-template/_layout/error_handle.html' %} 
+			{%block error_handle %}{%endblock%}
+		</div>
+	</div>
+	<!-- /.content-header -->
+	<!-- Main content -->
+    <div class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12">
+					<div class="card-body p-0">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link" href="details">Details</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="problemsetter">Problem Setter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="testcases">Test Case</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="languages">Languages</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="setting">Setting</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="customchecker">Custom Checker</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row  justify-content-center" id ="tableData">
+                <div class="col-8">
+                    <h2 style="margin-top: 10px;">{{problem.shortname}}</h2>
+
+                    <table class="table table-hover table-bordered" style="margin-top: 20px">
+                        <thead>
+                            <tr>
+                            <th scope="col">Testcase</th>
+                            <th scope="col">Input</th>
+                            <th scope="col">Output</th>
+                            <th scope="col">Time Limit</th>
+                            <th scope="col">Memory Limit</th>
+                            <th scope="col">Points</th>
+                            <th scope="col">Tag</th>
+                            <th scope="col" style="width: 70px; text-align: center">Edit</th>
+                            <th scope="col" style="width: 70px;">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%for x in list_testcases %}
+                                <tr style="align-items: center;">
+                                    <td scope="row">{{x.id}}</td>
+                                    <td><a href="{{x.input_file}}">input{{x.pk}}</a></td>
+                                    <td><a href="{{x.output_file}}">output{{x.pk}}</a></td>
+                                    <td>{{x.time_limit}} (ms)</td>
+                                    <td>{{x.memory_limit}} (Kb)</td>
+                                    <td>{{x.points}}</td>
+                                    <td>{{x.tag}}</td>
+                                    <td style="text-align: center; padding: 0.25rem"><a class="btn btn-warning"href="testcases/edit/{{x.pk}}"><i class="fas fa-edit"></i></a></td>
+                                    <td style="text-align: center; padding: 0.25rem"><button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="updateInfo('{{problem.shortname}}', '{{x.pk}}')"><i class="fas fa-trash"></i></button></td>
+                                </tr>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+
+                    <form method="post" url="">
+                        {% csrf_token %}
+                        <div class="col-12">
+                            <div class="text-center">
+                                <input class="btn btn-primary" type="submit" value="Save change">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row justify-content-center" style="margin-top: 20px;">
+                <div class="col-8">                    
+                    <div class="container">
+                        <form method="post" action="testcases/uploadzip/" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div>
+                                <label class="form-label">Upload zip</label>
+                                <select class="custom-select" name="filetype">
+                                    {% for x in list_formats%}
+                                        <option value="{{x.value}}">{{x.display}}</option>
+                                    {%endfor%}
+                                </select>
+                                <div class="custom-file" style="margin-top: 10px;">
+                                    <input type="file" name="zip_testcases" class="custom-file-input" id="customFile" accept=".zip">
+                                    <label class="custom-file-label text-truncate" for="customFile">Choose file</label>
+                                </div>
+                            </div>
+                            <div class="col-12" style="margin-top: 10px">
+                                <div class="text-center">
+                                    <input class="btn btn-primary" type="submit" value="Save change">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete TestCase</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4>Do you want to delete this testcase?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteTestCase()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+	<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+	<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+    <script src="{% static 'problem/js/editProblemTestcase.js' %}"></script>
+    <script>
+		var CSRF_TOKEN = '{{ csrf_token }}';
+	 </script>
+	<!-- /.content -->
+{%endblock%}

@@ -40,10 +40,10 @@
 								{% for x in page_obj %}
 
 								<tr>
-									<td id="{{x.fullname}}" style="text-align: center"><a href="/problems/{{x.shortname}}">{{x.id}}</a></td>
+									<td id="{{x.fullname}}" style="text-align: center"><a href="/admin/problems/edit/{{x.shortname}}/">{{x.id}}</a></td>
 									<td>
 										<div style="height: 100%;">
-											<a href="/problems/{{x.shortname}}" style="float: left; font-size: 18px;">{{x.fullname}}</a>
+											<a href="/admin/problems/edit/{{x.shortname}}/" style="float: left; font-size: 18px;">{{x.fullname}}</a>
 										</div>
 										<div style="width: 60%; float: right">
 										{%for y in x.categories%}
