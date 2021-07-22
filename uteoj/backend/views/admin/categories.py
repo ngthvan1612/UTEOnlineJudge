@@ -37,6 +37,9 @@ def AdminCategoriesView(request):
                 elif name == 'All':
                     response_data['status'] = 'error'
                     response_data['message'] = 'Không được đặt tên là \'All\''
+                elif ',' in name:
+                    response_data['status'] = 'error'
+                    response_data['message'] = 'Tên không được chứa dấu phẩy \',\''
                 else:
                     ProblemCategoryModel.objects.create(name=name, description=description).save()
                     response_data['status'] = 'success'

@@ -36,6 +36,7 @@ class ProblemModel(models.Model):
     author = models.ManyToManyField(User, blank=False)
     publish_date = models.DateTimeField(blank=False, default=django.utils.timezone.now)
     categories = models.ManyToManyField(ProblemCategoryModel, blank=True)
+    categories_str = models.CharField(blank=True, null=True, max_length=2048)
     shortname = models.CharField(max_length=32, unique=True)
     fullname = models.CharField(max_length=255)
     difficult = models.FloatField(default=5.0)
@@ -59,6 +60,11 @@ class ProblemModel(models.Model):
 
     def __str__(self):
         return self.shortname + ' - ' + self.fullname
+
+    def set_categories(self, lc):
+        self.categories.set(lc)
+        tmp = [str(x.id) for x in self.categories.all()]
+        self.categories_str = ','.join(tmp)
 
 
 class ProblemStatisticsModel(models.Model):

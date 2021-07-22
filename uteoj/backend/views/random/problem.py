@@ -58,7 +58,7 @@ def CreateRandomProblem(request):
                 time_limit=int(random() * 10000),
                 memory_limit=int(random() * 1000000),
                 problem_type=int(random() * 2),)
-            problem.categories.set(lc)
+            problem.set_categories(lc)
             problem.author.set(uc)
             problem.save()
     return HttpResponse('Created ' + str(count) + ' problem ok')
