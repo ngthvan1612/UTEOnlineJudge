@@ -189,5 +189,5 @@ function goNewPage(page,orderString) {
         else query += "&" + listQuery[i];
     }
 
-    window.location = " http://127.0.0.1:8000/admin/problems/?" + query;
+    window.location = "/admin/problems/?" + query;
 }
