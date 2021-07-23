@@ -20,3 +20,13 @@
     font-size: 18px;
     text-align: center;
 }
+
+.editor-toolbar > .fa.fa-columns.no-disable.no-mobile{
+    display: none;
+    visibility: hidden;
+}
+
+.editor-toolbar > .fa.fa-arrows-alt.no-disable.no-mobile{
+    display: none;
+    visibility: hidden;
+}

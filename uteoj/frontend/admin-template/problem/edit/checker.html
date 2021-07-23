@@ -2,8 +2,7 @@
 {%load static %} 
 {%block website_content %}
 <!-- Content Header (Page header) -->
-<link rel="stylesheet" href="{% static 'plugins/simplemde/css/simplemde.min.css' %}">
-<link rel="stylesheet" href="{% static 'problem/css/editProblemDetails.css' %}">
+<link rel="stylesheet" href="{% static 'problem/css/editProblemChecker.css' %}">
 
 <div class="content-header">
 	<div class="container-fluid">
@@ -51,30 +50,45 @@
 					<div class="tab-content" id="nav-tabContent">
 						<div class="tab-pane fade show active" id="nav-home">
 							<div class="container">
-								<form method="post" url="">
-									{% csrf_token %}
-									<div class="row">
-										<div class="col-12 mb-3">
-											<div class="row">
-												<div class="input-group mb-3 form-check" style="margin-top: 15px">
-													<span class="input-group-text form-check-label" style="width: 15%;">custom checker</span>
-													<input  type="checkbox" class="form-check-input" value="{{cate}}"  name="use_checker" {% if use_checker %}checked{%endif%}>
-												</div>
-                                                <div class="input-group mb-3" style="margin-top: 15px">
-													<span class="input-group-text" style="width: 15%;">checker</span>
-													<input type="text"  class="form-control" placeholder="Short name" value="{{checker_source}}" name="checker_source" />
-												</div>
-                                                
-											</div>
-										</div>
-										<div class="col-12">
-											<div class="text-center">
-												<input class="btn btn-primary" type="submit" value="Save change">
-											</div>
-										</div>
-									</div>
+                                <!--Source Checker-->
+                                <div class="custom-control custom-switch" style="margin-top: 25px;">
+                                    <input type="checkbox" class="custom-control-input" id="checker" {%if use_checker%} checked {%endif%} onchange="changeCheck()">
+                                    <label class="custom-control-label" for="checker">Use Checker</label>
+                                </div>
+
+                                <div class="Source"> 
+                                    <div class="select-languages">
+                                        <div class="input-group mb-3 select-language">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text" for="languages">Choose Language:</label>
+                                            </div>
+                                            <select class="custom-select" id="languages" onchange="changeLanguage()">
+                                                <option value="c" selected>C</option>
+                                                <option value="c++" >CPP</option>
+                                                <option value="python">Python</option>
+                                                <option value="node">NodeJS</option>
+                                            </select>
+                                        </div>
+                                    </div>                                       
+                                    <textarea id="checkerSource" style="display: none;">{{checker_source}}</textarea>
+                                    <div class="editor" id="editor"></div>
+                                </div>
+                                <!--Submit-->
+                                <div class="col-12" style="margin-top: 50px;">
+                                    <div class="text-center">
+                                        <button class="btn btn-primary" type="submit" onclick="getInfo()">Save Change</button>
+                                    </div>
+                                </div>
+
+                                <form method="post" url="" hidden id ="form">
+                                    {% csrf_token %}
+                                    <div class="custom-control custom-switch" style="margin-top: 25px;">
+                                        <input type="checkbox" class="custom-control-input" id="use_checker" {%if use_checker%} checked {%endif%} name="use_checker" onchange="changeCheck()">
+                                        <label class="custom-control-label" for="use_checker">Use Checker</label>
+                                    </div>
+                                    <textarea name="checker_source" id="checker_source"></textarea>
 								</form>
-							</div>
+                            </div>                              
 						</div>
 					</div>
 				</div>
@@ -85,7 +99,8 @@
 
 <script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
 <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
-<script src="{% static 'plugins/simplemde/js/simplemde.min.js'%}"></script>
-<script src="{% static 'problem/js/editProblemDetails.js'%}"></script>
+<script src="{% static 'problem/js/editProblemChecker.js'%}"></script>
+<script src="{% static 'plugins/aceJS/lib/ace.js' %}"></script>
+<script src="{% static 'plugins/aceJS/lib/theme-monokai.js' %}"></script>
 <!-- /.content -->
 {%endblock%}

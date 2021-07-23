@@ -51,29 +51,7 @@
 					<div class="tab-content" id="nav-tabContent">
 						<div class="tab-pane fade show active" id="nav-home">
 							<div class="container">
-								<form method="post" url="">
-									{% csrf_token %}
-									<div class="row">
-										<div class="col-12 mb-3">
-											<div class="row">
-												<div class="input-group mb-3 form-check" style="margin-top: 15px">
-													<span class="input-group-text form-check-label" style="width: 15%;">custom checker</span>
-													<input  type="checkbox" class="form-check-input" value="{{cate}}"  name="use_checker" {% if use_checker %}checked{%endif%}>
-												</div>
-                                                <div class="input-group mb-3" style="margin-top: 15px">
-													<span class="input-group-text" style="width: 15%;">checker</span>
-													<input type="text"  class="form-control" placeholder="Short name" value="{{checker_source}}" name="checker_source" />
-												</div>
-                                                
-											</div>
-										</div>
-										<div class="col-12">
-											<div class="text-center">
-												<input class="btn btn-primary" type="submit" value="Save change">
-											</div>
-										</div>
-									</div>
-								</form>
+								
 							</div>
 						</div>
 					</div>
