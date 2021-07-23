@@ -9,7 +9,6 @@ from backend.views.admin.require import admin_member_required
 from django.contrib.auth.models import User
 from backend.models.usersetting import UserSetting
 from django.http import HttpResponse
-from backend.models.filemanager import UserFileManager
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import never_cache
 from django.contrib import messages

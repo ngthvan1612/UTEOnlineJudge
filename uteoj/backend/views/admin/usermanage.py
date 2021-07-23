@@ -13,9 +13,9 @@ from backend.views.admin.require import admin_member_required
 from django.contrib.auth.models import User
 from backend.models.usersetting import UserSetting
 from django.http import HttpResponse
-from backend.models.filemanager import UserFileManager
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
+from PIL import Image
 
 def AdminFilterListUser(request, is_staff, template):
     list_user_filter = User.objects.all()
@@ -66,7 +66,7 @@ def AdminDeleteUser(request, user_name):
         else:
             is_staff = filter_user[0].is_staff
             for user in filter_user:
-                UserFileManager.deleteUserFile(user)
+                UserSetting.deleteUserSettingAndFile(user)
             filter_user.delete()
             messages.add_message(request, messages.SUCCESS, 'Xóa người dùng \'{}\' thành công'.format(user_name))
         if is_staff == True:
@@ -113,13 +113,12 @@ def AdminCreateUserView(request):
         elif len(password) < 8:
             messages.add_message(request, messages.ERROR, 'Mật khẩu phải từ 8 ký tự trở lên')
         else:
-
             #create
             user = User.objects.create_user(username=user_name, email=email, password=password, first_name=first_name, last_name=last_name)
             if make_user_admin == True:
                 user.is_staff = True
             user.save()
-            UserSetting.objects.create(user=user, job=job).save()
+            UserSetting.createSettingIfNotExists(user)
             messages.add_message(request, messages.SUCCESS, 'Đăng ký thành công')
         
         return HttpResponseRedirect(request.path_info)
@@ -135,9 +134,7 @@ def AdminEditUserView(request, user_name):
         messages.add_message(request, messages.ERROR, 'Không tìm thấy người dùng \'{}\''.format(user_name))
         return HttpResponseRedirect('/admin/users/contestants/')
     user = User.objects.get(username=user_name)
-    if not UserSetting.objects.filter(user=user):
-        UserSetting.objects.create(user=user).save()
-    user_setting = UserSetting.objects.get(user=user)
+    user_setting = UserSetting.getSetting(user)
     
     #edit
     if request.method == 'POST':
@@ -163,7 +160,6 @@ def AdminEditUserView(request, user_name):
             user_job = request.POST['user_job']
             email = request.POST['email']
 
-            #update & save
             user.first_name = first_name
             user.last_name = last_name
             user.email = email
@@ -172,13 +168,15 @@ def AdminEditUserView(request, user_name):
             user.save()
 
             user_setting.job = user_job
-            user_setting.save()
 
             if 'user_avatar' in request.FILES:
                 user_avatar = request.FILES['user_avatar']
-                extension = os.path.splitext(user_avatar.name)[1]
-                UserFileManager.uploadFile(user, 'avatar', extension, user_avatar.file, True, True)
+                if user_avatar.size > 1024 * 1024 * 2:
+                    messages.add_message(request, messages.ERROR, 'File ảnh đại diên không được vượt quá 2MB')
+                    return HttpResponseRedirect(request.path_info)
+                user_setting.uploadAvatar(user_avatar.name, user_avatar.file)
             
+            user_setting.save()
             messages.add_message(request, messages.SUCCESS, 'Cập nhật thành công')
         return HttpResponseRedirect(request.path_info)
 
@@ -195,7 +193,7 @@ def AdminEditUserView(request, user_name):
             'job': user_setting.job,
         }
 
-        context_user_avatar =  UserFileManager.getUserAvatar(user)
+        context_user_avatar =  UserSetting.getSetting(user).getAvatar()
         if context_user_avatar is not None:
             context['avatar'] = context_user_avatar + '?v={}'.format(randint(0, 11111111111))
         
@@ -204,3 +202,5 @@ def AdminEditUserView(request, user_name):
         return render(request, 'admin-template/user/profile.html', context)
 
     return HttpResponse(status=405)
+
+

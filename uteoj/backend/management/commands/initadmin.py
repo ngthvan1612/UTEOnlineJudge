@@ -5,16 +5,21 @@ from django.contrib.auth.models import User
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        user_filter = User.objects.filter(username='admin')
+        user_filter = User.objects.filter(username='root')
         
         if user_filter.exists():
             for user in user_filter:
-                user.username='admin'
-                user.set_password('1234567890')
+                user.set_password('92ad5d248d6da148092419b836ce16c1')
                 user.save()
+            print('------------------ FIX user root ok')
         else:
-            User.objects.create_superuser(email='123@gmail.com', username='admin', password='1234567890').save()
-        print('Create user admin ok')
+            User.objects.create_superuser(email='root@uteoj.hcmute.edu.vn', username='root', password='92ad5d248d6da148092419b836ce16c1').save()
+            print('------------------ CREATE user root ok')
+
+        user_filter = User.objects.filter(username='admin')
+        if not user_filter.exists():
+            print('------------------ CREATE user admin ok')
+            User.objects.create_superuser(email='root@uteoj.hcmute.edu.vn', username='admin', password='1234567890').save()
         # if User.objects.count() == 0:
         #     for user in settings.ADMINS:
         #         username = user[0].replace(' ', '')
@@ -27,4 +32,3 @@ class Command(BaseCommand):
         #         admin.save()
         # else:
         #     print('Admin accounts can only be initialized if no Accounts exist')
-

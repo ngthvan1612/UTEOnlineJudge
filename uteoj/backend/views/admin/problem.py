@@ -156,8 +156,6 @@ def AdminEditProblemTestcasesDeleteView(request, problem_short_name, testcase_pk
                 return HttpResponse(status=404)
             file_manager = OverwriteStorage(settings.MEDIA_ROOT)
             for test in filter_testcase:
-                #input_file_path = 'problems/{}/tests/input{}.txt'.format(problem.id,str(test.id).zfill(3))
-                #output_file_path = 'problems/{}/tests/output{}.txt'.format(problem.id,str(test.id).zfill(3))
                 file_manager.delete(test.input_file)
                 file_manager.delete(test.output_file)
             filter_testcase.delete()
@@ -518,7 +516,7 @@ def AdminListProblemView(request):
                 'fullname': x.fullname,
                 'shortname': x.shortname,
                 'publish_date': x.publish_date.strftime("%m/%d/%Y"),
-                'categories': [tmp_categories[int(y)] for y in x.categories_str.split(',')] if x.categories_str is not None else [],
+                'categories': x.categories.all(),
                 'difficult': x.difficult,
                 'problem_type': x.get_problem_type_display(),
             } for x in problem_models_filter
