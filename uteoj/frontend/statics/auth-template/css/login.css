@@ -36,9 +36,8 @@ a {
 	color: #000;
 }
 
-.container {
+.container1 {
 	position: relative;
-	min-height: 100vh;
 	overflow: hidden;
 }
 
@@ -99,7 +98,6 @@ a {
 	width: 100%;
 	padding: 1rem 3rem;
 	font-size: 1rem;
-	background-color: var(--gray);
 	border-radius: 0.5rem;
 	border: 0.125rem solid var(--white);
 	outline: none;
@@ -186,12 +184,12 @@ a {
 	background-color: var(--instagram-color);
 }
 
-.container.sign-in .form.sign-in,
-.container.sign-in .social-list.sign-in,
-.container.sign-in .social-list.sign-in > div,
-.container.sign-up .form.sign-up,
-.container.sign-up .social-list.sign-up,
-.container.sign-up .social-list.sign-up > div {
+.container1.sign-in .form.sign-in,
+.container1.sign-in .social-list.sign-in,
+.container1.sign-in .social-list.sign-in > div,
+.container1.sign-up .form.sign-up,
+.container1.sign-up .social-list.sign-up,
+.container1.sign-up .social-list.sign-up > div {
 	transform: scale(1);
 }
 
@@ -262,18 +260,18 @@ a {
 	transform: translateX(250%);
 }
 
-.container.sign-in .text.sign-in h2,
-.container.sign-in .text.sign-in p,
-.container.sign-in .img.sign-in img,
-.container.sign-up .text.sign-up h2,
-.container.sign-up .text.sign-up p,
-.container.sign-up .img.sign-up img {
+.container1.sign-in .text.sign-in h2,
+.container1.sign-in .text.sign-in p,
+.container1.sign-in .img.sign-in img,
+.container1.sign-up .text.sign-up h2,
+.container1.sign-up .text.sign-up p,
+.container1.sign-up .img.sign-up img {
 	transform: translateX(0);
 }
 
 /* Background */
 
-.container::before {
+.container1::before {
 	content: "";
 	position: absolute;
 	top: 0;
@@ -293,12 +291,12 @@ a {
 	border-top-left-radius: max(50vw, 50vh);
 }
 
-.container.sign-in::before {
+.container1.sign-in::before {
 	transform: translate(0, 0);
 	right: 50%;
 }
 
-.container.sign-up::before {
+.container1.sign-up::before {
 	transform: translate(100%, 0);
 	right: 50%;
 }
@@ -323,9 +321,9 @@ b#sign-up {
 }
 
 @media only screen and (max-width: 567px) {
-	.container::before,
-	.container.sign-in::before,
-	.container.sign-up::before {
+	.container1::before,
+	.container1.sign-in::before,
+	.container1.sign-up::before {
 		height: 100vh;
 		border-bottom-right-radius: 0;
 		border-top-left-radius: 0;
@@ -334,8 +332,8 @@ b#sign-up {
 		right: 0;
 	}
 
-	.container.sign-in .col.sign-in,
-	.container.sign-up .col.sign-up {
+	.container1.sign-in .col.sign-in,
+	.container1.sign-up .col.sign-up {
 		transform: translateY(0);
 	}
 

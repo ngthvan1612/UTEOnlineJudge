@@ -9,11 +9,12 @@
 			rel="stylesheet"
 		/>
 		<link rel="stylesheet" href="{% static 'auth-template/css/login.css' %}" />
+		<link rel="stylesheet" href="{% static 'admin-static/css/base.css'%}" />
 		<title>HCMUTE OJ | Sign In</title>
 	</head>
 	<body>
 		<!-- Container -->
-		<div class="container" id="container">
+		<div class="container1" id="container1">
 			<!-- Row -->
 			<div class="row">
 				<div class="col align-center flex-col sign-up"> </div>
@@ -21,6 +22,7 @@
 					<div class="form-wrapper align-center">
 						<form class="form sign-in" action="/login/" method="POST">
                             {% csrf_token %}
+
 							<div class="input-group">
 								<i class="bx bxs-user"></i>
 								<input type="text" placeholder="Username" name="username"/>
@@ -29,6 +31,10 @@
 								<i class="bx bxs-lock-alt"></i>
 								<input type="password" placeholder="Password" name="password"/>
 							</div>
+							
+							{%include 'admin-template/_layout/error_handle.html' %} 
+							{%block error_handle %}{%endblock%}
+
 							<button type = "submit">Sign in</button>
 							<p>
 								<b>Forgot password?</b>

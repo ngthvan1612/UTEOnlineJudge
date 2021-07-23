@@ -1,0 +1,107 @@
+{%extends 'admin-template/_layout/base.html' %}
+{%load static %}
+{%block website_content %}
+	<!-- Content Header (Page header) -->
+	<div class="content-header">
+		<div class="container-fluid">
+			<div class="row mb-2">
+				<div class="col-sm-6">
+					<ol class="breadcrumb float-sm-left">
+						<li class="breadcrumb-item"><a href="/admin/">Home</a></li>
+						<li class="breadcrumb-item active"><a href="/admin/problems/">Problems</a></li>
+                        <li class="breadcrumb-item active"><a href="/admin/problems/edit/{{problem.shortname}}/details">Edit</a></li>
+					</ol>
+				</div>
+			</div>
+			{%include 'admin-template/_layout/error_handle.html' %} 
+			{%block error_handle %}{%endblock%}
+		</div>
+	</div>
+	<!-- /.content-header -->
+	<!-- Main content -->
+    <div class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12">
+					<div class="card-body p-0">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin/problems/edit/{{problem.shortname}}/details">Details</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin/problems/edit/{{problem.shortname}}/problemsetter">Problem Setter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/admin/problems/edit/{{problem.shortname}}/testcases">Test Case</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin/problems/edit/{{problem.shortname}}/languages">Languages</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin/problems/edit/{{problem.shortname}}/settings">Setting</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin/problems/edit/{{problem.shortname}}/customchecker">Custom Checker</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row  justify-content-center">
+                <div class="col-8">
+                    <h2 style="margin-top: 10px;">{{problem.shortname}}</h2>
+                    <form method="post" url="" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">Time limit</span>
+                                    <input name="time_limit" type="text" class="form-control" id="modal-time-limit" value="{{testcase.time_limit}}">
+                                    <span class="input-group-text">ms</span>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">Memory limit</span>
+                                    <input name="memory_limit" type="text" class="form-control" id="modal-memory-limit" value="{{testcase.memory_limit}}">
+                                    <span class="input-group-text">KB</span>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">Points</span>
+                                    <input name="points" type="text" class="form-control" id="modal-points" value="{{testcase.points}}">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">Tag</span>
+                                    <input name="tag" type="text" class="form-control" id="modal-tag" value="{{testcase.tag}}">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text">Input file</label>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="customFile" name="input_file">
+                                        <label class="custom-file-label" for="customFile">Choose file</label>
+                                      </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text">Output file</label>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="customFile" name="output_file">
+                                        <label class="custom-file-label" for="customFile">Choose file</label>
+                                      </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="text-center">
+                                    <input class="btn btn-primary" type="submit" value="Save change">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+	<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+	<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+    <script src="{% static 'problem/js/editProblemTestcase.js' %}"></script>
+	<!-- /.content -->
+{%endblock%}

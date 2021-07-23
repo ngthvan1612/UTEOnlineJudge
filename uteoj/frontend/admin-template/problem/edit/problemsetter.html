@@ -1,0 +1,90 @@
+{%extends 'admin-template/_layout/base.html' %}
+{%load static %}
+{%block website_content %}
+	<!-- Content Header (Page header) -->
+    <link rel="stylesheet" href="{% static 'problem/css/editProblemSetter.css' %}">
+	<div class="content-header">
+		<div class="container-fluid">
+			<div class="row mb-2">
+				<div class="col-sm-6">
+					<ol class="breadcrumb float-sm-left">
+						<li class="breadcrumb-item"><a href="/admin/">Home</a></li>
+						<li class="breadcrumb-item active"><a href="/admin/problems/">Problems</a></li>
+                        <li class="breadcrumb-item active"><a href="details">Edit</a></li>
+					</ol>
+				</div>
+			</div>
+			{%include 'admin-template/_layout/error_handle.html' %} 
+			{%block error_handle %}{%endblock%}
+		</div>
+	</div>
+	<!-- /.content-header -->
+	<!-- Main content -->
+    <div class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xl-12">
+					<div class="card-body p-0">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link" href="details">Details</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="problemsetter">Problem Setter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="testcases">Test Case</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="languages">Languages</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="settings">Setting</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="customchecker">Custom Checker</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-home">
+                                <div class="container">
+                                    <form method="post" url="">
+                                        {% csrf_token %}
+                                        <div class="row" style="margin-top:10px;">
+                                            <div class="col-8" style="margin-left:auto;margin-right:auto;" onclick=";">
+                                                <div class="input-group mb-3">
+                                                    <input type="text" class="form-control" id="input-username">
+                                                    <button class="btn btn-primary" type="button" onclick="addAuthor()">Add</button>
+                                                </div>
+                                                <ul class="list-group" id="list-group-author" onclick=";">
+                                                    {%for name in list_authors %}
+                                                        <div class="list-group-item" style="display:flexbox" onclick=";" id={{name}} >
+                                                            <input name="list_author[]" style="margin-bottom: 0; cursor:hand; border: transparent" value={{name}} >
+                                                            <i class="fa fa-times" style="float: right;font-size: 20px" onclick="deleteAuthor('{{name}}')"></i>
+                                                        </div>
+                                                    {%endfor%}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+											<div class="text-center">
+												<input class="btn btn-primary" type="submit" value="Save change">
+											</div>
+										</div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+	<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+	<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+    <script src="{% static 'problem/js/editProblemSetter.js' %}"></script>
+	<!-- /.content -->
+{%endblock%}
