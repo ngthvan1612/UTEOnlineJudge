@@ -1,3 +1,4 @@
+from backend.views.user.home import UserHomeView
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
@@ -5,7 +6,21 @@ from django.db import transaction
 from backend.models.problem import ProblemCategoryModel, ProblemModel
 from datetime import datetime
 import json
-from random import random
+from random import randint, random
+
+from backend.views.admin.tools import Remove_accents
+
+
+def RandomFromList(input:list, size) -> list:
+    cnt = 0
+    result = []
+    for i in range(0, len(input), 1):
+        if randint(0, 1) % 2 == 0:
+            result.append(input[i])
+            cnt = cnt + 1
+            if cnt > 5:
+                break
+    return result
 
 @csrf_exempt
 def CreateRandomProblem(request):
@@ -27,39 +42,24 @@ def CreateRandomProblem(request):
                 'message': msg_error
             })
     
-    response = []
     with transaction.atomic():
-        for i in range(1, count + 1, 1):
-            num_lc = int(random() * ProblemCategoryModel.objects.count()) + 1
-            lc = [x.id for x in ProblemCategoryModel.objects.order_by('?').all()[:num_lc]]
+        categories_count = ProblemCategoryModel.objects.count()
+        user_count = User.objects.count()
+        list_categories = [x.id for x in ProblemCategoryModel.objects.all()]
+        list_user = [x.id for x in User.objects.all()]
 
-            num_uc = int(random() * User.objects.count()) + 1
-            uc = [x.id for x in User.objects.order_by('?').all()[:num_uc]]
-            problem = ProblemModel.objects.create(publish_date=datetime.now(),
-                shortname=startwith.replace(" ", '_').upper() + str(i),
-                fullname=startwith + str(i),
-                difficult=round(random() * 10, 2),
-                points_per_test=random() * 100,
-                statement=
-                "# Statement of {}\n"
-                "Publishing in StackEdit makes it simple for you to publish online your files. Once you're happy with a file, you can publish it to different hosting platforms like **Blogger**, **Dropbox**, **Gist**, **GitHub**, **Google Drive**, **WordPress** and **Zendesk**. With [Handlebars templates](http://handlebarsjs.com/), you have full control over what you export.\n"
-                "> Before starting to publish, you must link an account in the **Publish** sub-menu.\n".format(startwith + str(i)),
-                input_statement=
-                "# Input of {}\n"
-                "> **ProTip:** You can disable any **Markdown extension** in the **File properties** dialog.\n".format(startwith + str(i)),
-                output_statement=
-                "# Output of {}\n"
-                "You can render LaTeX mathematical expressions using [KaTeX](https://khan.github.io/KaTeX/):\n".format(startwith + str(i)),
-                constraints_statement=
-                "# Constraint of {}\n"
-                "The *Gamma function* satisfying $\Gamma(n) = (n-1)!\quad\forall n\in\mathbb N$ is via the Euler integral\n".format(startwith + str(i)),
-                input_filename='BAI' + str(i) + '.INP',
-                output_filename='BAI' + str(i) + '.OUT',
-                time_limit=int(random() * 10000),
-                memory_limit=int(random() * 1000000),
-                problem_type=int(random() * 2),)
-            problem.set_categories(lc)
-            problem.author.set(uc)
-            problem.save()
+        admin = User.objects.get(username='admin')
+
+        for i in range(1, count + 1, 1):
+            fullname = startwith + ' - ' + str(i)
+            shortname = Remove_accents(fullname.upper()).replace(' ', '_')
+            ProblemModel.CreateNewProblem(shortname, fullname, admin)
+        list_update = ProblemModel.objects.order_by('-id')[:count]
+        for p in list_update:
+            random_categories = RandomFromList(list_categories, categories_count)
+            random_user = RandomFromList(list_user, user_count)
+            p.categories.set(random_categories)
+            p.author.set(random_user)
+            p.save()
     return HttpResponse('Created ' + str(count) + ' problem ok')
 

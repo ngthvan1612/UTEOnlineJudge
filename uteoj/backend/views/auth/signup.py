@@ -23,7 +23,7 @@ def SignupView(request):
         password2 = request.POST['password2']
         if len(username) < 5:
             messages.add_message(request, messages.ERROR, 'Tên đăng nhập phải có từ 5 kí tự trở lên')
-        elif re.match("^[A-Za-z0-9_-]*$", username) == False:
+        elif not re.match("^[A-Za-z0-9_]*$", username):
             messages.add_message(request, messages.ERROR, 'Tên đăng nhập chỉ gồm các kí tự A-Za-z0-9 và _')
         elif User.objects.filter(username=username).exists():
             messages.add_message(request, messages.ERROR, 'Tên đăng nhập đã tồn tại')

@@ -37,6 +37,7 @@ from backend.views.admin.problem import AdminEditProblemSettingsview
 from backend.views.admin.problem import AdminEditProblemTestcasesview
 from backend.views.admin.problem import AdminEditProblemCustomCheckerview
 from backend.views.admin.problem import AdminEditProblemTestcasesUploadZipView
+from backend.views.admin.problem import AdminCreateProblemView
 
 from backend.views.admin.contest import AdminListContestView
 from backend.views.admin.contest import AdminCreateContestView
@@ -62,7 +63,7 @@ from django.views.static import serve
 url_patterns_admin_sub = [
     path('', AdminHomeView),
     path('problems/', AdminListProblemView),
-    #path('problem/create/', AdminCreateProblemView),
+    path('problem/create/', AdminCreateProblemView),
     path('problems/edit/<str:problem_short_name>/', AdminEditProblemDeatailsview),
     path('problems/edit/<str:problem_short_name>/details', AdminEditProblemDeatailsview),
     path('problems/edit/<str:problem_short_name>/problemsetter', AdminEditProblemProblemSetterview),

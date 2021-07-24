@@ -1,27 +1,36 @@
 import uuid
+import zipfile
 import os.path
 from os import mkdir
 import shutil
+
 from django.views.decorators.cache import never_cache
 from django.conf import settings
 from django.contrib import messages
 from django.http.response import HttpResponse, HttpResponseRedirect, HttpResponseRedirectBase
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
-from backend.models.problem import ProblemModel
-from backend.models.problem import ProblemCategoryModel
 from django.db.models import Q
 from django.db import transaction
 from django.core.paginator import Paginator
-import zipfile
 
+from backend.models.problem import ProblemModel
+from backend.models.problem import ProblemSettingModel
+from backend.models.problem import ProblemGraderModel
+from backend.models.problem import ProblemStatisticsModel
+from backend.models.problem import ProblemCategoryModel
 from backend.views.admin.require import admin_member_required
+
+from backend.models.problem import SUBMISSION_VISIBLE_MODE_CHOICES
 
 @admin_member_required
 def AdminEditProblemDeatailsview(request, problem_short_name):
     filter_problem = ProblemModel.objects.filter(shortname=problem_short_name)
     if not filter_problem.exists():
         return HttpResponse(status=404)
+    problem = filter_problem[0]
+    problem_setting = ProblemSettingModel.objects.get(problem=problem)
+
     #edit
     if request.method == 'POST':
         list_requirements = ['shortname', 'fullname', 'difficult', 'points_per_test',
@@ -48,6 +57,8 @@ def AdminEditProblemDeatailsview(request, problem_short_name):
         output_statement = str(request.POST['output_statement'])
         if len(shortname) == 0 or len(fullname) == 0:
             messages.add_message(request, messages.ERROR, 'Tên bài không được trống')
+        elif not re.match("^[A-Za-z0-9_-]*$", shortname) or len(shortname) == 0:
+            messages.add_message(request, messages.ERROR, 'Tên ngắn của bài chỉ được chứa các kí tự a-ZA-Z0-9 và _ - và không được trống')
         elif shortname != problem_short_name and ProblemModel.objects.filter(shortname=shortname).exists():
             messages.add_message(request, messages.ERROR, 'Tên bài này đã có, vui lòng chọn tên khác [shortname]')
         elif difficult < 0.0 or difficult > 10.0:
@@ -69,33 +80,41 @@ def AdminEditProblemDeatailsview(request, problem_short_name):
                 for x in list_categories_tmp:
                     for y in ProblemCategoryModel.objects.filter(name=x):
                         list_categories.append(y.id)
-            problem = filter_problem[0]
             problem.fullname = fullname
             problem.shortname = shortname
+
             problem.difficult = difficult
-            problem.points_per_test = points_per_test
-            problem.statement = statement
-            problem.input_statement = input_statement
-            problem.output_statement = output_statement
-            problem.constraints_statement = constraints_statement
-            problem.set_categories(list_categories)
+            problem_setting.points_per_test = points_per_test
+            problem_setting.statement = statement
+            problem_setting.input_statement = input_statement
+            problem_setting.output_statement = output_statement
+            problem_setting.constraints_statement = constraints_statement
+            problem_setting.save()
+            problem.categories.set(list_categories)
             problem.save()
+
             messages.add_message(request, messages.SUCCESS, 'Cập nhật thành công')
             return redirect('/admin/problems/edit/{}/'.format(shortname))
         return redirect('/admin/problems/edit/{}/'.format(problem_short_name))
     elif request.method == 'GET':
         problem = filter_problem[0]
+
         problem_context = {
             'shortname': problem.shortname,
             'fullname': problem.fullname,
             'difficult': problem.difficult,
             'categories': [x.name for x in problem.categories.all()],
-            'points_per_test': problem.points_per_test,
             'publish_date': problem.publish_date,
-            'statement': problem.statement if problem.statement and len(problem.statement) != 0 else '',
-            'input_statement': problem.input_statement if problem.input_statement and len(problem.input_statement) != 0 else '',
-            'output_statement': problem.output_statement if problem.output_statement and len(problem.output_statement) != 0 else '',
-            'constraints_statement': problem.constraints_statement if problem.constraints_statement and len(problem.constraints_statement) != 0 else '',
+
+            'points_per_test': problem_setting.points_per_test,
+            'statement': problem_setting.statement
+                if problem_setting.statement and len(problem_setting.statement) != 0 else '',
+            'input_statement': problem_setting.input_statement
+                if problem_setting.input_statement and len(problem_setting.input_statement) != 0 else '',
+            'output_statement': problem_setting.output_statement
+                if problem_setting.output_statement and len(problem_setting.output_statement) != 0 else '',
+            'constraints_statement': problem_setting.constraints_statement
+                if problem_setting.constraints_statement and len(problem_setting.constraints_statement) != 0 else '',
         }
         context = {
             'problem': problem_context,
@@ -229,6 +248,9 @@ def AdminEditProblemTestcasesEditView(request, problem_short_name, testcase_pk):
             #test.output_file = output_file_path
             file_manager.save(test.output_file, output_file)
 
+        if 'is_sample' in request.POST:
+            test.is_sample = True
+
         test.save()
 
         messages.add_message(request, messages.SUCCESS, 'Cập nhật thành công')
@@ -241,6 +263,7 @@ def AdminEditProblemTestcasesEditView(request, problem_short_name, testcase_pk):
             'testcase': {
                 'time_limit': test.time_limit,
                 'memory_limit': test.memory_limit,
+                'is_sample': test.is_sample,
                 'points': test.points,
                 'tag': test.tag if test.tag and len(test.tag) != 0 else '',
             }
@@ -249,17 +272,13 @@ def AdminEditProblemTestcasesEditView(request, problem_short_name, testcase_pk):
     else:
         return HttpResponse(status=405)
 
-def ConvertToList(a):
-    tmp = ""
-    for x in a:
-        tmp = tmp + '<li>{}</li>'.format(x)
-    return '<ol>{}</ol>'.format(tmp)
 
 def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
     filter_problem = ProblemModel.objects.filter(shortname=problem_short_name)
     if not filter_problem.exists():
         return HttpResponse(status=404)
     problem = filter_problem[0]
+    problem_grader = ProblemGraderModel.objects.get(problem=problem)
     if request.method == 'POST':
         if 'zip_testcases' not in request.FILES or 'filetype' not in request.POST:
             return HttpResponse(status=500)
@@ -289,8 +308,8 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
 
         #extract
         if filetype == 'themis':
-            problem_input_file_name = problem.input_filename
-            problem_output_file_name = problem.output_filename
+            problem_input_file_name = problem_grader.input_filename
+            problem_output_file_name = problem_grader.output_filename
             list_testcases_folder = []
             with zipfile.ZipFile(os.path.join(settings.MEDIA_ROOT, filepath)) as z:
                 all_path = z.namelist()
@@ -339,8 +358,8 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
                         id = tmp_id + 1
 
                         #update database
-                        testdb = problem.problemtestcasemodel_set.create(problem=problem, time_limit=1000,
-                            memory_limit=65536, points=1.0,
+                        testdb = problem.problemtestcasemodel_set.create(problem=problem, time_limit=problem_grader.time_limit,
+                            memory_limit=problem_grader.time_limit, points=1.0,
                             input_file='problems/{}/tests/input/input{}.txt'.format(problem.id, str(id).zfill(3)),
                             output_file='problems/{}/tests/output/output{}.txt'.format(problem.id, str(id).zfill(3)))
                         testdb.save()
@@ -395,6 +414,7 @@ def AdminEditProblemTestcasesview(request, problem_short_name):
                 'tag': x.tag if x.tag and len(x.tag) != 0 else '',
                 'time_limit': x.time_limit,
                 'memory_limit': x.memory_limit,
+                'is_sample': x.is_sample,
                 'points': x.points,
                 'input_file': settings.MEDIA_URL + x.input_file,
                 'output_file': settings.MEDIA_URL + x.output_file,
@@ -431,8 +451,75 @@ def AdminEditProblemLanguagesview(request, problem_short_name):
 
 @admin_member_required
 def AdminEditProblemSettingsview(request, problem_short_name):
+    filter_problem = ProblemModel.objects.filter(shortname=problem_short_name)
+    if not filter_problem.exists():
+        return HttpResponse(status=404)
+    problem = filter_problem[0]
+    problem_setting = ProblemSettingModel.objects.get(problem=problem)
+    problem_grader = ProblemGraderModel.objects.get(problem=problem)
 
-    return render(request, 'admin-template/problem/edit/settings.html')
+    if request.method == 'POST':
+        list_requirements = ['input_filename', 'output_filename', 'submission_visible_mode', 'time_limit', 'memory_limit']
+        for x in list_requirements:
+            if x not in request.POST:
+                return HttpResponse(status=500)
+
+        input_filename = request.POST['input_filename']
+        output_filename = request.POST['output_filename']
+        try:
+            submission_visible_mode = int(request.POST['submission_visible_mode'])
+        except: return HttpResponse(status=500)
+        try:
+            time_limit = int(request.POST['time_limit'])
+            if time_limit <= 0:
+                raise 'error'
+        except:
+            messages.add_message(request, messages.ERROR, 'Thời gian chạy phải là số  nguyên dương')
+            return HttpResponseRedirect(request.path_info)
+        try:
+            memory_limit = int(request.POST['memory_limit'])
+            if memory_limit <= 0:
+                raise 'error'
+        except:
+            messages.add_message(request, messages.ERROR, 'Giới hạn bộ nhớ phải là số nguyên dương')
+            return HttpResponseRedirect(request.path_info)
+
+        use_stdin = True if 'use_stdin' in request.POST else False
+        use_stdout = True if 'use_stdout' in request.POST else False
+
+        problem_setting.submission_visible_mode = submission_visible_mode
+        problem_setting.save()
+
+        problem_grader.input_filename = input_filename
+        problem_grader.output_filename = output_filename
+        problem_grader.use_stdin = use_stdin
+        problem_grader.use_stdout = use_stdout
+        problem_grader.time_limit = time_limit
+        problem_grader.memory_limit = memory_limit
+        problem_grader.save()
+
+        messages.add_message(request, messages.SUCCESS, 'Cập nhật thành công')
+
+        return HttpResponseRedirect(request.path_info)
+    elif request.method == 'GET':
+
+        context = {
+            'submission_visible_mode_choices': [
+                {
+                    'value': x[0],
+                    'display': x[1],
+                } for x in SUBMISSION_VISIBLE_MODE_CHOICES
+            ],
+            'input_filename': problem_grader.input_filename,
+            'output_filename': problem_grader.output_filename,
+            'use_stdin': problem_grader.use_stdin,
+            'use_stdout': problem_grader.use_stdout,
+            'time_limit': problem_grader.time_limit,
+            'memory_limit': problem_grader.memory_limit,
+            'submission_visible_mode': problem_setting.submission_visible_mode
+        }
+
+        return render(request, 'admin-template/problem/edit/settings.html', context)
 
 @admin_member_required
 def AdminEditProblemCustomCheckerview(request, problem_short_name):
@@ -440,19 +527,22 @@ def AdminEditProblemCustomCheckerview(request, problem_short_name):
     if not filter_problem.exists():
         return HttpResponse(status=404)
     problem = filter_problem[0]
+    problem_grader = ProblemGraderModel.objects.get(problem=problem)
 
     #edit
     if request.method == 'POST':
         list_requirements = ['checker_source']
+
         for x in list_requirements:
             if x not in request.POST:
                 return HttpResponse(status=500)
+        
         use_checker = True if 'use_checker' in request.POST else False
         checker_source = str(request.POST['checker_source'])
 
-        problem.use_checker = use_checker
-        problem.checker = checker_source
-        problem.save()
+        problem_grader.use_checker = use_checker
+        problem_grader.checker = checker_source
+        problem_grader.save()
 
         messages.add_message(request, messages.SUCCESS, 'Cập nhật thành công')
 
@@ -460,8 +550,8 @@ def AdminEditProblemCustomCheckerview(request, problem_short_name):
 
     elif request.method == 'GET':
         context = {
-            'use_checker': problem.use_checker,
-            'checker_source': problem.checker,
+            'use_checker': problem_grader.use_checker,
+            'checker_source': problem_grader.checker,
         }
         return render(request, 'admin-template/problem/edit/checker.html', context)
     else:
@@ -469,6 +559,8 @@ def AdminEditProblemCustomCheckerview(request, problem_short_name):
 
 
 from time import time
+from datetime import datetime
+from django.db.models import Max, Count
 
 @admin_member_required
 def AdminListProblemView(request):
@@ -501,43 +593,63 @@ def AdminListProblemView(request):
                 if field == 'difficult':
                     problem_models_filter = problem_models_filter.order_by(orderby_query)
         problem_models_filter = problem_models_filter.all()
-        print('--------> PREPROCESS 1 LIST_PROBLEM: {}', round(time() - tmp, 3))
-        tmp = time()
 
-        tmp_categories = {}
-        for x in ProblemCategoryModel.objects.all():
-            tmp_categories[x.id] = x.name
-
-        print('--------> PREPROCESS 2 LIST_PROBLEM: {}', round(time() - tmp, 3))
-        tmp = time()
+        problems = problem_models_filter
         list_problems = [
             {
                 'id': -1,
                 'fullname': x.fullname,
                 'shortname': x.shortname,
                 'publish_date': x.publish_date.strftime("%m/%d/%Y"),
-                'categories': x.categories.all(),
                 'difficult': x.difficult,
                 'problem_type': x.get_problem_type_display(),
-            } for x in problem_models_filter
+            } for x in problems
         ]
-
-        print('--------> GET LIST_PROBLEM: {}', round(time() - tmp, 3))
-        tmp = time()
+        
         for it in range(0, len(list_problems), 1):
             list_problems[it]['id'] = it + 1
-        paginator = Paginator(list_problems, 10)
+        paginator = Paginator(list_problems, 50)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-        print('--------> PAGING LIST_PROBLEM: {}', round(time() - tmp, 3))
-        tmp = time()
+        
         context = {
             'website_header_title': 'Danh sách bài tập',
             'list_problem': page_obj,
-            'list_categories': ProblemCategoryModel.objects.all(),
             'list_categories': ['All'] + [x.name for x in ProblemCategoryModel.objects.all()],
             'page_obj': page_obj,
         }
 
     return render(request, 'admin-template/problem/listproblem.html', context)
+
+import re
+
+def AdminCreateProblemView(request):
+    if request.method == 'POST':
+        list_requirements = ['shortname', 'fullname']
+        for x in list_requirements:
+            if x not in request.POST:
+                return HttpResponse(status=500)
+
+        shortname = str(request.POST['shortname'])
+        fullname = str(request.POST['fullname'])
+        if not re.match("^[A-Za-z0-9_-]*$", shortname) or len(shortname) == 0:
+            messages.add_message(request, messages.ERROR, 'Tên ngắn của bài chỉ được chứa các kí tự a-ZA-Z0-9 và _ và không được trống')
+        elif ProblemModel.objects.filter(shortname=shortname).exists():
+            messages.add_message(request, messages.ERROR, 'Bài {} đã tồn tại'.format(shortname))
+        elif len(fullname) == 0:
+            messages.add_message(request, messages.ERROR, 'Tên đầy đủ của bài không được trống')
+        else:
+            #ok -> create
+            # new_problem = ProblemModel.objects.create(
+            #     shortname
+            # )
+            messages.add_message(request, messages.SUCCESS, 'OK')
+        return HttpResponseRedirect(request.path_info)
+    elif request.method == 'GET':
+
+
+
+        return render(request, 'admin-template/problem/createproblem.html')
+    else:
+        return HttpResponse(status=405)
 

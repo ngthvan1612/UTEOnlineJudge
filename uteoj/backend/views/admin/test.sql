@@ -1,0 +1,24 @@
+SELECT
+    `backend_problemmodel`.`id`,
+    `backend_problemmodel`.`publish_date`,
+    `backend_problemmodel`.`categories_str`,
+    `backend_problemmodel`.`shortname`,
+    `backend_problemmodel`.`fullname`,
+    `backend_problemmodel`.`difficult`,
+    `backend_problemmodel`.`points_per_test`,
+    `backend_problemmodel`.`statement`,
+    `backend_problemmodel`.`input_statement`,
+    `backend_problemmodel`.`output_statement`,
+    `backend_problemmodel`.`constraints_statement`,
+    `backend_problemmodel`.`input_filename`,
+    `backend_problemmodel`.`output_filename`,
+    `backend_problemmodel`.`use_stdin`,
+    `backend_problemmodel`.`use_stdout`,
+    `backend_problemmodel`.`time_limit`,
+    `backend_problemmodel`.`memory_limit`,
+    `backend_problemmodel`.`use_checker`,
+    `backend_problemmodel`.`checker`, 
+    `backend_problemmodel`.`problem_type`,
+    `backend_problemmodel`.`submission_visible_mode`
+FROM
+    `backend_problemmodel`
