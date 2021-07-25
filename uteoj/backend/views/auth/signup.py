@@ -38,4 +38,5 @@ def SignupView(request):
         else:
             User.objects.create_user(username=username, email=email, password=password1)
             messages.add_message(request, messages.SUCCESS, 'Đăng ký thành công')
+            return render(request, 'auth-template/login.html', context)
     return render(request, 'auth-template/signup.html', context)

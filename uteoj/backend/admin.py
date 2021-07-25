@@ -31,4 +31,3 @@ admin.site.register(ProblemSettingModel)
 admin.site.register(ProblemGraderModel)
 admin.site.register(ProblemStatisticsModel)
 
-

@@ -21,6 +21,16 @@ WEBSITE_HOST_NAME = '127.0.0.1:8000'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 
+# Celery backend ----------------------------------------------------------------------
+
+broker_url = 'redis://localhost:6379'
+result_backend = 'redis://localhost:6379'
+accept_content = ['application/json']
+task_serializer = 'json'
+result_serializer = 'json'
+timezone = 'UTC'
+
+
 # Media backend ----------------------------------------------------------------------
 
 MEDIA_ROOT = os.environ['MEDIA_ROOT'] if 'MEDIA_ROOT' in os.environ else 'ADMIN_DATA_MEDIA/'

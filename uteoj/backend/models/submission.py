@@ -5,8 +5,6 @@ from backend.models.language import LanguageModel
 
 
 class SubmissionResultType:
-    NONE = -2
-    CE = -1
     AC = 0
     WA = 1
     TLE = 2
@@ -14,42 +12,41 @@ class SubmissionResultType:
     RTE = 4
     OLE = 5
     PE = 6
+    CE = 7
 
 class SubmissionStatusType:
-    NONE = -1
     InQueued = 0
     Compiling = 1
     Grading = 2
     Completed = 3
 
 SUBMISSION_RESULT_CHOICES = (
-    (SubmissionResultType.NONE, 'None'),
-    (SubmissionResultType.CE, 'Compile error'),
-    (SubmissionResultType.AC, 'Accept'),
-    (SubmissionResultType.WA, 'Wrong answer'),
-    (SubmissionResultType.TLE, 'Time limit exceeded'),
+    (SubmissionResultType.CE, 'Dịch lỗi'),
+    (SubmissionResultType.AC, 'Được chấp nhận'),
+    (SubmissionResultType.WA, 'Kết quả sai'),
+    (SubmissionResultType.TLE, 'Chạy quá thời gian'),
 
-    (SubmissionResultType.MLE, 'memory limit exceeded'),
-    (SubmissionResultType.RTE, 'Runtime error'),
+    (SubmissionResultType.MLE, 'Vượt quá bộ nhớ'),
+    (SubmissionResultType.RTE, 'Lỗi thực thi'),
     (SubmissionResultType.OLE, 'Output Limit Exceed'),
     (SubmissionResultType.PE, 'Presentation Error'),
 )
 
 SUBMISSION_STATUS_CHOICES = (
-    (SubmissionStatusType.NONE, 'None'),
-    (SubmissionStatusType.InQueued, 'In queued'),
-    (SubmissionStatusType.Compiling, 'Compiling'),
-    (SubmissionStatusType.Grading, 'Grading'),
-    (SubmissionStatusType.Completed, 'Completed'),
+    (SubmissionStatusType.InQueued, 'Đang đợi'),
+    (SubmissionStatusType.Compiling, 'Đang biên dịch'),
+    (SubmissionStatusType.Grading, 'Đang chấm'),
+    (SubmissionStatusType.Completed, 'Chấm xong'),
 )
 
 class SubmissionModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     problem = models.ForeignKey(ProblemModel, on_delete=models.CASCADE)
+    source_code =models.TextField()
 
     #Cập nhật lúc nộp bài lên server (không thể không có)
     submission_date = models.DateTimeField(blank=False)
-    language = models.ForeignKey(LanguageModel, on_delete=models.DO_NOTHING)
+    language = models.ForeignKey(LanguageModel, on_delete=models.SET_NULL, null=True,blank=True)
 
     #Khi nào lôi bài từ hàng đợi xuống chấm mới cập nhật, mặc định là NULL (chưa chấm)
     submission_judge_date = models.DateTimeField(blank=True, null=True)
@@ -65,11 +62,22 @@ class SubmissionModel(models.Model):
     result = models.IntegerField(choices=SUBMISSION_RESULT_CHOICES, blank=True, null=True)
     status = models.IntegerField(choices=SUBMISSION_STATUS_CHOICES, blank=True, null=True)
 
-    #Số hiệu test cuối cùng bị sai, nếu đúng hết thì coi như -1
-    lastest_test = models.IntegerField(default=-1)
+    #Số hiệu test cuối cùng bị sai
+    lastest_test = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return self.user.username + '.' + self.problem.shortname
+        result_str = self.get_result_display() if self.get_result_display() is not None else ''
+        rtest = str(self.lastest_test) if self.lastest_test is not None else 'Đang đợi chấm...'
+        if self.result == SubmissionResultType.CE:
+            return '{}.{} -> {} --------------------> {}'.format(self.user.username, self.problem.shortname, self.get_status_display(), result_str)
+        if self.status != SubmissionStatusType.Completed:
+            return '{}.{} -> {} [{}] {}'.format(self.user.username, self.problem.shortname, self.get_status_display(), rtest, result_str)
+        else:
+            if self.result == SubmissionResultType.AC:
+                return '{}.{} -> {} --------------------> {}'.format(self.user.username, self.problem.shortname, self.get_status_display(), result_str)
+            else:
+                
+                return '{}.{} -> {} --------------------> {} test {}'.format(self.user.username, self.problem.shortname, self.get_status_display(), result_str, rtest)
 
 class SubmissionTestcaseResultModel(models.Model):
     submission = models.ForeignKey(SubmissionModel, on_delete=models.CASCADE)

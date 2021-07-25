@@ -80,4 +80,27 @@ Gửi xuống client:
 -- submission_visible_mode
 -- time_limit
 -- memory_limit
-|
+
+
+# Upgrade
+## Fix lại models
+```bash
+pip install -r requirements.txt
+python manage.py makemigrations
+python manage.py migrate
+```
+## Cài đặt máy chủ redis (dùng để chạy nền)
+```bash
+sudo apt-get install redis
+```
+## Chạy nền celery (trên terminal khác)
+```
+celery -A uteoj worker 
+```
+
+## Thử nghiệm nộp bài
+### Nộp bài: 
+http://.../problem/{{shortname}}/submit
+### Xem list submission:
+http://.../submission
+

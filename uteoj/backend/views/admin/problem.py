@@ -102,7 +102,7 @@ def AdminEditProblemDeatailsview(request, problem_short_name):
         problem_context = {
             'shortname': problem.shortname,
             'fullname': problem.fullname,
-            'difficult': problem.difficult,
+            'difficult': round(problem.difficult, 2),
             'categories': [x.name for x in problem.categories.all()],
             'publish_date': problem.publish_date,
 
@@ -601,7 +601,7 @@ def AdminListProblemView(request):
                 'fullname': x.fullname,
                 'shortname': x.shortname,
                 'publish_date': x.publish_date.strftime("%m/%d/%Y"),
-                'difficult': x.difficult,
+                'difficult': round(x.difficult, 2),
                 'problem_type': x.get_problem_type_display(),
             } for x in problems
         ]

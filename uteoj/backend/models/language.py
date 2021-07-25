@@ -11,10 +11,3 @@ class LanguageModel(models.Model):
 
     def __str__(self):
         return self.name + ' (' + self.ext + ')'
-
-
-class LanguageSerializer(serializers.Serializer):
-
-    class Meta:
-        model = LanguageModel
-        fields = ('id', 'name', 'ext', 'description', 'compile_command', 'run_command')

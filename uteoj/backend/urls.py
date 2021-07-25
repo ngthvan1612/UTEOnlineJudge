@@ -19,6 +19,8 @@ from backend.views.auth.signup import SignupView
 
 #user
 from backend.views.user.problem import UserProblemView
+from backend.views.user.problem import UserSubmitSolution
+from backend.views.user.problem import UserListSubmission
 from backend.views.user.home import UserHomeView
 
 #admin
@@ -118,7 +120,9 @@ url_patterns_auth = [
 
 url_patterns_user = [
     path('', UserHomeView),
-    path('problems/<str:problem_id>/', UserProblemView),
+    path('problem/<str:shortname>', UserProblemView),
+    path('problem/<str:shortname>/submit', UserSubmitSolution),
+    path('submission', UserListSubmission),
 ]
 
 from backend.views.random.user import CreateRandomUser

@@ -15,7 +15,6 @@ from django.contrib import messages
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 from backend.models.language import LanguageModel
-from backend.models.language import LanguageSerializer
 
 
 @admin_member_required

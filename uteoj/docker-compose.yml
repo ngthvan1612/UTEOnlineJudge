@@ -28,6 +28,8 @@ services:
        MYSQL_ROOT_PASSWORD: 'hcmute.f18c1a3b9e1b16e36d26fc6420ac985d'
     volumes:
       - ./webdata/db:/var/lib/mysql
+  redis:
+    image: redis:alpine
   nginx:
     build: ./nginx
     ports:
@@ -35,6 +37,15 @@ services:
     volumes:
       - ./static:/code/static/
     depends_on:
+      - web
+  celery:
+    restart: always
+    build:
+      context: .
+    command: celery -A uteoj worker
+    depends_on:
+      - db
+      - redis
       - web
 volumes:
   postgres_data:
