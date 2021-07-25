@@ -37,7 +37,7 @@ def UserListSubmission(request):
                             }
                     </script>
                 </head>
-                <body onload = "JavaScript:AutoRefresh(300);" style="font-size:17px;font-family:Arial;">
+                <body onload = "JavaScript:AutoRefresh(2000);" style="font-size:17px;font-family:Arial;">
                     <ul>
         """
     end_tem = """
@@ -46,13 +46,13 @@ def UserListSubmission(request):
             </html>
     """
     list_submission = ""
-    for x in SubmissionModel.objects.order_by('-id').all():
+    for x in SubmissionModel.objects.order_by('-id').all()[:30]:
         color = "black"
         if x.status == SubmissionStatusType.Completed:
             color="red"
             if x.result == SubmissionResultType.AC:
                 color = "green"
-        list_submission += '<li style="color:{};">{}</li>'.format(color,str(x))
+        list_submission += '<li style="color:{};">{}</li>\n'.format(color,str(x))
     return HttpResponse(template + list_submission + end_tem)
 
 @csrf_exempt

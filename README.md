@@ -97,10 +97,9 @@ sudo apt-get install redis
 ```
 celery -A uteoj worker 
 ```
-
+> Note: Số lượng luồng celery chạy = số lượng bài chấm cùng một lúc = Số cores của máy tính hiện t
 ## Thử nghiệm nộp bài
 ### Nộp bài: 
 http://.../problem/{{shortname}}/submit
-### Xem list submission:
+### Xem list submission (1 giây tự refresh 1 lần):
 http://.../submission
-

@@ -47,23 +47,26 @@ def SubmitSolution(submission_id:int) -> None:
     submission.status = SubmissionStatusType.Grading
     num_test = 30
     stopped = False
+    time_sleep_count = random()
     for i in range(0, num_test, 1):
         submission.lastest_test = i + 1
         random_can_out = rnd(60)
         if random_can_out == 2:
-            random_result = rnd(3) + 1
+            random_result = rnd(4) + 1
             if random_result == 1:
                 submission.result = SubmissionResultType.WA
             elif random_result == 2:
                 submission.result = SubmissionResultType.TLE
             elif random_result == 3:
                 submission.result = SubmissionResultType.MLE
+            else:
+                submission.result = SubmissionResultType.RTE
             stopped = True
             submission.status = SubmissionStatusType.Completed
             submission.save()
             break
         submission.save()
-        time.sleep(1)
+        time.sleep(time_sleep_count)
     
     if stopped:
         return
