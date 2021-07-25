@@ -29,11 +29,11 @@ def SubmitSolution(submission_id:int) -> None:
     #starting
     #print('Đang chấm bài tập {} của {}, ngon ngu: {}'.format(problem.fullname, user.username, language.name))
     submission.submission_judge_date = datetime.now(tz=timezone.utc)
-    time.sleep(5)
 
     #begin compile
     submission.status = SubmissionStatusType.Compiling
     submission.save()
+    time.sleep(5)
 
     #endcompile
     if rnd(5) == 1:
