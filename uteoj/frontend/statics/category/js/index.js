@@ -10,7 +10,7 @@ triggerDivList[0].classList.add("show", "active")
 function showProblem() {
   var value = listActive[1].id;
   console.log(value);
-  window.location = "http://127.0.0.1:8000/admin/problems/?category=" + value;
+  window.location = "/admin/problems/?category=" + value;
 }
 
 function getCategoryInfo(value) {

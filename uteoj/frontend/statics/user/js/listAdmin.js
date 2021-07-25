@@ -95,5 +95,5 @@ function goNewPage(page) {
     }
     
     console.log(query);
-    window.location = " http://127.0.0.1:8000/admin/users/administrators/?" + query;
+    window.location = "/admin/users/administrators/?" + query;
 }
