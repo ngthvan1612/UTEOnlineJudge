@@ -61,6 +61,7 @@
                             <th scope="col">Memory Limit</th>
                             <th scope="col">Points</th>
                             <th scope="col">Tag</th>
+                            <th scope="col">Is Sample</th>
                             <th scope="col" style="width: 70px; text-align: center">Edit</th>
                             <th scope="col" style="width: 70px;">Delete</th>
                             </tr>
@@ -75,6 +76,12 @@
                                     <td>{{x.memory_limit}} (Kb)</td>
                                     <td>{{x.points}}</td>
                                     <td>{{x.tag}}</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="is_sample" {%if problem.is_sample%} checked {%endif%} name="is_sample">
+                                            <label class="custom-control-label" for="is_sample"></label>
+                                          </div>
+                                    </td>
                                     <td style="text-align: center; padding: 0.25rem"><a class="btn btn-warning"href="testcases/edit/{{x.pk}}"><i class="fas fa-edit"></i></a></td>
                                     <td style="text-align: center; padding: 0.25rem"><button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="updateInfo('{{problem.shortname}}', '{{x.pk}}')"><i class="fas fa-trash"></i></button></td>
                                 </tr>

@@ -1,4 +1,4 @@
-# Upgrade database
+# Upgrade database                          (DONE)
 > Có thay đổi toàn bộ cơ sở dữ liệu nên cần drop toàn bộ database và create lại
 ```sql
 drop database <ten>
@@ -13,9 +13,8 @@ python manage.py initadmin # tạo 2 người dùng admin và root
 # mật khẩu của root là 92ad5d248d6da148092419b836ce16c1
 ```
 
-# Fix
-
-## Fix các pagination
+# Fix                                       (DONE)
+## Fix các pagination                       (DONE)
 
 Thiết kế lại pagination như sau
 
@@ -28,11 +27,11 @@ Nếu trang hiện tại là k, và tổng số trang là n
 -- 1 2 ... 103 //đang ở trang 1
 -- 1 2 3 ...103 //đang ở trang 2
 
-## Trang listtestcase
+## Trang listtestcase                       (DONE)
 - Làm mỗi hàng nhỏ lại (height)
 - Hiện tại backend không đưa ra categories nữa (tức là không show ra nhưng filter không đổi) - bỏ div categories trong table là được.
 
-## Trang problem details
+## Trang problem details                    (DONE)
 - Edit lại toàn bộ textarea - test lỗi. Xóa bỏ khoảng trắng thừa ví dụ
 ```html
 <tag> {{variable}} </tag>
@@ -40,13 +39,13 @@ thành
 <tag>{{variable}}</tag>
 ```
 
-## Trang list testcase
+## Trang list testcase                      (DONE)
 - Thêm cột is sample để biết test có dùng làm mẫu hay không (boolean - giống is_admin)
 - 
-## Trang edit testcase
+## Trang edit testcase                      (DONE)
 - Thêm trường is_sample (type=checkbox, name="is_sample") để gửi thông tin về server
 
-## Trang settings
+## Trang settings                           (DONE)
 ### a) Backend
 Gửi xuống client:
 - input_filename: tên file input
@@ -81,19 +80,18 @@ Gửi xuống client:
 -- time_limit
 -- memory_limit
 
-
 # Upgrade
-## Fix lại models
+## Fix lại models                           (DONE)
 ```bash
 pip install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
 ```
-## Cài đặt máy chủ redis (dùng để chạy nền)
+## Cài đặt máy chủ redis (dùng để chạy nền) (DONE)
 ```bash
 sudo apt-get install redis
 ```
-## Chạy nền celery (trên terminal khác)
+## Chạy nền celery (trên terminal khác)     (DONE)
 ```
 celery -A uteoj worker 
 ```

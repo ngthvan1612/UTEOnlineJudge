@@ -11,7 +11,7 @@ function showSelect() {
 
 function createNewCategory(selectedValue) {
     var categoryBoxes = document.getElementsByClassName("listCatgories")[0];
-    
+
     var newBox = document.createElement("div");
     var icon = document.createElement("i");
     var h5 = document.createElement("span");
@@ -57,41 +57,59 @@ function chooseCategory() {
     if (!checkExist && selectedValue != "") categoryBoxes.appendChild(newBox);
 }
 
+function createBtn(id, Max) {
+    var aElement;
+    if (id != "...") {
+        aElement = document.createElement('a');
+        aElement.setAttribute('href', "javascript:;");
+    } else aElement = document.createElement('span');
+    aElement.textContent = id.toString();
+    aElement.classList.add("page-link");
+
+
+    var liElement = document.createElement("li");
+    liElement.classList.add("page-item");
+    if (id == Max) liElement.classList.add("active");
+    if (id != "...") {
+        liElement.onclick = function () {
+            element = this.children[0];
+            goNewPage(parseInt(element.textContent), '');
+        }
+    }
+    else{
+        liElement.classList.add("disabled");
+    }
+    liElement.appendChild(aElement);
+    return liElement;
+}
+
 function updatePage() {
+    var pageArray = [];
     var pagination = document.getElementById("Pagination");
     var pageCurrent = parseInt(document.getElementById("page_current").value);
     var totalPage = parseInt(document.getElementById("page_total").value);
     var base = pageCurrent;
 
     if (base > totalPage) base = totalPage;
-    if (totalPage - pageCurrent <= 1) pageCurrent = totalPage - 1;
-    if (pageCurrent <= 0) pageCurrent = 1;
 
     if (pageCurrent == 1) {
-        document.getElementById("previous").classList.add("disabled");
+        document.getElementById("first").style.display = "none";
+        document.getElementById("previous").style.display = "none";
     }
-    if (base >= totalPage) {
-        document.getElementById("next").classList.add("disabled");
+    if (base == totalPage) {
+        document.getElementById("next").style.display = "none";
+        document.getElementById("end").style.display = "none";
     }
 
-    for (var i = Math.max(pageCurrent - 1, 1); i <= Math.min(pageCurrent + 1, totalPage); i++) {
-        var aElement = document.createElement('a');
-        aElement.classList.add("page-link");
-        aElement.setAttribute('href', "javascript:;");
-        aElement.textContent = i.toString();
+    if (base > 4) pageArray.push(createBtn("...", totalPage));
 
-        var liElement = document.createElement("li");
-        liElement.classList.add("page-item");
-        if (i == base) liElement.classList.add("active");
-        liElement.onclick = function () {
-            element = this.children[0];
-            goNewPage(parseInt(element.textContent),'');
-        }
-        liElement.appendChild(aElement);
+    for (var i = Math.max(pageCurrent - 3, 1); i <= Math.min(pageCurrent + 3, totalPage); i++)
+        pageArray.push(createBtn(i, base));
 
-        if (base != 1) pagination.insertBefore(liElement, pagination.children[i - pageCurrent + 2]);
-        else pagination.insertBefore(liElement, pagination.children[i - pageCurrent + 1]);
-    }
+    if (base + 3 < totalPage) pageArray.push(createBtn("...", totalPage));
+
+    for (var i = 0; i < pageArray.length; i++)
+        pagination.insertBefore(pageArray[i], pagination.children[i + 2]);
 }
 
 function updateFilter() {
@@ -121,29 +139,37 @@ function updateFilter() {
     }
 }
 
-function previous(){
+function previous() {
     var page = parseInt(document.getElementsByClassName("active")[1].children[0].textContent);
-    goNewPage(page-1,'');
+    goNewPage(page - 1, '');
 }
 
-function next(){
+function next() {
     var page = parseInt(document.getElementsByClassName("active")[1].children[0].textContent);
-    goNewPage(page+1,'');
+    goNewPage(page + 1, '');
 }
 
-function difficultFilter(){
+function goFirst() {
+    goNewPage(1, '');
+}
+
+function goEnd() {
+    var totalPage = parseInt(document.getElementById("page_total").value);
+    goNewPage(totalPage, '');
+}
+
+function difficultFilter() {
     var urlSearchParams = new URLSearchParams(window.location.search);
     var params = Object.fromEntries(urlSearchParams.entries())
-    
-    var orderString="";
-    if (params["orderby"]==null || params["orderby"]=="-difficult") {
+
+    var orderString = "";
+    if (params["orderby"] == null || params["orderby"] == "-difficult") {
         orderString = "orderby=difficult"
-    }
-    else orderString="orderby=-difficult"
-    goNewPage(1,orderString);
+    } else orderString = "orderby=-difficult"
+    goNewPage(1, orderString);
 }
 
-function goNewPage(page,orderString) {
+function goNewPage(page, orderString) {
     var searchBox = document.getElementById("search");
     var selectedBox = document.getElementById("selectType");
     var categoryAdds = document.getElementsByClassName("categoryAdd");
@@ -169,17 +195,17 @@ function goNewPage(page,orderString) {
     if (searchBox.value != "") problem_name = "problemnamelike=" + searchBox.value;
 
     /*Order*/
-    var order="";
-    if (params["orderby"]!=null){
-        if (params["orderby"]=="difficult") order = "orderby=difficult"
-        else order="orderby=-difficult"
+    var order = "";
+    if (params["orderby"] != null) {
+        if (params["orderby"] == "difficult") order = "orderby=difficult"
+        else order = "orderby=-difficult"
     }
     var listQuery = [];
     var query = "";
 
     if (page != 1) listQuery.push("page=" + page.toString());
-    if (orderString!="") listQuery.push(orderString);
-    else if (order!="") listQuery.push(order);
+    if (orderString != "") listQuery.push(orderString);
+    else if (order != "") listQuery.push(order);
     if (category != "") listQuery.push(category);
     if (problem_type != "") listQuery.push(problem_type);
     if (problem_name != "") listQuery.push(problem_name);
