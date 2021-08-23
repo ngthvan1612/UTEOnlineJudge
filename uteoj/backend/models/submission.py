@@ -25,11 +25,8 @@ SUBMISSION_RESULT_CHOICES = (
     (SubmissionResultType.AC, 'Được chấp nhận'),
     (SubmissionResultType.WA, 'Kết quả sai'),
     (SubmissionResultType.TLE, 'Chạy quá thời gian'),
-
     (SubmissionResultType.MLE, 'Vượt quá bộ nhớ'),
     (SubmissionResultType.RTE, 'Lỗi thực thi'),
-    (SubmissionResultType.OLE, 'Output Limit Exceed'),
-    (SubmissionResultType.PE, 'Presentation Error'),
 )
 
 SUBMISSION_STATUS_CHOICES = (
@@ -38,6 +35,26 @@ SUBMISSION_STATUS_CHOICES = (
     (SubmissionStatusType.Grading, 'Đang chấm'),
     (SubmissionStatusType.Completed, 'Chấm xong'),
 )
+
+
+def context_processors_subission_result_status(request):
+    return {
+        'SUBMISSION_RESULT_TYPE': {
+            'CE': SubmissionResultType.CE,
+            'AC': SubmissionResultType.AC,
+            'WA': SubmissionResultType.WA,
+            'TLE': SubmissionResultType.TLE,
+            'MLE': SubmissionResultType.MLE,
+            'RTE': SubmissionResultType.RTE,
+        },
+        'SUBMISSION_STATUS_TYPE': {
+            'InQueued': SubmissionStatusType.InQueued,
+            'Compiling': SubmissionStatusType.Compiling,
+            'Grading': SubmissionStatusType.Grading,
+            'Completed': SubmissionStatusType.Completed,
+        }
+    }
+
 
 class SubmissionModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

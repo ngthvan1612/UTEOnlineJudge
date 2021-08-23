@@ -11,9 +11,7 @@ from django.http import HttpResponse
 from django.core import serializers
 
 
-def UserHomeView(request):
-    context = {
-        
-    }
-    return render(request, 'user-template/index.html', context)
+def UserProfile(request):
 
+
+    return render(request, render('user-template/'))

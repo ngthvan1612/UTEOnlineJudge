@@ -582,8 +582,8 @@ def AdminListProblemView(request):
                         problem_models_filter = problem_models_filter.filter(categories__in=[
                             y.id for y in ProblemCategoryModel.objects.filter(name=x).all()
                         ]).distinct()
-            if 'problemnamelike' in request.GET:
-                problemnamelike = request.GET['problemnamelike']
+            if 'name' in request.GET:
+                problemnamelike = request.GET['name']
                 problem_models_filter = problem_models_filter.filter(Q(shortname__contains=problemnamelike) | Q(fullname__contains=problemnamelike))
             if 'orderby' in request.GET:
                 orderby_query = request.GET['orderby']
