@@ -55,7 +55,8 @@ def UserListProblemView(request):
     page_obj = paginator.get_page(page_number)
 
     context = {
-        'problems': page_obj
+        'page_obj': page_obj,
+        'list_categories': [x.name for x in ProblemCategoryModel.objects.all()],
     }
 
     return render(request, 'user-template/problem/listproblem.html', context)
@@ -169,6 +170,7 @@ def UserStatusView(request):
                     'fullname': x.problem.fullname,
                 },
                 'submission_date': x.submission_date,
+                'judge_date': x.submission_judge_date,
                 'language': x.language.name,
                 'status': x.status,
                 'result': x.result,
