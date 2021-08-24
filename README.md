@@ -95,11 +95,90 @@ sudo apt-get install redis
 ```
 ## Chạy nền celery (trên terminal khác)
 ```
-celery -A uteoj worker 
+celery -A uteoj worker -Ofair
 ```
 > Note: Số lượng luồng celery chạy = số lượng bài chấm cùng một lúc = Số cores của máy tính hiện t
-## Thử nghiệm nộp bài
-### Nộp bài: 
-http://.../problem/{{shortname}}/submit
-### Xem list submission (1 giây tự refresh 1 lần):
-http://.../submission
+> Nên chỉ định số luồng chạy bằng cách thêm -c=<số luồng chạy> vào sau lệnh trên để tiện quan sát
+
+## Chỉnh sửa:
+
+### List problem (trong admin):
+
+Chỉnh lại problemlikename thành name
+
+## Thêm trang phía user:
+
+### Danh sách bài tập
+
+url:/problems
+template:user-template/problem/listproblem.html
+
+#### Backend:
+
+Truyền xuống:
+
+- page_obj: danh sách bài tập, mỗi phần tử gồm giá trị sau:
+-- shortname: tên ngắn của bài, (này dùng để href)
+-- fullname: tên đầy đủ của bài
+-- difficult: độ khó
+-- problem.categories.all: dạng bài
+
+- Dùng phân trang như trong admin
+
+- list_categories: danh sách tên dạng bài (như trong admin)
+
+#### Frontend:
+
+Gửi lên (nếu người dùng cần filter, method='GET', làm giống admin):
+- category: dạng bài
+- problem_type: acm hay oi
+- name: tên bài (tìm những bài chứa chuỗi name)
+- orderby: hiện tại chỉ dùng được difficult
+-- orderby=difficult là xếp tăng,
+-- orderby=-difficult là xếp giảm
+
+### Trạng thái
+
+url=/status
+template: user-template/status.html
+
+#### Backend
+
+Gửi xuống client
+- submissions: danh sách trạng thái hiện tại, mỗi trạng thái gồm
+-- id: chỉ số bài nộp
+-- username: tên người dùng,
+-- problem.shortname: tên ngắn của bài
+-- problem.fullname: tên đầy đủ của bài
+-- submission_date: thời điểm gửi lên,
+-- judge_date: thời điểm chấm,
+-- language: tên ngôn ngữ,
+-- status: trạng thái,
+-- result: kết quả,
+-- testid: đang chạy test nào
+
+#### Frontend xử lý gần xuống như này
+
+https://ideone.com/q3aFGp
+
+### Submit bài
+
+url: /problem/{{shortname}}/submit
+template: user-template/problem/submit.html
+
+#### Backend
+
+Gửi xuống client:
+- languages: danh sách ngôn ngữ, mỗi thành phần gồm:
+-- value: giá trị để gửi lên server
+-- display: tên ngôn ngữ
+
+
+#### Frontend
+
+> Phần langauges dùng select, option
+
+Gửi về server (method=post, url=/):
+
+- language: tên value nảy backend gửi xuống và người dùng chọn
+- source: source code

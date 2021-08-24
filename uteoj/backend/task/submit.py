@@ -27,7 +27,7 @@ def SubmitSolution(submission_id:int) -> None:
     language = submission.language
 
     #starting
-    #print('Đang chấm bài tập {} của {}, ngon ngu: {}'.format(problem.fullname, user.username, language.name))
+    print('Đang chấm bài tập {} của {}, ngon ngu: {}'.format(problem.fullname, user.username, language.name))
     submission.submission_judge_date = datetime.now(tz=timezone.utc)
 
     #begin compile
