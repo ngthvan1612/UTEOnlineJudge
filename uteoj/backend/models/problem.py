@@ -84,7 +84,7 @@ class ProblemModel(models.Model):
         problem_statistics = ProblemStatisticsModel.objects.create(problem=problem)
         problem_statistics.save()
 
-        pass
+        return problem
 
 
 class ProblemSettingModel(models.Model):

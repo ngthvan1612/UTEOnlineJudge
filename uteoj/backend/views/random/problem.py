@@ -53,7 +53,11 @@ def CreateRandomProblem(request):
         for i in range(1, count + 1, 1):
             fullname = startwith + ' - ' + str(i)
             shortname = Remove_accents(fullname.upper()).replace(' ', '_')
-            ProblemModel.CreateNewProblem(shortname, fullname, admin)
+            problem = ProblemModel.CreateNewProblem(shortname, fullname, admin)
+            problem.difficult = round(random() * 5, 2)
+            if randint(0, 9) % 3 == 0:
+                problem.problem_type = 1
+            problem.save()
         list_update = ProblemModel.objects.order_by('-id')[:count]
         for p in list_update:
             random_categories = RandomFromList(list_categories, categories_count)

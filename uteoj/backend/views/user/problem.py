@@ -1,4 +1,6 @@
-from django.http.response import HttpResponseRedirect
+from typing import final
+from django.core.paginator import Paginator
+from django.http.response import HttpResponseNotAllowed, HttpResponseRedirect
 from backend.models.language import LanguageModel
 from django.contrib import messages
 from django.shortcuts import render
@@ -16,15 +18,67 @@ from random import random
 from django.http import HttpResponse
 from django.core import serializers
 
+from backend.task.submit import SubmitSolution
+
+
+def UserListProblemView(request):
+
+    final_filter = ProblemModel.objects.all().order_by('-id')
+
+    if 'category' in request.GET:
+        category = str(request.GET['category'])
+        list_categories_filter = category.split(",")
+        if 'All' not in list_categories_filter:
+            for x in list_categories_filter:
+                final_filter = final_filter.filter(categories__in=[
+                    y.id for y in ProblemCategoryModel.objects.filter(name=x).all()
+                ]).distinct()
+    
+    if 'problem_type' in request.GET:
+        problem_type = request.GET['problem_type'].lower()
+        if problem_type == 'acm':
+            final_filter = final_filter.filter(problem_type=0)
+        if problem_type == 'oi':
+            final_filter = final_filter.filter(problem_type=1)
+    
+    if 'name' in request.GET:
+        problemnamelike = request.GET['name']
+        final_filter = final_filter.filter(Q(shortname__contains=problemnamelike) | Q(fullname__contains=problemnamelike))
+
+    if 'orderby' in request.GET:
+        orderby = str(request.GET['orderby'])
+        if orderby == 'difficult' or orderby == '-difficult':
+            final_filter = final_filter.order_by(orderby)
+
+    paginator = Paginator(final_filter, 30)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'list_categories': [x.name for x in ProblemCategoryModel.objects.all()],
+    }
+
+    return render(request, 'user-template/problem/listproblem.html', context)
+
 
 def UserProblemView(request, shortname):
     problems = ProblemModel.objects.filter(shortname=shortname)
+
     if problems.exists() == False:
         return HttpResponse(status=404)
-    return HttpResponse(serializers.serialize('json', problems, indent=4),
-        content_type="text/json-comment-filtered")
+    problem = problems[0]
+    problem_setting = problem.problemsettingmodel
 
-from backend.task.submit import SubmitSolution
+    context = {
+        'fullname': problem.fullname,
+        'statement': problem_setting.statement,
+        'input_statement': problem_setting.input_statement,
+        'output_statement': problem_setting.output_statement,
+        'constraints_statement': problem_setting.constraints_statement
+    }
+
+    return render(request, 'user-template/problem/problemdetail.html', context)
 
 
 def UserListSubmission(request):
@@ -67,13 +121,17 @@ def UserSubmitSolution(request, shortname):
     if request.method == 'POST':
         if 'language' not in request.POST:
             return HttpResponse('Thiếu ngôn ngữ')
-        if 'source_code' not in request.POST:
+        if 'source' not in request.POST:
             return HttpResponse('Thiếu source code')
         language_filter = LanguageModel.objects.filter(name=request.POST['language'])
         if not language_filter.exists():
             return HttpResponse('Không có ngôn ngữ nào tên \'{}\''.format(request.POST['language']))
         language=LanguageModel.objects.get(name=request.POST['language'])
-        source_code = request.POST['source_code']
+        source_code = request.POST['source']
+
+        if len(source_code) == 0:
+            messages.add_message(request, messages.ERROR, 'Mã nguồn không được để trống')
+            return HttpResponseRedirect(request.path_info)
 
         submission = SubmissionModel.objects.create(
             user=request.user,
@@ -88,21 +146,43 @@ def UserSubmitSolution(request, shortname):
         return HttpResponse('<h2>Submit ok: id = {}</br>Bài tập: <font style="color:red;">{}</font> ({})</br>Người dùng: {}</br>Ngôn ngữ: {}</h2>'
             .format(submission.id, problem.shortname, problem.fullname, request.user.username, language.name))
     elif request.method == 'GET':
-        template = """
-        <form action="" method="post">
-            <label>Ngôn ngữ: </label>
-            <input name="language" type="text"/>
-            </br>
-            </br>
-            <label>Source code: </label>
-            <textarea name="source_code" cols="100" rows="20"></textarea>
-            </br>
-            <input value="Nộp bài" type="submit">
-        </form>
-        """
-        return HttpResponse(template)
+        
+        context = {
+            'languages': [
+                {'value': x.name, 'display': x.name}
+                for x in LanguageModel.objects.all()
+            ]
+        }
+        return render(request, 'user-template/problem/submit.html', context)
     else:
         return HttpResponse(status=405)
 
 
+def UserStatusView(request):
+    if request.method == 'GET':
+        submissions = []
+        for x in SubmissionModel.objects.order_by('-id')[:20].all():
+            sub = {
+                'id': x.id,
+                'username': x.user.username,
+                'problem': {
+                    'shortname': x.problem.shortname,
+                    'fullname': x.problem.fullname,
+                },
+                'submission_date': x.submission_date,
+                'judge_date': x.submission_judge_date,
+                'language': x.language.name,
+                'status': x.status,
+                'result': x.result,
+                'testid': x.lastest_test
+            }
+            submissions.append(sub)
+        
+        context = {
+            'submissions': submissions,
+        }
+
+        return render(request, 'user-template/status.html', context)
+    else:
+        return HttpResponse(status=405)
 
