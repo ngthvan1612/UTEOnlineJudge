@@ -40,21 +40,16 @@
 								{% for x in page_obj %}
 
 								<tr>
-									<td id="{{x.fullname}}" style="text-align: center"><a href="/admin/problems/edit/{{x.shortname}}/">{{x.id}}</a></td>
-									<td>
+									<td id="{{x.fullname}}" style="text-align: center; padding: 8px"><a href="/admin/problems/edit/{{x.shortname}}/">{{x.id}}</a></td>
+									<td style="padding: 8px">
 										<div style="height: 100%;">
 											<a href="/admin/problems/edit/{{x.shortname}}/" style="float: left; font-size: 18px;">{{x.fullname}}</a>
 										</div>
-										<div style="width: 60%; float: right">
-										{%for y in x.categories%}
-											<a href="/admin/problems/?category={{y}}" type="button" class= "btn btn-outline-secondary" style="float: right; font-size: 10px; margin-left: 5px; margin-top: 5px;	 padding: 3px 6px">{{y}}</a>
-										{% endfor %}
-										</div>
 									</td>
-									<td style="text-align: center">{{x.difficult}}</td>
-									<td style="text-align: center">0</td>
-									<td style="text-align: center;color: red">{{x.problem_type}}</td>
-									<td style="text-align: center"><a href=""><i class="fa fa-wrench"></i></a></td>
+									<td style="text-align: center; padding: 8px">{{x.difficult}}</td>
+									<td style="text-align: center; padding: 8px">0</td>
+									<td style="text-align: center;color: red; padding: 8px">{{x.problem_type}}</td>
+									<td style="text-align: center; padding: 8px"><a href=""><i class="fa fa-wrench"></i></a></td>
 								</tr>
 
 								{% endfor%}
@@ -65,13 +60,27 @@
 						<input type="hidden" id="page_total" value="{{page_obj.paginator.num_pages}}">
 						<nav aria-label="Page navigation example" style="margin-top: 2rem;">
 							<ul class="pagination justify-content-center" id="Pagination">
+								<li class="page-item" id="first" onclick="goFirst()">
+									<a class="page-link" href = "javascript:;" tabindex="-1" style="height: 38px;">
+										<i class="fas fa-angle-double-left" aria-hidden="true"></i>
+									</a>
+								</li>
 								<li class="page-item" id="previous" onclick="previous()">
-									<a class="page-link" href = "javascript:;" tabindex="-1">Previous</a>
+									<a class="page-link" href="javascript:;" style="height: 38px;">
+										<i class="fas fa-angle-left" aria-hidden="true"></i>
+									</a>
 								</li>
-								<li class="page-item" id="next" onclick="next()">
-									<a class="page-link" href="javascript:;">Next</a>
+								<li class="page-item" id="next" onclick="nextr()">
+									<a class="page-link" href = "javascript:;" tabindex="-1" style="height: 38px;">
+										<i class="fas fa-angle-right" aria-hidden="true"></i>
+									</a>
 								</li>
-								</ul>
+								<li class="page-item" id="end" onclick="goEnd()">
+									<a class="page-link" href="javascript:;" style="height: 38px;">
+										<i class="fas fa-angle-double-right" aria-hidden="true"></i>
+									</a>
+								</li>
+							</ul>
 						</nav>
 
 					</div>
