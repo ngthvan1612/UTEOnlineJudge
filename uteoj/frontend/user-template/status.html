@@ -1,0 +1,64 @@
+
+<div class="container">
+    <div style="margin-left:auto;margin-right:auto;margin-top:50px;width=750px;" id="table-status">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Problem</th>
+                    <th scope="col">When</th>
+                    <th scope="col">Judge</th>
+                    <th scope="col">Language</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            {%for submission in submissions%}
+                <tr>
+                    <td>{{submission.id}}</td>
+                    <td>{{submission.username}}</td>
+                    <td><a style="text-decoration:none;" href="/problem/{{submission.problem.shortname}}">{{submission.problem.fullname}}</a></td>
+                    <td>{{submission.submission_date}}</td>
+                    <td>
+                        {%if submission.judge_date%}
+                            {{submission.judge_date}}
+                        {%else%}
+                            Chưa chấm
+                        {%endif%}
+                    </td>
+                    <td>{{submission.language}}</td>
+                    <td>
+                        {%if submission.status == SUBMISSION_STATUS_TYPE.InQueued%}
+                            Đang đợi chấm bài
+                        {%elif submission.status == SUBMISSION_STATUS_TYPE.Compiling%}
+                            Đang biên dịch
+                        {%elif submission.status == SUBMISSION_STATUS_TYPE.Grading%}
+                            Đang chấm bài (Test #{{submission.testid}})
+                        {%else%}
+                            {%if submission.result == SUBMISSION_RESULT_TYPE.CE%}
+                                <a style="color:red;">Dịch lỗi</a>
+                            {%elif submission.result == SUBMISSION_RESULT_TYPE.AC%}
+                                <a style="color:green;">Được chấp nhận</a>
+                            {%elif submission.result == SUBMISSION_RESULT_TYPE.TLE%}
+                                <a style="color:#98A927;">Chạy quá thời gian</a>
+                            {%elif submission.result == SUBMISSION_RESULT_TYPE.MLE%}
+                                <a style="color:#98A927;">Vượt quá bộ nhớ cho phép</a>
+                            {%elif submission.result == SUBMISSION_RESULT_TYPE.WA%}
+                                <a style="color:red;">Kết quả sai</a>
+                            {%else%}
+                                <a style="color:red;">Chạy sinh lỗi</a>
+                            {%endif%}
+                        {%endif%}
+                    </td>
+                </tr>
+            {%endfor%}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    setInterval(function() {
+        $('#table-status').load(location.href + ' #table-status');
+    }, 3000);
+</script>
