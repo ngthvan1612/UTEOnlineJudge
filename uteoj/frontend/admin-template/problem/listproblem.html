@@ -1,22 +1,325 @@
 {%extends 'admin-template/_layout/base.html' %}
 {%load static %}
+
+<link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'assets/plugins/custom/prismjs/prismjs.bundle.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'assets/css/style.bundle.css' %}" rel="stylesheet" type="text/css" />
+
 {%block website_content %}
-	<!-- Content Header (Page header) -->
-	<div class="content-header">
-		<div class="container-fluid">
-			<div class="row mb-2">
-				<div class="col-sm-6">
-					<ol class="breadcrumb float-sm-left">
-						<li class="breadcrumb-item"><a href="/admin/">Home</a></li>
-						<li class="breadcrumb-item active"><a href="/admin/problems/">Problems</a></li>
-					</ol>
-				</div>
+	<!--begin::Subheader-->
+	<div class="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
+		<div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+			<!--begin::Info-->
+			<div class="d-flex align-items-center flex-wrap mr-2">
+				<!--begin::Page Title-->
+				<h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Dashboard</h5>
+				<!--end::Page Title-->
+				<!--begin::Actions-->
+				<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
+				<!--end::Actions-->
+				<!--begin::Page Title-->
+				<h6 class="text-dark font-weight-bold mt-2 mb-2 mr-5">List Problems</h6>
+				<!--end::Page Title-->
+				<!--begin::Actions-->
+				<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
+				<!--end::Actions-->
 			</div>
-			{%include 'admin-template/_layout/error_handle.html' %} 
-			{%block error_handle %}{%endblock%}
+			<!--end::Info-->
+			<!--begin::Toolbar-->
+			<div class="d-flex align-items-center">
+				<!--begin::Actions-->
+				<a href="#" class="btn btn-clean btn-sm font-weight-bold font-size-base mr-1">Today</a>
+				<a href="#" class="btn btn-clean btn-sm font-weight-bold font-size-base mr-1">Month</a>
+				<a href="#" class="btn btn-clean btn-sm font-weight-bold font-size-base mr-1">Year</a>
+				<!--end::Actions-->
+				<!--begin::Daterange-->
+				<a href="#" class="btn btn-sm btn-light font-weight-bold mr-2" id="kt_dashboard_daterangepicker"
+					data-toggle="tooltip" title="Select dashboard daterange" data-placement="left">
+					<span class="text-muted font-size-base font-weight-bold mr-2"
+						id="kt_dashboard_daterangepicker_title">Today</span>
+					<span class="text-primary font-size-base font-weight-bolder" id="kt_dashboard_daterangepicker_date">Aug
+						16</span>
+				</a>
+				<!--end::Daterange-->
+				<!--begin::Dropdowns-->
+				<div class="dropdown dropdown-inline" data-toggle="tooltip" title="Quick actions" data-placement="left">
+					<a href="#" class="btn btn-sm btn-clean btn-icon" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false">
+						<span class="svg-icon svg-icon-success svg-icon-lg">
+							<!--begin::Svg Icon | path:assets/media/svg/icons/Files/File-plus.svg-->
+							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px"
+								height="24px" viewBox="0 0 24 24" version="1.1">
+								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+									<polygon points="0 0 24 0 24 24 0 24" />
+									<path
+										d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z"
+										fill="#000000" fill-rule="nonzero" opacity="0.3" />
+									<path
+										d="M11,14 L9,14 C8.44771525,14 8,13.5522847 8,13 C8,12.4477153 8.44771525,12 9,12 L11,12 L11,10 C11,9.44771525 11.4477153,9 12,9 C12.5522847,9 13,9.44771525 13,10 L13,12 L15,12 C15.5522847,12 16,12.4477153 16,13 C16,13.5522847 15.5522847,14 15,14 L13,14 L13,16 C13,16.5522847 12.5522847,17 12,17 C11.4477153,17 11,16.5522847 11,16 L11,14 Z"
+										fill="#000000" />
+								</g>
+							</svg>
+							<!--end::Svg Icon-->
+						</span>
+					</a>
+					<div class="dropdown-menu p-0 m-0 dropdown-menu-md dropdown-menu-right py-3">
+						<!--begin::Navigation-->
+						<ul class="navi navi-hover py-5">
+							<li class="navi-item">
+								<a href="#" class="navi-link">
+									<span class="navi-icon">
+										<i class="flaticon2-drop"></i>
+									</span>
+									<span class="navi-text">New Group</span>
+								</a>
+							</li>
+							<li class="navi-item">
+								<a href="#" class="navi-link">
+									<span class="navi-icon">
+										<i class="flaticon2-list-3"></i>
+									</span>
+									<span class="navi-text">Contacts</span>
+								</a>
+							</li>
+							<li class="navi-item">
+								<a href="#" class="navi-link">
+									<span class="navi-icon">
+										<i class="flaticon2-rocket-1"></i>
+									</span>
+									<span class="navi-text">Groups</span>
+									<span class="navi-link-badge">
+										<span class="label label-light-primary label-inline font-weight-bold">new</span>
+									</span>
+								</a>
+							</li>
+							<li class="navi-item">
+								<a href="#" class="navi-link">
+									<span class="navi-icon">
+										<i class="flaticon2-bell-2"></i>
+									</span>
+									<span class="navi-text">Calls</span>
+								</a>
+							</li>
+							<li class="navi-item">
+								<a href="#" class="navi-link">
+									<span class="navi-icon">
+										<i class="flaticon2-gear"></i>
+									</span>
+									<span class="navi-text">Settings</span>
+								</a>
+							</li>
+							<li class="navi-separator my-3"></li>
+							<li class="navi-item">
+								<a href="#" class="navi-link">
+									<span class="navi-icon">
+										<i class="flaticon2-magnifier-tool"></i>
+									</span>
+									<span class="navi-text">Help</span>
+								</a>
+							</li>
+							<li class="navi-item">
+								<a href="#" class="navi-link">
+									<span class="navi-icon">
+										<i class="flaticon2-bell-2"></i>
+									</span>
+									<span class="navi-text">Privacy</span>
+									<span class="navi-link-badge">
+										<span class="label label-light-danger label-rounded font-weight-bold">5</span>
+									</span>
+								</a>
+							</li>
+						</ul>
+						<!--end::Navigation-->
+					</div>
+				</div>
+				<!--end::Dropdowns-->
+			</div>
+			<!--end::Toolbar-->
 		</div>
 	</div>
-	<!-- /.content-header -->
+	<!--end::Subheader-->
+
+
+	<!--New content -->
+	<!--begin::Card-->
+	<div class="card card-custom gutter-b">
+		<div class="card-header flex-wrap border-0 pt-6 pb-0">
+			<div class="card-title">
+				<h3 class="card-label">Record Selection
+				<span class="d-block text-muted pt-2 font-size-sm">row selection and group actions</span></h3>
+			</div>
+			<div class="card-toolbar">
+				<!--begin::Dropdown-->
+				<div class="dropdown dropdown-inline mr-2">
+					<button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<span class="svg-icon svg-icon-md">
+						<!--begin::Svg Icon | path:assets/media/svg/icons/Design/PenAndRuller.svg-->
+						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+							<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+								<rect x="0" y="0" width="24" height="24" />
+								<path d="M3,16 L5,16 C5.55228475,16 6,15.5522847 6,15 C6,14.4477153 5.55228475,14 5,14 L3,14 L3,12 L5,12 C5.55228475,12 6,11.5522847 6,11 C6,10.4477153 5.55228475,10 5,10 L3,10 L3,8 L5,8 C5.55228475,8 6,7.55228475 6,7 C6,6.44771525 5.55228475,6 5,6 L3,6 L3,4 C3,3.44771525 3.44771525,3 4,3 L10,3 C10.5522847,3 11,3.44771525 11,4 L11,19 C11,19.5522847 10.5522847,20 10,20 L4,20 C3.44771525,20 3,19.5522847 3,19 L3,16 Z" fill="#000000" opacity="0.3" />
+								<path d="M16,3 L19,3 C20.1045695,3 21,3.8954305 21,5 L21,15.2485298 C21,15.7329761 20.8241635,16.200956 20.5051534,16.565539 L17.8762883,19.5699562 C17.6944473,19.7777745 17.378566,19.7988332 17.1707477,19.6169922 C17.1540423,19.602375 17.1383289,19.5866616 17.1237117,19.5699562 L14.4948466,16.565539 C14.1758365,16.200956 14,15.7329761 14,15.2485298 L14,5 C14,3.8954305 14.8954305,3 16,3 Z" fill="#000000" />
+							</g>
+						</svg>
+						<!--end::Svg Icon-->
+					</span>Export</button>
+					<!--begin::Dropdown Menu-->
+					<div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+						<!--begin::Navigation-->
+						<ul class="navi flex-column navi-hover py-2">
+							<li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">Choose an option:</li>
+							<li class="navi-item">
+								<a href="#" class="navi-link">
+									<span class="navi-icon">
+										<i class="la la-print"></i>
+									</span>
+									<span class="navi-text">Print</span>
+								</a>
+							</li>
+							<li class="navi-item">
+								<a href="#" class="navi-link">
+									<span class="navi-icon">
+										<i class="la la-copy"></i>
+									</span>
+									<span class="navi-text">Copy</span>
+								</a>
+							</li>
+							<li class="navi-item">
+								<a href="#" class="navi-link">
+									<span class="navi-icon">
+										<i class="la la-file-excel-o"></i>
+									</span>
+									<span class="navi-text">Excel</span>
+								</a>
+							</li>
+							<li class="navi-item">
+								<a href="#" class="navi-link">
+									<span class="navi-icon">
+										<i class="la la-file-text-o"></i>
+									</span>
+									<span class="navi-text">CSV</span>
+								</a>
+							</li>
+							<li class="navi-item">
+								<a href="#" class="navi-link">
+									<span class="navi-icon">
+										<i class="la la-file-pdf-o"></i>
+									</span>
+									<span class="navi-text">PDF</span>
+								</a>
+							</li>
+						</ul>
+						<!--end::Navigation-->
+					</div>
+					<!--end::Dropdown Menu-->
+				</div>
+				<!--end::Dropdown-->
+				<!--begin::Button-->
+				<a href="#" class="btn btn-primary font-weight-bolder">
+				<span class="svg-icon svg-icon-md">
+					<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Flatten.svg-->
+					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+						<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+							<rect x="0" y="0" width="24" height="24" />
+							<circle fill="#000000" cx="9" cy="15" r="6" />
+							<path d="M8.8012943,7.00241953 C9.83837775,5.20768121 11.7781543,4 14,4 C17.3137085,4 20,6.6862915 20,10 C20,12.2218457 18.7923188,14.1616223 16.9975805,15.1987057 C16.9991904,15.1326658 17,15.0664274 17,15 C17,10.581722 13.418278,7 9,7 C8.93357256,7 8.86733422,7.00080962 8.8012943,7.00241953 Z" fill="#000000" opacity="0.3" />
+						</g>
+					</svg>
+					<!--end::Svg Icon-->
+				</span>New Record</a>
+				<!--end::Button-->
+			</div>
+		</div>
+		<div class="card-body">
+			<!--begin: Search Form-->
+			<!--begin::Search Form-->
+			<div class="mb-7">
+				<div class="row align-items-center">
+					<div class="col-lg-9 col-xl-8">
+						<div class="row align-items-center">
+							<div class="col-md-4 my-2 my-md-0">
+								<div class="input-icon">
+									<input type="text" class="form-control" placeholder="Search..." id="kt_datatable_search_query" />
+									<span>
+										<i class="flaticon2-search-1 text-muted"></i>
+									</span>
+								</div>
+							</div>
+							<div class="col-md-4 my-2 my-md-0">
+								<div class="d-flex align-items-center">
+									<label class="mr-3 mb-0 d-none d-md-block">Difficult:</label>
+									<select class="form-control" id="kt_datatable_search_status">
+										<option value="">All</option>
+										<option value="1">0-1</option>
+										<option value="2">1-2</option>
+										<option value="3">2-3</option>
+										<option value="4">3-4</option>
+										<option value="5">4-5</option>
+										<option value="6">5+</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-4 my-2 my-md-0">
+								<div class="d-flex align-items-center">
+									<label class="mr-3 mb-0 d-none d-md-block">Type:</label>
+									<select class="form-control" id="kt_datatable_search_type">
+										<option value="">All</option>
+										<option value="1">ACM</option>
+										<option value="2">OI</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
+						<a href="#" class="btn btn-light-primary px-6 font-weight-bold">Search</a>
+					</div>
+				</div>
+			</div>
+			<!--end::Search Form-->
+			<!--end: Search Form-->
+			<!--begin: Selected Rows Group Action Form-->
+			<div class="mt-10 mb-5 collapse" id="kt_datatable_group_action_form">
+				<div class="d-flex align-items-center">
+					<div class="font-weight-bold text-danger mr-3">Selected
+					<span id="kt_datatable_selected_records">0</span>records:</div>
+					<div class="dropdown mr-2">
+						<button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">Update status</button>
+						<div class="dropdown-menu dropdown-menu-sm">
+							<ul class="nav nav-hover flex-column">
+								<li class="nav-item">
+									<a href="#" class="nav-link">
+										<span class="nav-text">Pending</span>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link">
+										<span class="nav-text">Delivered</span>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link">
+										<span class="nav-text">Canceled</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<button class="btn btn-sm btn-danger mr-2" type="button" id="kt_datatable_delete_all">Delete All</button>
+					<button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#kt_datatable_fetch_modal">Fetch Selected Records</button>
+				</div>
+			</div>
+			<!--end: Selected Rows Group Action Form-->
+			<!--begin: Datatable-->
+			<div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>
+			<!--end: Datatable-->
+		</div>
+	</div>
+	<!--end::Card-->
+	<!--end::New content -->
+
+
+
 	<!-- Main content -->
 	<div class="content">
 		<div class="container-fluid">
@@ -138,6 +441,9 @@
 			</div>
 		</div>
 	</div>
+	<!--begin::Page Scripts(used by this page)-->
+	<script src="{% static 'assets/js/pages/crud/ktdatatable/advanced/record-selection.js' %}"></script>
+	<!--end::Page Scripts-->
 
 	<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
 	<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
