@@ -1,16 +1,14 @@
 from datetime import datetime
+from backend.models.problem import ProblemStatisticsModel
 from celery.decorators import task
 from django.contrib.auth.models import User
-
-
 from backend.models.submission import SubmissionModel, SubmissionResultType, SubmissionStatusType
-
 from random import randint, random
-
 from django.utils import timezone
 import time
-
 import uuid
+from judger.judger import Compile
+from django.db import transaction
 
 def rnd(upper_bound:int) -> int:
     tmp = str(uuid.uuid4().hex)
@@ -26,11 +24,19 @@ def SubmitSolution(submission_id:int) -> None:
     user = submission.user
     language = submission.language
 
+    #Update
+    problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=problem)
+    with transaction.atomic():
+        for problemStatistics in problemStatisticsEntries:
+            problemStatistics.submitCount = problemStatistics.submitCount + 1
+            problemStatistics.save()
+
     #starting
     print('Đang chấm bài tập {} của {}, ngon ngu: {}'.format(problem.fullname, user.username, language.name))
-    submission.submission_judge_date = datetime.now(tz=timezone.utc)
+    submission.submission_judge_date = timezone.now()
 
     #begin compile
+    # Compile(submission=submission)
     submission.status = SubmissionStatusType.Compiling
     submission.save()
     time.sleep(5)
@@ -71,7 +77,14 @@ def SubmitSolution(submission_id:int) -> None:
     if stopped:
         return
 
-    #collect result
+    # Làm đúng
+
+    problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=problem)
+    with transaction.atomic():
+        for problemStatistics in problemStatisticsEntries:
+            problemStatistics.solvedCount = problemStatistics.solvedCount + 1
+            problemStatistics.save()
+
     submission.status = SubmissionStatusType.Completed
     submission.result = SubmissionResultType.AC
     submission.save()

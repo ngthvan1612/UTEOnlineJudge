@@ -3,6 +3,7 @@ import zipfile
 import os.path
 from os import mkdir
 import shutil
+from django.core import serializers
 
 from django.views.decorators.cache import never_cache
 from django.conf import settings
@@ -584,7 +585,7 @@ def AdminListProblemView(request):
                         ]).distinct()
             if 'name' in request.GET:
                 problemnamelike = request.GET['name']
-                problem_models_filter = problem_models_filter.filter(Q(shortname__contains=problemnamelike) | Q(fullname__contains=problemnamelike))
+                problem_models_filter = problem_models_filter.filter(Q(shortname__icontains=problemnamelike) | Q(fullname__icontains=problemnamelike))
             if 'orderby' in request.GET:
                 orderby_query = request.GET['orderby']
                 field = orderby_query
@@ -592,6 +593,16 @@ def AdminListProblemView(request):
                     field = field[1:]
                 if field == 'difficult':
                     problem_models_filter = problem_models_filter.order_by(orderby_query)
+            if 'difficult' in request.GET:
+                tmp = request.GET['difficult'].split(',')
+                if len(tmp) == 2:
+                    a, b = tmp
+                    try:
+                        a = round(float(a), 2) if len(a) else 0
+                        b = round(float(b), 2) if len(b) else 1000
+                        problem_models_filter = problem_models_filter.filter(difficult__gte=a, difficult__lte=b)
+                    except:
+                        pass
         problem_models_filter = problem_models_filter.all()
 
         problems = problem_models_filter
@@ -608,7 +619,7 @@ def AdminListProblemView(request):
         
         for it in range(0, len(list_problems), 1):
             list_problems[it]['id'] = it + 1
-        paginator = Paginator(list_problems, 50)
+        paginator = Paginator(problem_models_filter, 50)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         

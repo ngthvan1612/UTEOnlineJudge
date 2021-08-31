@@ -10,3 +10,5 @@ uteoj/ADMIN_DATA_MEDIA
 uteoj/uteoj/dbutils.py
 .vscode/settings.json
 celerybeat-schedule
+*.pyc
+uteoj/uteoj/__pycache__/__init__.cpython-39.pyc

@@ -123,6 +123,7 @@ class ProblemGraderModel(models.Model):
 class ProblemStatisticsModel(models.Model):
     problem = models.OneToOneField(ProblemModel, on_delete=models.CASCADE)
     solvedCount = models.IntegerField(default=0, blank=False)
+    submitCount = models.IntegerField(default=0, blank=True)
 
     def __str__(self):
         return self.problem.shortname + ' ' + str(self.solvedCount)
