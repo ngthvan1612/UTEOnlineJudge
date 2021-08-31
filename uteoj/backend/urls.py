@@ -66,11 +66,10 @@ from backend.views.admin.language import AdminDeleteLanguage
 from django.views.static import serve
 
 from rest_framework import routers
-from backend.serializer.problem import ProblemModelView, ProblemStatisticsModelView
+from backend.serializer.problem import ProblemModelView
 
 router = routers.DefaultRouter()
 router.register('problem', ProblemModelView, 'problem')
-router.register('problemStatistics', ProblemStatisticsModelView, 'problemStatistics')
 
 url_patterns_admin_sub = [
     path('', AdminHomeView),
