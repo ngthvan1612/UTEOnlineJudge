@@ -65,6 +65,13 @@ from backend.views.admin.language import AdminDeleteLanguage
 
 from django.views.static import serve
 
+from rest_framework import routers
+from backend.serializer.problem import ProblemModelView, ProblemStatisticsModelView
+
+router = routers.DefaultRouter()
+router.register('problem', ProblemModelView, 'problem')
+router.register('problemStatistics', ProblemStatisticsModelView, 'problemStatistics')
+
 url_patterns_admin_sub = [
     path('', AdminHomeView),
     path('problems/', AdminListProblemView),
@@ -130,6 +137,10 @@ url_patterns_user = [
     path('submission', UserListSubmission),
 ]
 
+url_patterns_api = [
+    path('api/', include(router.urls)),
+]
+
 from backend.views.random.user import CreateRandomUser
 from backend.views.random.problem import CreateRandomProblem
 from backend.views.random.category import CreateRandomCate
@@ -152,6 +163,6 @@ urlpatterns = [
     path('who/', WhoView),
     #url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     #url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
-] + url_pattern_random + url_patterns_admin + url_patterns_auth + url_patterns_user + merge_static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + url_patterns_api + url_pattern_random + url_patterns_admin + url_patterns_auth + url_patterns_user + merge_static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
