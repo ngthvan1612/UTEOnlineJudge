@@ -1,3 +1,4 @@
+from backend.models.problem import ProblemCategoryModel
 from django.contrib.auth.models import User
 from backend.models.problem import ProblemModel, ProblemStatisticsModel
 from rest_framework import serializers
@@ -37,7 +38,7 @@ class ProblemModelView(viewsets.ModelViewSet):
     def get_queryset(self):
         return ProblemModel.objects.all()
 
-# PROBLEM MODEL ---------------------------------------------------
+# PROBLEM STATISTICS ---------------------------------------------------
 class ProblemStatisticsModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProblemStatisticsModel
@@ -55,3 +56,10 @@ class ProblemStatisticsModelView(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return ProblemStatisticsModel.objects.all()
+
+# PROBLEM STATISTICS ---------------------------------------------------
+class ProblemCategoryModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProblemCategoryModel
+        fields = ('id', 'name', 'description')
+
