@@ -16,6 +16,7 @@ from backend.models.submission import SubmissionTestcaseResultModel
 from backend.models.settings import OJSettingModel
 
 from backend.models.usersetting import UserSetting
+from backend.models.usersetting import UserStatisticsModel
 
 #from backend.models.usersetting import ??
 
@@ -30,4 +31,4 @@ admin.site.register(UserSetting)
 admin.site.register(ProblemSettingModel)
 admin.site.register(ProblemGraderModel)
 admin.site.register(ProblemStatisticsModel)
-
+admin.site.register(UserStatisticsModel)

@@ -57,4 +57,26 @@ class UserSetting(models.Model):
         self.save()
         file_manager.save(path, content)
 
+class UserStatisticsModel(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
+    totalSubmission = models.IntegerField(default=0)
+    solvedCount = models.IntegerField(default=0)
+    waCount = models.IntegerField(default=0)
+    tleCount = models.IntegerField(default=0)
+    rteCount = models.IntegerField(default=0)
+    mleCount = models.IntegerField(default=0)
+
+    @staticmethod
+    def createStatIfNotExists(user:User):
+        setting_filter = UserStatisticsModel.objects.filter(user=user)
+        if not setting_filter.exists():
+            new_setting = UserStatisticsModel.objects.create(user=user)
+            new_setting.save()
+
+    @staticmethod
+    def getStat(user:User):
+        setting_filter = UserStatisticsModel.objects.filter(user=user)
+        if not setting_filter.exists():
+            return UserStatisticsModel.createStatIfNotExists(user)
+        return setting_filter[0]
 

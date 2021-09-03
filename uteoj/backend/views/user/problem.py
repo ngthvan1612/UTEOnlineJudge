@@ -43,12 +43,16 @@ def UserListProblemView(request):
     
     if 'name' in request.GET:
         problemnamelike = request.GET['name']
-        final_filter = final_filter.filter(Q(shortname__contains=problemnamelike) | Q(fullname__contains=problemnamelike))
+        final_filter = final_filter.filter(Q(shortname__icontains=problemnamelike) | Q(fullname__icontains=problemnamelike))
 
     if 'orderby' in request.GET:
         orderby = str(request.GET['orderby'])
         if orderby == 'difficult' or orderby == '-difficult':
             final_filter = final_filter.order_by(orderby)
+        if orderby == 'solvedCount' or orderby == '-solvedCount':
+            neg = '-' if orderby[0] == '-' else ''
+            orderby = orderby if orderby[0] != '-' else orderby[1:]
+            final_filter = final_filter.order_by(neg + 'problemstatisticsmodel__' + orderby)
 
     paginator = Paginator(final_filter, 30)
     page_number = request.GET.get('page')
@@ -109,6 +113,8 @@ def UserListSubmission(request):
         list_submission += '<li style="color:{};">{}</li>\n'.format(color,str(x))
     return HttpResponse(template + list_submission + end_tem)
 
+from django.utils import timezone
+
 @csrf_exempt
 def UserSubmitSolution(request, shortname):
     problem = get_object_or_404(ProblemModel, shortname=shortname)
@@ -136,20 +142,21 @@ def UserSubmitSolution(request, shortname):
         submission = SubmissionModel.objects.create(
             user=request.user,
             problem=problem,
-            submission_date=datetime.now(),
+            submission_date=timezone.localtime(timezone.now()),
             source_code = source_code,
             language=language)
         submission.status = SubmissionStatusType.InQueued
         submission.save()
         
         SubmitSolution.delay(submission.id)
+        #return redirect('/status')
         return HttpResponse('<h2>Submit ok: id = {}</br>Bài tập: <font style="color:red;">{}</font> ({})</br>Người dùng: {}</br>Ngôn ngữ: {}</h2>'
             .format(submission.id, problem.shortname, problem.fullname, request.user.username, language.name))
     elif request.method == 'GET':
         
         context = {
             'languages': [
-                {'value': x.name, 'display': x.name}
+                {'value': x.name, 'display': x.name }
                 for x in LanguageModel.objects.all()
             ]
         }
@@ -160,26 +167,15 @@ def UserSubmitSolution(request, shortname):
 
 def UserStatusView(request):
     if request.method == 'GET':
-        submissions = []
-        for x in SubmissionModel.objects.order_by('-id')[:20].all():
-            sub = {
-                'id': x.id,
-                'username': x.user.username,
-                'problem': {
-                    'shortname': x.problem.shortname,
-                    'fullname': x.problem.fullname,
-                },
-                'submission_date': x.submission_date,
-                'judge_date': x.submission_judge_date,
-                'language': x.language.name,
-                'status': x.status,
-                'result': x.result,
-                'testid': x.lastest_test
-            }
-            submissions.append(sub)
-        
+
+        final_filter = SubmissionModel.objects.order_by('-id').all()
+
+        paginator = Paginator(final_filter, 50)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
         context = {
-            'submissions': submissions,
+            'page_obj': page_obj,
         }
 
         return render(request, 'user-template/status.html', context)

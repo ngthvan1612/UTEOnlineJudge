@@ -28,8 +28,7 @@ result_backend = 'redis://localhost:6379'
 accept_content = ['application/json']
 task_serializer = 'json'
 result_serializer = 'json'
-timezone = 'UTC'
-
+timezone = 'Asia/Ho_Chi_Minh'
 
 # Media backend ----------------------------------------------------------------------
 
@@ -76,10 +75,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
+CORS_ALLOW_ALL_ORIGINS=True 
+
 CORS_ORIGIN_WHITELIST = [
-     'http://localhost:3000'
+     'http://localhost:8000'
 ]
 
 ROOT_URLCONF = 'uteoj.urls'
@@ -157,7 +159,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Ho_Chi_Minh'
 
 USE_I18N = True
 
