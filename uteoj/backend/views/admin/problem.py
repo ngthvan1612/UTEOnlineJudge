@@ -588,11 +588,12 @@ def AdminListProblemView(request):
                 problem_models_filter = problem_models_filter.filter(Q(shortname__icontains=problemnamelike) | Q(fullname__icontains=problemnamelike))
             if 'orderby' in request.GET:
                 orderby_query = request.GET['orderby']
-                field = orderby_query
-                if field[0] == '-':
-                    field = field[1:]
-                if field == 'difficult':
+                if orderby_query == 'difficult' or orderby_query == '-difficult':
                     problem_models_filter = problem_models_filter.order_by(orderby_query)
+                elif orderby_query == 'solvedCount' or orderby_query == '-solvedCount':
+                    neg = '-' if '-' in orderby_query else ''
+                    orderby_query = orderby_query if '-' not in orderby_query else orderby_query[1:]
+                    problem_models_filter = problem_models_filter.order_by(neg + 'problemstatisticsmodel__' + orderby_query)
             if 'difficult' in request.GET:
                 tmp = request.GET['difficult'].split(',')
                 if len(tmp) == 2:
@@ -604,28 +605,17 @@ def AdminListProblemView(request):
                     except:
                         pass
         problem_models_filter = problem_models_filter.all()
+        pre = 0
+        for x in problem_models_filter:
+            x.index = pre + 1
+            pre = pre + 1
 
-        problems = problem_models_filter
-        list_problems = [
-            {
-                'id': -1,
-                'fullname': x.fullname,
-                'shortname': x.shortname,
-                'publish_date': x.publish_date.strftime("%m/%d/%Y"),
-                'difficult': round(x.difficult, 2),
-                'problem_type': x.get_problem_type_display(),
-            } for x in problems
-        ]
-        
-        for it in range(0, len(list_problems), 1):
-            list_problems[it]['id'] = it + 1
         paginator = Paginator(problem_models_filter, 50)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         
         context = {
             'website_header_title': 'Danh sách bài tập',
-            'list_problem': page_obj,
             'list_categories': ['All'] + [x.name for x in ProblemCategoryModel.objects.all()],
             'page_obj': page_obj,
         }
