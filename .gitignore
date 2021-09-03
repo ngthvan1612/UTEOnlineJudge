@@ -11,4 +11,7 @@ uteoj/uteoj/dbutils.py
 .vscode/settings.json
 celerybeat-schedule
 *.pyc
+<<<<<<< Updated upstream
 uteoj/uteoj/__pycache__/__init__.cpython-39.pyc
+=======
+>>>>>>> Stashed changes

@@ -28,8 +28,7 @@ result_backend = 'redis://localhost:6379'
 accept_content = ['application/json']
 task_serializer = 'json'
 result_serializer = 'json'
-timezone = 'UTC'
-
+timezone = 'Asia/Ho_Chi_Minh'
 
 # Media backend ----------------------------------------------------------------------
 
@@ -160,7 +159,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Ho_Chi_Minh'
 
 USE_I18N = True
 

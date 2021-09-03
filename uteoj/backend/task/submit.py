@@ -1,4 +1,5 @@
 from datetime import datetime
+from backend.models.usersetting import UserStatisticsModel
 from backend.models.problem import ProblemStatisticsModel
 from celery.decorators import task
 from django.contrib.auth.models import User
@@ -25,15 +26,22 @@ def SubmitSolution(submission_id:int) -> None:
     language = submission.language
 
     #Update
-    problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=problem)
     with transaction.atomic():
+        problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=problem)
         for problemStatistics in problemStatisticsEntries:
             problemStatistics.submitCount = problemStatistics.submitCount + 1
             problemStatistics.save()
+    
+    with transaction.atomic():
+        UserStatisticsModel.createStatIfNotExists(user)
+        userStatisticEntries = UserStatisticsModel.objects.select_for_update().filter(user=user)
+        for stat in userStatisticEntries:
+            stat.totalSubmission = stat.totalSubmission + 1
+            stat.save()
 
     #starting
     print('Đang chấm bài tập {} của {}, ngon ngu: {}'.format(problem.fullname, user.username, language.name))
-    submission.submission_judge_date = timezone.now()
+    submission.submission_judge_date = timezone.localtime(timezone.now())
 
     #begin compile
     # Compile(submission=submission)
@@ -61,12 +69,36 @@ def SubmitSolution(submission_id:int) -> None:
             random_result = rnd(4) + 1
             if random_result == 1:
                 submission.result = SubmissionResultType.WA
+                with transaction.atomic():
+                    UserStatisticsModel.createStatIfNotExists(user)
+                    userStatisticEntries = UserStatisticsModel.objects.select_for_update().filter(user=user)
+                    for stat in userStatisticEntries:
+                        stat.waCount = stat.waCount + 1
+                        stat.save()
             elif random_result == 2:
                 submission.result = SubmissionResultType.TLE
+                with transaction.atomic():
+                    UserStatisticsModel.createStatIfNotExists(user)
+                    userStatisticEntries = UserStatisticsModel.objects.select_for_update().filter(user=user)
+                    for stat in userStatisticEntries:
+                        stat.tleCount = stat.tleCount + 1
+                        stat.save()
             elif random_result == 3:
                 submission.result = SubmissionResultType.MLE
+                with transaction.atomic():
+                    UserStatisticsModel.createStatIfNotExists(user)
+                    userStatisticEntries = UserStatisticsModel.objects.select_for_update().filter(user=user)
+                    for stat in userStatisticEntries:
+                        stat.mleCount = stat.mleCount + 1
+                        stat.save()
             else:
                 submission.result = SubmissionResultType.RTE
+                with transaction.atomic():
+                    UserStatisticsModel.createStatIfNotExists(user)
+                    userStatisticEntries = UserStatisticsModel.objects.select_for_update().filter(user=user)
+                    for stat in userStatisticEntries:
+                        stat.rteCount = stat.rteCount + 1
+                        stat.save()
             stopped = True
             submission.status = SubmissionStatusType.Completed
             submission.save()
@@ -75,18 +107,29 @@ def SubmitSolution(submission_id:int) -> None:
         time.sleep(time_sleep_count)
     
     if stopped:
+        submission.executed_time = randint(10, 10000)
+        submission.memory_usage = randint(10, 11111111)
+        submission.save()
         return
 
     # Làm đúng
-
-    problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=problem)
     with transaction.atomic():
+        problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=problem)
         for problemStatistics in problemStatisticsEntries:
             problemStatistics.solvedCount = problemStatistics.solvedCount + 1
             problemStatistics.save()
+    
+    with transaction.atomic():
+        UserStatisticsModel.createStatIfNotExists(user)
+        userStatisticEntries = UserStatisticsModel.objects.select_for_update().filter(user=user)
+        for stat in userStatisticEntries:
+            stat.solvedCount = stat.solvedCount + 1
+            stat.save()
 
     submission.status = SubmissionStatusType.Completed
     submission.result = SubmissionResultType.AC
+    submission.executed_time = randint(10, 10000)
+    submission.memory_usage = randint(10, 11111111)
     submission.save()
 
 @task(name="sum_two_numbers")

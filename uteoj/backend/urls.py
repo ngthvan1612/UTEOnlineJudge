@@ -20,9 +20,9 @@ from backend.views.auth.signup import SignupView
 #user
 from backend.views.user.problem import UserProblemView
 from backend.views.user.problem import UserSubmitSolution
-from backend.views.user.problem import UserListSubmission
 from backend.views.user.problem import UserListProblemView
 from backend.views.user.problem import UserStatusView
+from backend.views.user.rank import UserRankView
 
 from backend.views.user.home import UserHomeView
 
@@ -132,8 +132,9 @@ url_patterns_user = [
     path('problems', UserListProblemView),
     path('problem/<str:shortname>', UserProblemView),
     path('problem/<str:shortname>/submit', UserSubmitSolution),
-    path('status', UserStatusView),
-    path('submission', UserListSubmission),
+    path('submissions', UserStatusView),
+    path('ranks', UserRankView)
+    # path('submission', UserListSubmission),
 ]
 
 url_patterns_api = [
@@ -160,8 +161,8 @@ def merge_static(prefix, view=serve, **kwargs):
 
 urlpatterns = [
     path('who/', WhoView),
-    #url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
-    #url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
+    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 ] + url_patterns_api + url_pattern_random + url_patterns_admin + url_patterns_auth + url_patterns_user + merge_static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
