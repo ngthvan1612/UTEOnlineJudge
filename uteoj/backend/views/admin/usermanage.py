@@ -127,6 +127,8 @@ def AdminCreateUserView(request):
     else:
         return HttpResponse(status=405)
 
+from PIL import Image
+from io import StringIO
 
 @admin_member_required
 def AdminEditUserView(request, user_name):
@@ -171,7 +173,7 @@ def AdminEditUserView(request, user_name):
 
             if 'user_avatar' in request.FILES:
                 user_avatar = request.FILES['user_avatar']
-                if user_avatar.size > 1024 * 1024 * 2:
+                if user_avatar.size > 1024 * 1024 * 200:
                     messages.add_message(request, messages.ERROR, 'File ảnh đại diên không được vượt quá 2MB')
                     return HttpResponseRedirect(request.path_info)
                 user_setting.uploadAvatar(user_avatar.name, user_avatar.file)

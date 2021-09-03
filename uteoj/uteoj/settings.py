@@ -100,6 +100,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'backend.models.submission.context_processors_subission_result_status',
+                'backend.models.usersetting.context_processors_user_setting',
             ],
         },
     },

@@ -6,6 +6,8 @@ from backend.models.filemanager import OverwriteStorage
 
 import uuid
 import os
+from io import BytesIO
+from PIL import Image
 
 
 class UserSetting(models.Model):
@@ -47,15 +49,39 @@ class UserSetting(models.Model):
         return setting_filter[0]
     
     def getAvatar(self):
-        return settings.MEDIA_URL + 'usermedia/' + self.avatar
+        return self.avatar
 
     def uploadAvatar(self, file_name_with_ext, content) -> None:
         file_manager = OverwriteStorage()
         #file path = usermedia/hash_profile/avatar_with_ext
-        self.avatar = self.hash_user_profile + '/avatar' + os.path.splitext(file_name_with_ext)[1]
-        path = 'usermedia/' + self.avatar
+        self.avatar = settings.MEDIA_URL + 'usermedia/' + self.hash_user_profile + '/avatar' + os.path.splitext(file_name_with_ext)[1]
+        path = 'usermedia/' + self.hash_user_profile + '/avatar' + os.path.splitext(file_name_with_ext)[1]
+        
+        print('save to ' + path)
         self.save()
-        file_manager.save(path, content)
+
+        # optimize content
+        image_file = BytesIO(content.read())
+        image = Image.open(image_file)
+        image = image.resize((256, 256), Image.ANTIALIAS)
+        image = image.convert("RGB")
+        image_file = BytesIO()
+        image.save(image_file, 'PNG', quality=90)
+
+        # end
+
+        file_manager.save(path, image_file)
+
+def context_processors_user_setting(request):
+    if request.user.is_authenticated:
+        avatar = UserSetting.getSetting(request.user).avatar
+        if avatar is not None and len(avatar) != 0:
+            return {
+                'user.avatar': UserSetting.getSetting(request.user).avatar
+            }
+    return {
+
+    }
 
 class UserStatisticsModel(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
