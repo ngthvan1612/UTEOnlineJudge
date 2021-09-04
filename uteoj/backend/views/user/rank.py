@@ -1,5 +1,5 @@
 from typing import final
-from backend.models.usersetting import UserStatisticsModel
+from backend.models.usersetting import UserProblemStatisticsModel
 from django.core.paginator import Paginator
 from django.http.response import HttpResponseNotAllowed, HttpResponseRedirect
 from backend.models.language import LanguageModel
@@ -19,25 +19,29 @@ from datetime import datetime
 from random import random
 from django.http import HttpResponse
 from django.core import serializers
+from django.db.models import F, Sum
 
 from backend.task.submit import SubmitSolution
 
 
 def UserRankView(request):
 
-    final_filter = UserStatisticsModel.objects.order_by('-solvedCount').all()
+    final_filter = UserProblemStatisticsModel.objects.values(username=F('user__username')).annotate(total_solvedCount=Sum('solvedCount')).order_by('-total_solvedCount')
 
     id = 0
     pre = -1
     for x in final_filter:
-        if pre != x.solvedCount:
+        #print(x.solvedCount)
+        if pre != x['total_solvedCount']:
             id = id + 1
-            pre = x.solvedCount
-        x.rank = id
+            pre = x['total_solvedCount']
+        x['rank'] = id
     
     paginator = Paginator(final_filter, 30)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+
+    anal = UserProblemStatisticsModel.objects.order_by()
 
     context = {
         'page_obj': page_obj

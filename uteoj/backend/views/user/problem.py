@@ -1,4 +1,5 @@
 from typing import final
+from backend.models.usersetting import UserProblemStatisticsModel
 from django.core.paginator import Paginator
 from django.http.response import HttpResponseNotAllowed, HttpResponseRedirect
 from backend.models.language import LanguageModel
@@ -54,13 +55,24 @@ def UserListProblemView(request):
             orderby = orderby if orderby[0] != '-' else orderby[1:]
             final_filter = final_filter.order_by(neg + 'problemstatisticsmodel__' + orderby)
 
+    if 'difficult' in request.GET:
+        tmp = request.GET['difficult'].split(',')
+        if len(tmp) == 2:
+            a, b = tmp
+            try:
+                a = round(float(a), 2) if len(a) else 0
+                b = round(float(b), 2) if len(b) else 1000
+                final_filter = final_filter.filter(difficult__gte=a, difficult__lte=b)
+            except:
+                pass
+
     paginator = Paginator(final_filter, 30)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     context = {
         'page_obj': page_obj,
-        'list_categories': [x.name for x in ProblemCategoryModel.objects.all()],
+        'list_categories': ProblemCategoryModel.objects.all(),
     }
 
     return render(request, 'user-template/problem/listproblem.html', context)
@@ -75,12 +87,13 @@ def UserProblemView(request, shortname):
     problem_setting = problem.problemsettingmodel
 
     context = {
-        'fullname': problem.fullname,
-        'statement': problem_setting.statement,
-        'input_statement': problem_setting.input_statement,
-        'output_statement': problem_setting.output_statement,
-        'constraints_statement': problem_setting.constraints_statement
+        'problem': problem,
     }
+
+    if request.user.is_authenticated:
+        UserProblemStatisticsModel.createStatIfNotExists(user=request.user, problem=problem)
+        entries = UserProblemStatisticsModel.objects.filter(user=request.user, problem=problem)
+        context['statistics'] = entries[0]
 
     return render(request, 'user-template/problem/problemdetail.html', context)
 

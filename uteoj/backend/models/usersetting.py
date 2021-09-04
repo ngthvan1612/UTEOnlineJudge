@@ -1,3 +1,4 @@
+from backend.models.problem import ProblemModel
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -67,7 +68,6 @@ class UserSetting(models.Model):
         image = image.convert("RGB")
         image_file = BytesIO()
         image.save(image_file, 'PNG', quality=90)
-
         # end
 
         file_manager.save(path, image_file)
@@ -83,8 +83,9 @@ def context_processors_user_setting(request):
 
     }
 
-class UserStatisticsModel(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
+class UserProblemStatisticsModel(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    problem = models.ForeignKey(ProblemModel, on_delete=models.CASCADE)
     totalSubmission = models.IntegerField(default=0)
     solvedCount = models.IntegerField(default=0)
     waCount = models.IntegerField(default=0)
@@ -93,16 +94,23 @@ class UserStatisticsModel(models.Model):
     mleCount = models.IntegerField(default=0)
 
     @staticmethod
-    def createStatIfNotExists(user:User):
-        setting_filter = UserStatisticsModel.objects.filter(user=user)
+    def createStatIfNotExists(user:User, problem:ProblemModel):
+        setting_filter = UserProblemStatisticsModel.objects.filter(user=user,problem=problem)
         if not setting_filter.exists():
-            new_setting = UserStatisticsModel.objects.create(user=user)
+            new_setting = UserProblemStatisticsModel.objects.create(user=user,problem=problem)
             new_setting.save()
 
     @staticmethod
-    def getStat(user:User):
-        setting_filter = UserStatisticsModel.objects.filter(user=user)
+    def getStat(user:User, problem:ProblemModel):
+        setting_filter = UserProblemStatisticsModel.objects.filter(user=user,problem=problem)
         if not setting_filter.exists():
-            return UserStatisticsModel.createStatIfNotExists(user)
+            return UserProblemStatisticsModel.createStatIfNotExists(user,problem=problem)
         return setting_filter[0]
+    
+    class Meta:
+        unique_together = ('user', 'problem')
+    
+    def __str__(self) -> str:
+        return self.user.username + ' ----- ' + self.problem.shortname + ' -> total = ' + str(self.solvedCount)
+
 
