@@ -29,7 +29,7 @@ def SubmitSolution(submission_id:int) -> None:
     with transaction.atomic():
         problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=problem)
         for problemStatistics in problemStatisticsEntries:
-            problemStatistics.submitCount = problemStatistics.submitCount + 1
+            problemStatistics.totalSubmission = problemStatistics.totalSubmission + 1
             problemStatistics.save()
     
     with transaction.atomic():
@@ -52,6 +52,17 @@ def SubmitSolution(submission_id:int) -> None:
     #endcompile
     if rnd(5) == 1:
         #compile error
+        with transaction.atomic():
+            UserProblemStatisticsModel.createStatIfNotExists(user, problem=problem)
+            userStatisticEntries = UserProblemStatisticsModel.objects.select_for_update().filter(user=user, problem=problem)
+            for stat in userStatisticEntries:
+                stat.ceCount = stat.ceCount + 1
+                stat.save()
+        with transaction.atomic():
+            problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=problem)
+            for problemStatistics in problemStatisticsEntries:
+                problemStatistics.ceCount = problemStatistics.ceCount + 1
+                problemStatistics.save()
         submission.result = SubmissionResultType.CE
         submission.status = SubmissionStatusType.Completed
         submission.save()
@@ -75,6 +86,11 @@ def SubmitSolution(submission_id:int) -> None:
                     for stat in userStatisticEntries:
                         stat.waCount = stat.waCount + 1
                         stat.save()
+                with transaction.atomic():
+                    problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=problem)
+                    for problemStatistics in problemStatisticsEntries:
+                        problemStatistics.waCount = problemStatistics.waCount + 1
+                        problemStatistics.save()
             elif random_result == 2:
                 submission.result = SubmissionResultType.TLE
                 with transaction.atomic():
@@ -83,6 +99,11 @@ def SubmitSolution(submission_id:int) -> None:
                     for stat in userStatisticEntries:
                         stat.tleCount = stat.tleCount + 1
                         stat.save()
+                with transaction.atomic():
+                    problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=problem)
+                    for problemStatistics in problemStatisticsEntries:
+                        problemStatistics.tleCount = problemStatistics.tleCount + 1
+                        problemStatistics.save()
             elif random_result == 3:
                 submission.result = SubmissionResultType.MLE
                 with transaction.atomic():
@@ -91,6 +112,11 @@ def SubmitSolution(submission_id:int) -> None:
                     for stat in userStatisticEntries:
                         stat.mleCount = stat.mleCount + 1
                         stat.save()
+                with transaction.atomic():
+                    problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=problem)
+                    for problemStatistics in problemStatisticsEntries:
+                        problemStatistics.mleCount = problemStatistics.mleCount + 1
+                        problemStatistics.save()
             else:
                 submission.result = SubmissionResultType.RTE
                 with transaction.atomic():
@@ -99,6 +125,11 @@ def SubmitSolution(submission_id:int) -> None:
                     for stat in userStatisticEntries:
                         stat.rteCount = stat.rteCount + 1
                         stat.save()
+                with transaction.atomic():
+                    problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=problem)
+                    for problemStatistics in problemStatisticsEntries:
+                        problemStatistics.rteCount = problemStatistics.rteCount + 1
+                        problemStatistics.save()
             stopped = True
             submission.status = SubmissionStatusType.Completed
             submission.save()

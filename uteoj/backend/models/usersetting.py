@@ -92,6 +92,7 @@ class UserProblemStatisticsModel(models.Model):
     tleCount = models.IntegerField(default=0)
     rteCount = models.IntegerField(default=0)
     mleCount = models.IntegerField(default=0)
+    ceCount = models.IntegerField(default=0)
 
     @staticmethod
     def createStatIfNotExists(user:User, problem:ProblemModel):
