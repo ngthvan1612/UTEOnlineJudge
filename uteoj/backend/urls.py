@@ -20,6 +20,7 @@ from backend.views.auth.signup import SignupView
 #user
 from backend.views.user.problem import UserProblemView
 from backend.views.user.problem import UserSubmitSolution
+from backend.views.user.problem import UserSubmitSolutionTest
 from backend.views.user.problem import UserListProblemView
 from backend.views.user.problem import UserStatusView
 from backend.views.user.rank import UserRankView
@@ -132,6 +133,7 @@ url_patterns_user = [
     path('problems', UserListProblemView),
     path('problem/<str:shortname>', UserProblemView),
     path('problem/<str:shortname>/submit', UserSubmitSolution),
+    path('problem/<str:shortname>/testsubmit', UserSubmitSolutionTest),
     path('submissions', UserStatusView),
     path('ranks', UserRankView)
     # path('submission', UserListSubmission),

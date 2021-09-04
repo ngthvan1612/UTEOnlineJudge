@@ -122,8 +122,13 @@ class ProblemGraderModel(models.Model):
 
 class ProblemStatisticsModel(models.Model):
     problem = models.OneToOneField(ProblemModel, on_delete=models.CASCADE)
-    solvedCount = models.IntegerField(default=0, blank=False)
-    submitCount = models.IntegerField(default=0, blank=True)
+    solvedCount = models.IntegerField(default=0)
+    totalSubmission = models.IntegerField(default=0)
+    waCount = models.IntegerField(default=0)
+    tleCount = models.IntegerField(default=0)
+    rteCount = models.IntegerField(default=0)
+    mleCount = models.IntegerField(default=0)
+    ceCount = models.IntegerField(default=0)
 
     def __str__(self):
         return self.problem.shortname + ' ' + str(self.solvedCount)
