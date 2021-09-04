@@ -71,8 +71,22 @@ def UserListProblemView(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    rows = []
+    tmp = []
+    cnt = 0
+    for x in page_obj:
+        if cnt % 5 == 0:
+            if len(tmp) != 0:
+                rows.append(tmp)
+            tmp = []
+        tmp.append(x)
+        cnt = cnt + 1
+    if len(tmp) != 0:
+        rows.append(tmp)
+
     context = {
         'page_obj': page_obj,
+        'rows': rows,
         'list_categories': ProblemCategoryModel.objects.all(),
     }
 
