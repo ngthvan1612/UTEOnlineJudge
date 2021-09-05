@@ -145,7 +145,8 @@ def UserSubmitSolution(request, shortname):
     elif request.method == 'GET':
         
         context = {
-            'languages': [x.name for x in LanguageModel.objects.all()]
+            'languages': [x.name for x in LanguageModel.objects.all()],
+            'problem': problem
         }
         return render(request, 'user-template/problem/submit.html', context)
     else:
