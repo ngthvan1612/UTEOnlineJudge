@@ -131,11 +131,17 @@ def UserSubmitSolution(request, shortname):
             messages.add_message(request, messages.ERROR, 'Mã nguồn không được để trống')
             return HttpResponseRedirect(request.path_info)
 
+        final_source = source_code
+
+        if 'source_file' in request.FILES:
+            source_file = request.FILES['source_file'].read()
+            final_source = source_file.decode('utf-8')
+
         submission = SubmissionModel.objects.create(
             user=request.user,
             problem=problem,
             submission_date=timezone.localtime(timezone.now()),
-            source_code = source_code,
+            source_code = final_source,
             language=language)
         submission.status = SubmissionStatusType.InQueued
         submission.save()
