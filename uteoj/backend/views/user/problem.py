@@ -117,6 +117,7 @@ def UserSubmitSolution(request, shortname):
         return redirect('/login')
     
     if request.method == 'POST':
+        print('dsfsdfsdfsdf')
         if 'language' not in request.POST:
             return HttpResponse('Thiếu ngôn ngữ')
         if 'source' not in request.POST:
@@ -127,15 +128,15 @@ def UserSubmitSolution(request, shortname):
         language=LanguageModel.objects.get(name=request.POST['language'])
         source_code = request.POST['source']
 
-        if len(source_code) == 0:
-            messages.add_message(request, messages.ERROR, 'Mã nguồn không được để trống')
-            return HttpResponseRedirect(request.path_info)
-
         final_source = source_code
 
         if 'source_file' in request.FILES:
             source_file = request.FILES['source_file'].read()
             final_source = source_file.decode('utf-8')
+
+        if len(final_source) == 0:
+            messages.add_message(request, messages.ERROR, 'Mã nguồn không được để trống')
+            return HttpResponseRedirect(request.path_info)
 
         submission = SubmissionModel.objects.create(
             user=request.user,
@@ -147,6 +148,7 @@ def UserSubmitSolution(request, shortname):
         submission.save()
         
         SubmitSolution.delay(submission.id)
+        print('okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
         return redirect('/submissions')
     elif request.method == 'GET':
         
@@ -212,24 +214,3 @@ def UserSubmitSolutionTest(request, shortname):
         return HttpResponse(content=content)
     else:
         return HttpResponse(status=405)
-
-def UserStatusView(request):
-    if request.method == 'GET':
-        final_filter = SubmissionModel.objects.order_by('-id')
-        if 'my' in request.GET and request.user.is_authenticated:
-            my = request.GET['my']
-            if my == 'on':
-                final_filter = final_filter.filter(user=request.user)
-
-        paginator = Paginator(final_filter, 50)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-
-        context = {
-            'page_obj': page_obj,
-        }
-
-        return render(request, 'user-template/submissions.html', context)
-    else:
-        return HttpResponse(status=405)
-
