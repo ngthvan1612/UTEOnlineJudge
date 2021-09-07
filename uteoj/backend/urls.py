@@ -22,8 +22,10 @@ from backend.views.user.problem import UserProblemView
 from backend.views.user.problem import UserSubmitSolution
 from backend.views.user.problem import UserSubmitSolutionTest
 from backend.views.user.problem import UserListProblemView
-from backend.views.user.problem import UserStatusView
 from backend.views.user.rank import UserRankView
+
+from backend.views.user.submission import UserListSubmissionView
+from backend.views.user.submission import UserSubmissionView
 
 from backend.views.user.home import UserHomeView
 
@@ -130,11 +132,12 @@ url_patterns_auth = [
 
 url_patterns_user = [
     path('', UserHomeView),
-    path('problems', UserListProblemView),
+    path('problems/', UserListProblemView),
     path('problem/<str:shortname>', UserProblemView),
     path('problem/<str:shortname>/submit', UserSubmitSolution),
     path('problem/<str:shortname>/testsubmit', UserSubmitSolutionTest),
-    path('submissions', UserStatusView),
+    path('submissions/', UserListSubmissionView),
+    path('submissions/<int:submission_id>', UserSubmissionView),
     path('ranks', UserRankView)
     # path('submission', UserListSubmission),
 ]
@@ -146,11 +149,13 @@ url_patterns_api = [
 from backend.views.random.user import CreateRandomUser
 from backend.views.random.problem import CreateRandomProblem
 from backend.views.random.category import CreateRandomCate
+from backend.views.random.submission import CreateRandomSubmission
 
 url_pattern_random = [
     path('random/user', CreateRandomUser),
     path('random/problem', CreateRandomProblem),
     path('random/categories', CreateRandomCate),
+    path('random/submission', CreateRandomSubmission),
 ]
 
 from django.conf.urls import url

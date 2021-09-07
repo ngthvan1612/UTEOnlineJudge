@@ -21,6 +21,7 @@ WEBSITE_HOST_NAME = '127.0.0.1:8000'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 
+
 # Celery backend ----------------------------------------------------------------------
 
 broker_url = 'redis://localhost:6379'

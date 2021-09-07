@@ -1,15 +1,19 @@
+from backend.models.language import LanguageModel
 from datetime import datetime
 from backend.models.usersetting import UserProblemStatisticsModel
-from backend.models.problem import ProblemStatisticsModel
+from backend.models.problem import ProblemModel, ProblemStatisticsModel, ProblemType
 from celery.decorators import task
+from celery.utils.log import get_task_logger
 from django.contrib.auth.models import User
-from backend.models.submission import SubmissionModel, SubmissionResultType, SubmissionStatusType
+from backend.models.submission import SubmissionModel, SubmissionResultType, SubmissionStatusType, SubmissionTestcaseResultModel
 from random import randint, random
 from django.utils import timezone
 import time
 import uuid
 from judger.judger import Compile
 from django.db import transaction
+
+logger = get_task_logger(__name__)
 
 def rnd(upper_bound:int) -> int:
     tmp = str(uuid.uuid4().hex)
@@ -18,8 +22,33 @@ def rnd(upper_bound:int) -> int:
         result = (result * 16 + ord(z)) % upper_bound
     return result
 
+@task(name='random_submission')
+def RandomSubmission(count) -> None:
+    #list all user
+    #list all problem
+    list_all_user = User.objects.all()
+    list_all_problem = ProblemModel.objects.all()
+    list_all_language = LanguageModel.objects.all()
+    cnt_user = len(list_all_user)
+    cnt_problem = len(list_all_problem)
+    cnt_language = len(list_all_language)
+
+    for i in range(0, count, 1):
+        random_user = list_all_user[randint(1, cnt_user) - 1]
+        random_problem = list_all_problem[randint(1, cnt_problem) - 1]
+        random_language = list_all_language[randint(1, cnt_language) - 1]
+        submission = SubmissionModel.objects.create(
+            user=random_user,
+            problem=random_problem,
+            submission_date=timezone.localtime(timezone.now()),
+            source_code = "gi do random",
+            language=random_language)
+        submission.status = SubmissionStatusType.InQueued
+        submission.save()
+        SubmitSolution.delay(submission.id, False)
+
 @task(name="submit_solution")
-def SubmitSolution(submission_id:int) -> None:
+def SubmitSolution(submission_id:int, allow_sleep=True) -> None:
     submission = SubmissionModel.objects.get(pk=submission_id)
     problem = submission.problem
     user = submission.user
@@ -40,14 +69,17 @@ def SubmitSolution(submission_id:int) -> None:
             stat.save()
 
     #starting
-    print('Đang chấm bài tập {} của {}, ngon ngu: {}'.format(problem.fullname, user.username, language.name))
+    #print('Đang chấm bài tập {} của {}, ngon ngu: {}'.format(problem.fullname, user.username, language.name))
+    logger.info('Đang chấm bài tập {} của {}, ngon ngu: {}, id = {}'.format(problem.fullname, user.username, language.name, submission))
     submission.submission_judge_date = timezone.localtime(timezone.now())
 
     #begin compile
     # Compile(submission=submission)
     submission.status = SubmissionStatusType.Compiling
     submission.save()
-    time.sleep(5)
+
+    if allow_sleep:
+        time.sleep(5)
 
     #endcompile
     if rnd(5) == 1:
@@ -79,6 +111,7 @@ def SubmitSolution(submission_id:int) -> None:
         if random_can_out == 2:
             random_result = rnd(4) + 1
             if random_result == 1:
+                SubmissionTestcaseResultModel.objects.create(submission=submission, executed_time=randint(0, 999), memory_usage=randint(0, 999), points=random() * 9, result=SubmissionResultType.WA).save()
                 submission.result = SubmissionResultType.WA
                 with transaction.atomic():
                     UserProblemStatisticsModel.createStatIfNotExists(user, problem=problem)
@@ -92,6 +125,7 @@ def SubmitSolution(submission_id:int) -> None:
                         problemStatistics.waCount = problemStatistics.waCount + 1
                         problemStatistics.save()
             elif random_result == 2:
+                SubmissionTestcaseResultModel.objects.create(submission=submission, executed_time=randint(0, 999), memory_usage=randint(0, 999), points=random() * 9, result=SubmissionResultType.TLE).save()
                 submission.result = SubmissionResultType.TLE
                 with transaction.atomic():
                     UserProblemStatisticsModel.createStatIfNotExists(user, problem=problem)
@@ -105,6 +139,7 @@ def SubmitSolution(submission_id:int) -> None:
                         problemStatistics.tleCount = problemStatistics.tleCount + 1
                         problemStatistics.save()
             elif random_result == 3:
+                SubmissionTestcaseResultModel.objects.create(submission=submission, executed_time=randint(0, 999), memory_usage=randint(0, 999), points=random() * 9, result=SubmissionResultType.MLE).save()
                 submission.result = SubmissionResultType.MLE
                 with transaction.atomic():
                     UserProblemStatisticsModel.createStatIfNotExists(user, problem=problem)
@@ -118,6 +153,7 @@ def SubmitSolution(submission_id:int) -> None:
                         problemStatistics.mleCount = problemStatistics.mleCount + 1
                         problemStatistics.save()
             else:
+                SubmissionTestcaseResultModel.objects.create(submission=submission, executed_time=randint(0, 999), memory_usage=randint(0, 999), points=random() * 9, result=SubmissionResultType.RTE).save()
                 submission.result = SubmissionResultType.RTE
                 with transaction.atomic():
                     UserProblemStatisticsModel.createStatIfNotExists(user, problem=problem)
@@ -130,12 +166,18 @@ def SubmitSolution(submission_id:int) -> None:
                     for problemStatistics in problemStatisticsEntries:
                         problemStatistics.rteCount = problemStatistics.rteCount + 1
                         problemStatistics.save()
-            stopped = True
-            submission.status = SubmissionStatusType.Completed
-            submission.save()
-            break
+
+            if submission.problem.problem_type == ProblemType.ACM:
+                stopped = True
+                submission.status = SubmissionStatusType.Completed
+                submission.save()
+                break
+        else:
+            SubmissionTestcaseResultModel.objects.create(submission=submission, executed_time=randint(0, 999), memory_usage=randint(0, 999), points=random() * 9, result=SubmissionResultType.AC).save()
         submission.save()
-        time.sleep(time_sleep_count)
+
+        if allow_sleep:
+            time.sleep(time_sleep_count)
     
     if stopped:
         submission.executed_time = randint(10, 10000)

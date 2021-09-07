@@ -102,7 +102,8 @@ class SubmissionTestcaseResultModel(models.Model):
     memory_usage = models.IntegerField(blank=False)
     points = models.FloatField(blank=False)
     checker_message = models.TextField(blank=True)
+    result = models.IntegerField(choices=SUBMISSION_RESULT_CHOICES, blank=True, null=True)
 
     def __str__(self):
-        return str(self.submission) + ' ' + str(self.points)
+        return str(self.submission.id) + ' -> ' + str(self.get_result_display())
 
