@@ -46,15 +46,15 @@ class ACMScore(ScoreAbstract):
             UserProblemStatisticsModel.createStatIfNotExists(self._user)
             userStatisticEntries = UserProblemStatisticsModel.objects.select_for_update().filter(user=self._user)
             for stat in userStatisticEntries:
-                if self._result == 'AC':
+                if self._result == SubmissionResultType.AC:
                     stat.solvedCount = stat.solvedCount + 1
-                elif self._result == 'TLE':
+                elif self._result == SubmissionResultType.TLE:
                     stat.tleCount = stat.tleCount + 1
-                elif self._result == 'MLE':
+                elif self._result == SubmissionResultType.MLE:
                     stat.mleCount = stat.mleCount + 1
-                elif self._result == 'RTE':
+                elif self._result == SubmissionResultType.RTE:
                     stat.rteCount = stat.rteCount + 1
-                elif self._result == 'CE':
+                elif self._result == SubmissionResultType.CE:
                     stat.ceCount = stat.ceCount + 1
                 else:
                     raise Exception('SYSTEM ERROR')
@@ -62,15 +62,15 @@ class ACMScore(ScoreAbstract):
         with transaction.atomic():
             problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=self._problem)
             for problemStatistics in problemStatisticsEntries:
-                if self._result == 'AC':
+                if self._result == SubmissionResultType.AC:
                     problemStatistics.solvedCount = problemStatistics.solvedCount + 1
-                elif self._result == 'TLE':
+                elif self._result == SubmissionResultType.TLE:
                     problemStatistics.tleCount = problemStatistics.tleCount + 1
-                elif self._result == 'MLE':
+                elif self._result == SubmissionResultType.MLE:
                     problemStatistics.mleCount = problemStatistics.mleCount + 1
-                elif self._result == 'RTE':
+                elif self._result == SubmissionResultType.RTE:
                     problemStatistics.rteCount = problemStatistics.rteCount + 1
-                elif self.result == 'CE':
+                elif self.result == SubmissionResultType.CE:
                     problemStatistics.ceCount = problemStatistics.ceCount + 1
                 else:
                     raise Exception('SYSTEM ERROR')
