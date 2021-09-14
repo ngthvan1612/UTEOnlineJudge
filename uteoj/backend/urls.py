@@ -77,7 +77,7 @@ router.register('problem', ProblemModelView, 'problem')
 url_patterns_admin_sub = [
     path('', AdminHomeView),
     path('problems/', AdminListProblemView),
-    path('problem/create/', AdminCreateProblemView),
+    path('problems/create/', AdminCreateProblemView),
     path('problems/edit/<str:problem_short_name>/', AdminEditProblemDeatailsview),
     path('problems/edit/<str:problem_short_name>/details', AdminEditProblemDeatailsview),
     path('problems/edit/<str:problem_short_name>/problemsetter', AdminEditProblemProblemSetterview),

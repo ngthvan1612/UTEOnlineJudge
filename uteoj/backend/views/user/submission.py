@@ -24,10 +24,20 @@ def UserListSubmissionView(request):
             my = request.GET['my']
             if my == 'on':
                 final_filter = final_filter.filter(user=request.user)
+        
+        if 'problem' in request.GET:
+            problem_name = request.GET['problem']
+            entries = ProblemModel.objects.filter(shortname=problem_name)
+            if not entries.exists():
+                return HttpResponse(status=404)
+            final_filter = final_filter.filter(problem=entries[0])
 
         paginator = Paginator(final_filter, 50)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
+
+        for x in page_obj:
+            x.problem.totalPoints = sum([x.points for x in x.problem.problemtestcasemodel_set.all()])
 
         context = {
             'page_obj': page_obj,
