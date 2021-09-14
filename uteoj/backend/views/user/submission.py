@@ -13,8 +13,8 @@ from django.http import HttpResponse
 from django.core import serializers
 
 
-from backend.task.submit import SubmitSolution
-from backend.models.submission import SubmissionModel
+from backend.task.submit import SubmitSolutionTest
+from backend.models.submission import SubmissionModel, SubmissionTestcaseResultModel
 from django.core.paginator import Paginator
 
 def UserListSubmissionView(request):
@@ -65,12 +65,11 @@ def UserSubmissionView(request, submission_id):
                 allow = True
 
 
-        context = {
-
-        }
+        context = {}
 
         if allow:
             context['submission'] = submission
+            context['list_testcases'] = SubmissionTestcaseResultModel.objects.filter(submission=submission).all()
         else:
             messages.add_message(request, messages.ERROR, 'Bạn không có quyền xem source code này')
 

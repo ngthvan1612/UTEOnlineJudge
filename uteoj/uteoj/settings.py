@@ -34,7 +34,6 @@ timezone = 'Asia/Ho_Chi_Minh'
 # Media backend ----------------------------------------------------------------------
 
 MEDIA_ROOT = os.environ['MEDIA_ROOT'] if 'MEDIA_ROOT' in os.environ else 'ADMIN_DATA_MEDIA/'
-print('MEDIA_ROOT = ' + MEDIA_ROOT)
 MEDIA_URL = '/media/'
 
 
@@ -101,6 +100,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'backend.models.submission.context_processors_subission_result_status',
+                'backend.models.problem.context_processors_problem_type',
                 'backend.models.usersetting.context_processors_user_setting',
             ],
         },
@@ -111,8 +111,6 @@ WSGI_APPLICATION = 'uteoj.wsgi.application'
 
 
 # Database ----------------------------------------------------------------------
-
-print('PID = ' + str(os.getpid()))
 
 if IS_PRODUCTION: #docker file
     print('-------------------------------- PRODUCTION STARTED ------------------------------')
@@ -127,7 +125,6 @@ if IS_PRODUCTION: #docker file
         }
     }
 else:
-    print('-------------------------------- DEBUG STARTED ------------------------------')
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',

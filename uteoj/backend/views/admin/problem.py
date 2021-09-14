@@ -333,7 +333,8 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
                         list_message_error.append('Test \'{}\' thiếu file output [{}]'.format(testcase[:-1], testcase_output_file_name))
                     else:
                         testcase_output_file_name = reverse_all_path[testcase_output_file_name.lower()]
-                    
+                    if len(list_message_error) > 5:
+                        break
                     list_input.append(testcase_input_file_name)
                     list_output.append(testcase_output_file_name)
                 if len(list_message_error) != 0:
@@ -347,8 +348,6 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
                     except: pass
                     try:
                         os.mkdir(os.path.join(settings.MEDIA_ROOT, folderpath))
-                        os.mkdir(os.path.join(settings.MEDIA_ROOT, folderpath, 'input'))
-                        os.mkdir(os.path.join(settings.MEDIA_ROOT, folderpath, 'output'))
                     except: pass
                     problem.problemtestcasemodel_set.all().delete()
                     for tmp_id in range(0, len(list_testcases_folder), 1):
@@ -357,20 +356,24 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
                         zip_output = list_output[tmp_id]
 
                         id = tmp_id + 1
+                        os.mkdir(os.path.join(settings.MEDIA_ROOT, 'problems', str(problem.id), 'tests', zip_folder))
 
                         #update database
-                        testdb = problem.problemtestcasemodel_set.create(problem=problem, time_limit=problem_grader.time_limit,
+                        testdb = problem.problemtestcasemodel_set.create(
+                            problem=problem,
+                            time_limit=problem_grader.time_limit,
                             memory_limit=problem_grader.time_limit, points=1.0,
-                            input_file='problems/{}/tests/input/input{}.txt'.format(problem.id, str(id).zfill(3)),
-                            output_file='problems/{}/tests/output/output{}.txt'.format(problem.id, str(id).zfill(3)))
+                            name=zip_folder.strip('/').strip('\\'),
+                            input_file=os.path.join('problems', str(problem.id), 'tests', zip_folder, problem.problemgradermodel.input_filename),
+                            output_file=os.path.join('problems', str(problem.id), 'tests', zip_folder, problem.problemgradermodel.output_filename))
                         testdb.save()
 
                         #write input
-                        with open(os.path.join(settings.MEDIA_ROOT, folderpath, 'input/input{}.txt'.format(str(id).zfill(3))), 'wb') as f:
+                        with open(os.path.join(settings.MEDIA_ROOT, 'problems', str(problem.id), 'tests', zip_folder, problem.problemgradermodel.input_filename), 'wb') as f:
                             f.write(z.read(zip_input))
 
                         #write output
-                        with open(os.path.join(settings.MEDIA_ROOT, folderpath, 'output/output{}.txt'.format(str(id).zfill(3))), 'wb') as f:
+                        with open(os.path.join(settings.MEDIA_ROOT, 'problems', str(problem.id), 'tests', zip_folder, problem.problemgradermodel.output_filename), 'wb') as f:
                             f.write(z.read(zip_output))
                     messages.add_message(request, messages.SUCCESS, 'Tải lên thành công')
             
@@ -383,6 +386,7 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
         return HttpResponse(test)
     else:
         return HttpResponse(status=405)
+
 
 @admin_member_required
 @never_cache
@@ -566,7 +570,7 @@ from django.db.models import Max, Count
 @admin_member_required
 def AdminListProblemView(request):
     with transaction.atomic():
-        problem_models_filter = ProblemModel.objects
+        problem_models_filter = ProblemModel.objects.order_by('-id')
         tmp = time()
         if request.method == 'GET':
             if 'problem_type' in request.GET:

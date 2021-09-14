@@ -22,7 +22,7 @@ from django.http import HttpResponse
 from django.core import serializers
 from django.db.models import F, Sum, Count
 
-from backend.task.submit import SubmitSolution
+from backend.task.submit import SubmitSolutionTest
 
 
 def UserRankView(request):

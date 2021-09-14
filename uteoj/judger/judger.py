@@ -60,6 +60,7 @@ def run(max_cpu_time,
         seccomp_rule_name,
         uid,
         gid,
+        workDir,
         memory_limit_check_only=0):
     str_list_vars = ["args", "env"]
     int_vars = ["max_cpu_time", "max_real_time",
@@ -96,92 +97,9 @@ def run(max_cpu_time,
     if seccomp_rule_name:
         proc_args.append("--seccomp_rule={}".format(seccomp_rule_name))
 
-    proc = subprocess.Popen(proc_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc = subprocess.Popen(proc_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=workDir)
     out, err = proc.communicate()
     if err:
         raise ValueError("Error occurred while calling judger: {}".format(err))
     return json.loads(out.decode("utf-8"))
 
-
-def Compile(submission:SubmissionModel):
-    """
-    submission: Bài gửi lên (gửi cả model)
-
-    $SOURCE_NAME$ : tên của file (không bao gồm extension)
-    $SOURCE_NAME_EXT$ : tên của file (bao gồm cả extension)
-
-    $EXECUTE_NAME$ : tên file thực thi (không bao gồm ext)
-    $EXECUTE_NAME_EXT$ : tên file thực thi (bao gồm ext)
-
-    """
-    language = submission.language
-    file_manager = OverwriteStorage(settings.COMPILE_ROOT)
-    
-    #Lưu bài vào ổ đĩa
-    ## ../compile/{hash md5 - shuffle name}/Main<lang ext>
-    random_md5 = str(uuid.uuid4().hex) + '_' + str(submission.pk)
-    file_name = os.path.join(random_md5, 'Main' + language.ext)
-    try:
-        file_manager.save(file_name, ContentFile(submission.source_code))
-    except:
-        try:
-            shutil.rmtree(os.path.join(settings.COMPILE_ROOT, random_md5))
-        except:
-            pass
-        return [False, SubmissionResultType.CE, '']
-
-    #Biên dịch
-    if len(language.compile_command) == 0:
-        return [True, file_name, ''] # Trường hợp này không cần biên dịch
-
-    try:
-        raw_command = language.compile_command
-        raw_command = raw_command.replace('$SOURCE_NAME$', 'Main')
-        raw_command = raw_command.replace('$SOURCE_NAME_EXT$', 'Main' + language.ext)
-        command = [x for x in raw_command.split() if len(x)]
-        process = subprocess.Popen(command, cwd=os.path.join(settings.COMPILE_ROOT, random_md5), stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        output, error = process.communicate()
-        output = output.decode('utf-8')
-        error = error.decode('utf-8')
-        print('OUTPUT => ' + output)
-        print('ERROR => ' + error)
-        if process.returncode != 0:
-            print('Dịch lỗi rồi :((( ' + str(process.returncode))
-            return [False, SubmissionResultType.CE, error]
-    except Exception as e:
-        return [False, SubmissionResultType.CE, error]
-    print('Dịch thành công :)))')
-
-
-    #Debug, chạy xong hết test rồi xóa
-    try:
-        shutil.rmtree(os.path.join(settings.COMPILE_ROOT, random_md5))
-    except:
-        pass
-    
-    return [True, file_name, output]
-
-"""
-ret = _judger.run(max_cpu_time=1000,
-                  max_real_time=5000,
-                  max_memory=1 * 1024 * 1024,
-                  max_process_number=200,
-                  max_output_size=10000,
-                  max_stack=_judger.UNLIMITED,
-                  exe_path="main",
-                  input_path="1.in",
-                  output_path="1.out",
-                  error_path="1.out",
-                  args=[],
-                  # can be empty list
-                  env=[],
-                  log_path="judger.log",
-                  # can be None
-                  seccomp_rule_name=None,
-                  uid=0,
-                  gid=0)
-"""
-
-def RunTest(submission):
-
-    return [True]
