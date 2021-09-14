@@ -75,10 +75,10 @@ class ProblemModel(models.Model):
 
         #setting
         problem_setting = ProblemSettingModel.objects.create(problem=problem)
-        problem_setting.statement = "Cho 3 số nguyên a, b, c ($-1000\le a,b,c \le 1000$). Xác định xem phương trinh $ax^2 + bx + c = 0$ có nghiệm trên tập $\mathbb{R}$ hay không và in ra màn hình nếu có."
-        problem_setting.input_statement = "Gồm 1 dòng 3 số nguyên $a, b, c$ cách nhau ít nhất một khoảng trắng."
-        problem_setting.output_statement = 'Nếu phương trình vô nghiệm chỉ cần in ra 1 dòng "NO SOLUTION" (không có ngoặc kép).'
-        problem_setting.constraints_statement = "$-1000\le a,b,c \le 1000$"
+        problem_setting.statement = ""
+        problem_setting.input_statement = ""
+        problem_setting.output_statement = ""
+        problem_setting.constraints_statement = ""
         problem_setting.save()
 
         #Grader

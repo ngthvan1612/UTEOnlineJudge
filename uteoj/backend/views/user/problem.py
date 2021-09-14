@@ -116,6 +116,10 @@ def UserSubmitSolution(request, shortname):
         return redirect('/login')
     if not request.user.is_authenticated:
         return redirect('/login')
+
+    if problem.problemtestcasemodel_set.count() == 0:
+        messages.add_message(request, messages.ERROR, 'Không thể chấm bài này, hiện tại không có testcase nào!')
+        return redirect('/problems')
     
     if request.method == 'POST':
         if 'language' not in request.POST:

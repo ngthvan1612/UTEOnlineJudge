@@ -1,3 +1,4 @@
+from backend.models.problem import PROBLEM_TYPE_CHOICES
 import uuid
 import zipfile
 import os.path
@@ -23,6 +24,13 @@ from backend.models.problem import ProblemCategoryModel
 from backend.views.admin.require import admin_member_required
 
 from backend.models.problem import SUBMISSION_VISIBLE_MODE_CHOICES
+
+from django import template
+register = template.Library()
+
+@register.filter
+def totalPoints(arg):
+    return sum(testcase.points for testcase in arg.problemtestcasemodel.all())
 
 @admin_member_required
 def AdminEditProblemDeatailsview(request, problem_short_name):
@@ -464,7 +472,7 @@ def AdminEditProblemSettingsview(request, problem_short_name):
     problem_grader = ProblemGraderModel.objects.get(problem=problem)
 
     if request.method == 'POST':
-        list_requirements = ['input_filename', 'output_filename', 'submission_visible_mode', 'time_limit', 'memory_limit']
+        list_requirements = ['input_filename', 'output_filename', 'submission_visible_mode', 'time_limit', 'memory_limit', 'problem_type']
         for x in list_requirements:
             if x not in request.POST:
                 return HttpResponse(status=500)
@@ -473,6 +481,9 @@ def AdminEditProblemSettingsview(request, problem_short_name):
         output_filename = request.POST['output_filename']
         try:
             submission_visible_mode = int(request.POST['submission_visible_mode'])
+        except: return HttpResponse(status=500)
+        try:
+            problem_type = int(request.POST['problem_type'])
         except: return HttpResponse(status=500)
         try:
             time_limit = int(request.POST['time_limit'])
@@ -491,6 +502,9 @@ def AdminEditProblemSettingsview(request, problem_short_name):
 
         use_stdin = True if 'use_stdin' in request.POST else False
         use_stdout = True if 'use_stdout' in request.POST else False
+
+        problem.problem_type = problem_type
+        problem.save()
 
         problem_setting.submission_visible_mode = submission_visible_mode
         problem_setting.save()
@@ -515,6 +529,13 @@ def AdminEditProblemSettingsview(request, problem_short_name):
                     'display': x[1],
                 } for x in SUBMISSION_VISIBLE_MODE_CHOICES
             ],
+            'problem_type_choices': [
+                {
+                    'value': x[0],
+                    'display': x[1]
+                } for x in PROBLEM_TYPE_CHOICES
+            ],
+            'problem_type':problem.problem_type,
             'input_filename': problem_grader.input_filename,
             'output_filename': problem_grader.output_filename,
             'use_stdin': problem_grader.use_stdin,
@@ -664,11 +685,10 @@ def AdminCreateProblemView(request):
         elif len(fullname) == 0:
             messages.add_message(request, messages.ERROR, 'Tên đầy đủ của bài không được trống')
         else:
-            #ok -> create
-            # new_problem = ProblemModel.objects.create(
-            #     shortname
-            # )
-            messages.add_message(request, messages.SUCCESS, 'OK')
+            problem = ProblemModel.CreateNewProblem(shortname, fullname, request.user)
+            problem.save()
+            messages.add_message(request, messages.SUCCESS, 'Tạo thành công')
+            return redirect('/admin/problems/edit/{}'.format(shortname))
         return HttpResponseRedirect(request.path_info)
     elif request.method == 'GET':
 
