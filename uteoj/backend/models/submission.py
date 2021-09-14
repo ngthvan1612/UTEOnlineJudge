@@ -1,3 +1,4 @@
+from backend.models.problem import ProblemTestCaseModel
 from django.db import models
 from django.contrib.auth.models import User
 from backend.models.problem import ProblemModel
@@ -13,6 +14,7 @@ class SubmissionResultType:
     OLE = 5
     PE = 6
     CE = 7
+    SYS_ERROR = -999
 
 class SubmissionStatusType:
     InQueued = 0
@@ -74,13 +76,13 @@ class SubmissionModel(models.Model):
     #Đã chấm xong mới cập nhật thời gian chạy + bộ nhớ
     executed_time = models.IntegerField(blank=True, null=True)
     memory_usage = models.IntegerField(blank=True, null=True)
-    points = models.FloatField(blank=True, null=True)
+    points = models.FloatField(blank=True, null=True, default=0.0)
 
     result = models.IntegerField(choices=SUBMISSION_RESULT_CHOICES, blank=True, null=True)
     status = models.IntegerField(choices=SUBMISSION_STATUS_CHOICES, blank=True, null=True)
 
     #Số hiệu test cuối cùng bị sai
-    lastest_test = models.IntegerField(null=True, blank=True)
+    lastest_test = models.IntegerField(null=True, blank=True, default=1)
 
     def __str__(self):
         result_str = self.get_result_display() if self.get_result_display() is not None else ''
@@ -98,6 +100,7 @@ class SubmissionModel(models.Model):
 
 class SubmissionTestcaseResultModel(models.Model):
     submission = models.ForeignKey(SubmissionModel, on_delete=models.CASCADE)
+    testcase = models.ForeignKey(ProblemTestCaseModel, on_delete=models.CASCADE, null=True)
     executed_time = models.IntegerField(blank=False)
     memory_usage = models.IntegerField(blank=False)
     points = models.FloatField(blank=False)

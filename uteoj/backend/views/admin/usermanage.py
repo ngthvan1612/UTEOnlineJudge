@@ -36,7 +36,7 @@ def AdminFilterListUser(request, is_staff, template):
         } for x in list_user_filter.order_by('is_active') if x.is_staff == is_staff]
     for x in range(0, len(list_users), 1):
         list_users[x]['id'] = x + 1
-    rows_per_page = request.GET.get('rows_per_page') if 'rows_per_page' in request.GET else 10
+    rows_per_page = request.GET.get('rows_per_page') if 'rows_per_page' in request.GET else 50
     paginator = Paginator(list_users, rows_per_page)
     page_num = request.GET.get('page')
     page_obj = paginator.get_page(page_num)

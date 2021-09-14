@@ -34,7 +34,6 @@ timezone = 'Asia/Ho_Chi_Minh'
 # Media backend ----------------------------------------------------------------------
 
 MEDIA_ROOT = os.environ['MEDIA_ROOT'] if 'MEDIA_ROOT' in os.environ else 'ADMIN_DATA_MEDIA/'
-print('MEDIA_ROOT = ' + MEDIA_ROOT)
 MEDIA_URL = '/media/'
 
 
@@ -101,6 +100,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'backend.models.submission.context_processors_subission_result_status',
+                'backend.models.problem.context_processors_problem_type',
                 'backend.models.usersetting.context_processors_user_setting',
             ],
         },
@@ -111,8 +111,6 @@ WSGI_APPLICATION = 'uteoj.wsgi.application'
 
 
 # Database ----------------------------------------------------------------------
-
-print('PID = ' + str(os.getpid()))
 
 if IS_PRODUCTION: #docker file
     print('-------------------------------- PRODUCTION STARTED ------------------------------')
@@ -127,7 +125,6 @@ if IS_PRODUCTION: #docker file
         }
     }
 else:
-    print('-------------------------------- DEBUG STARTED ------------------------------')
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -186,7 +183,16 @@ STATICFILES_DIRS = [
 COMPILE_ROOT = 'tmp/compile/'
 RUNNING_ROOT = 'tmp/run/'
 
+# User chạy chương trình
+import pwd, grp
+
+COMPILER_UID = pwd.getpwnam('uteoj_compiler').pw_gid
+COMPILER_GID = grp.getgrnam('uteoj_compiler').gr_gid
+
+RUN_UID = pwd.getpwnam('uteoj_run').pw_gid
+RUN_GID = grp.getgrnam('uteoj_run').gr_gid
 
 # Default primary key field type ----------------------------------------------------------------------
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

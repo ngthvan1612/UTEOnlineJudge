@@ -16,6 +16,13 @@ class ProblemType:
     ACM = 0
     OI = 1
 
+def context_processors_problem_type(request):
+    return {
+        'PROBLEM_TYPE': {
+            'ACM': ProblemType.ACM,
+            'OI': ProblemType.OI,
+        },
+    }
 
 class SubmissionVisibleModeType:
     AllowedFromAll = 0
@@ -140,6 +147,7 @@ class ProblemTestCaseModel(models.Model):
     time_limit = models.IntegerField(default=1000)
     memory_limit = models.IntegerField(default=65536)
     points = models.FloatField(default=1.0)
+    name = models.CharField(null=True, max_length=255)
 
     is_sample = models.BooleanField(default=False)
 

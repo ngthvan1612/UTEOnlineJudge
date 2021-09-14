@@ -20,6 +20,7 @@ from random import random
 from django.http import HttpResponse
 from django.core import serializers
 
+from backend.task.submit import SubmitSolutionTest
 from backend.task.submit import SubmitSolution
 
 
@@ -117,7 +118,6 @@ def UserSubmitSolution(request, shortname):
         return redirect('/login')
     
     if request.method == 'POST':
-        print('dsfsdfsdfsdf')
         if 'language' not in request.POST:
             return HttpResponse('Thiếu ngôn ngữ')
         if 'source' not in request.POST:
@@ -148,7 +148,6 @@ def UserSubmitSolution(request, shortname):
         submission.save()
         
         SubmitSolution.delay(submission.id)
-        print('okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
         return redirect('/submissions')
     elif request.method == 'GET':
         
@@ -193,7 +192,7 @@ def UserSubmitSolutionTest(request, shortname):
         submission.status = SubmissionStatusType.InQueued
         submission.save()
         
-        SubmitSolution.delay(submission.id)
+        SubmitSolutionTest(submission.id)
         return HttpResponse('<h2>Submit ok: id = {}</br>Bài tập: <font style="color:red;">{}</font> ({})</br>Người dùng: {}</br>Ngôn ngữ: {}</h2><br/>Có thể F5 để submit lại'
             .format(submission.id, problem.shortname, problem.fullname, request.user.username, language.name))
     elif request.method == 'GET':

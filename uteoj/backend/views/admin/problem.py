@@ -333,7 +333,8 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
                         list_message_error.append('Test \'{}\' thiếu file output [{}]'.format(testcase[:-1], testcase_output_file_name))
                     else:
                         testcase_output_file_name = reverse_all_path[testcase_output_file_name.lower()]
-                    
+                    if len(list_message_error) > 5:
+                        break
                     list_input.append(testcase_input_file_name)
                     list_output.append(testcase_output_file_name)
                 if len(list_message_error) != 0:
@@ -347,8 +348,6 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
                     except: pass
                     try:
                         os.mkdir(os.path.join(settings.MEDIA_ROOT, folderpath))
-                        os.mkdir(os.path.join(settings.MEDIA_ROOT, folderpath, 'input'))
-                        os.mkdir(os.path.join(settings.MEDIA_ROOT, folderpath, 'output'))
                     except: pass
                     problem.problemtestcasemodel_set.all().delete()
                     for tmp_id in range(0, len(list_testcases_folder), 1):
@@ -357,20 +356,24 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
                         zip_output = list_output[tmp_id]
 
                         id = tmp_id + 1
+                        os.mkdir(os.path.join(settings.MEDIA_ROOT, 'problems', str(problem.id), 'tests', zip_folder))
 
                         #update database
-                        testdb = problem.problemtestcasemodel_set.create(problem=problem, time_limit=problem_grader.time_limit,
+                        testdb = problem.problemtestcasemodel_set.create(
+                            problem=problem,
+                            time_limit=problem_grader.time_limit,
                             memory_limit=problem_grader.time_limit, points=1.0,
-                            input_file='problems/{}/tests/input/input{}.txt'.format(problem.id, str(id).zfill(3)),
-                            output_file='problems/{}/tests/output/output{}.txt'.format(problem.id, str(id).zfill(3)))
+                            name=zip_folder.strip('/').strip('\\'),
+                            input_file=os.path.join('problems', str(problem.id), 'tests', zip_folder, problem.problemgradermodel.input_filename),
+                            output_file=os.path.join('problems', str(problem.id), 'tests', zip_folder, problem.problemgradermodel.output_filename))
                         testdb.save()
 
                         #write input
-                        with open(os.path.join(settings.MEDIA_ROOT, folderpath, 'input/input{}.txt'.format(str(id).zfill(3))), 'wb') as f:
+                        with open(os.path.join(settings.MEDIA_ROOT, 'problems', str(problem.id), 'tests', zip_folder, problem.problemgradermodel.input_filename), 'wb') as f:
                             f.write(z.read(zip_input))
 
                         #write output
-                        with open(os.path.join(settings.MEDIA_ROOT, folderpath, 'output/output{}.txt'.format(str(id).zfill(3))), 'wb') as f:
+                        with open(os.path.join(settings.MEDIA_ROOT, 'problems', str(problem.id), 'tests', zip_folder, problem.problemgradermodel.output_filename), 'wb') as f:
                             f.write(z.read(zip_output))
                     messages.add_message(request, messages.SUCCESS, 'Tải lên thành công')
             
@@ -383,6 +386,7 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
         return HttpResponse(test)
     else:
         return HttpResponse(status=405)
+
 
 @admin_member_required
 @never_cache
@@ -522,6 +526,9 @@ def AdminEditProblemSettingsview(request, problem_short_name):
 
         return render(request, 'admin-template/problem/edit/settings.html', context)
 
+import os
+from judger.grader import CppGrader
+
 @admin_member_required
 def AdminEditProblemCustomCheckerview(request, problem_short_name):
     filter_problem = ProblemModel.objects.filter(shortname=problem_short_name)
@@ -541,13 +548,30 @@ def AdminEditProblemCustomCheckerview(request, problem_short_name):
         use_checker = True if 'use_checker' in request.POST else False
         checker_source = str(request.POST['checker_source'])
 
+        context = {}
+        context['checker_source'] = checker_source
+        context['use_checker'] = use_checker
+
+        # biên dịch
+        if use_checker:
+            grader = CppGrader(None, None)
+            os.system('mkdir -p ' + os.path.join(settings.MEDIA_ROOT, 'problems/{}/checker'.format(problem.id)))
+            os.system('cp checker/testlib.h ' + os.path.join(settings.MEDIA_ROOT, 'problems/{}/checker/testlib.h'.format(problem.id)))
+            with open(os.path.join(settings.MEDIA_ROOT, 'problems/{}/checker/checker.cpp'.format(problem.id)), 'w', encoding='utf-8') as f:
+                f.write(checker_source)
+            result, msg = grader.compileChecker(os.path.join(settings.MEDIA_ROOT, 'problems/{}'.format(problem.id)))
+            if not result:
+                messages.add_message(request, messages.ERROR, 'Biên dịch gặp lỗi')
+                context['compile_error'] = msg
+                return render(request, 'admin-template/problem/edit/checker.html', context)
+            
         problem_grader.use_checker = use_checker
         problem_grader.checker = checker_source
         problem_grader.save()
 
         messages.add_message(request, messages.SUCCESS, 'Cập nhật thành công')
 
-        return HttpResponseRedirect(request.path_info)
+        return render(request, 'admin-template/problem/edit/checker.html', context)
 
     elif request.method == 'GET':
         context = {
@@ -566,7 +590,7 @@ from django.db.models import Max, Count
 @admin_member_required
 def AdminListProblemView(request):
     with transaction.atomic():
-        problem_models_filter = ProblemModel.objects
+        problem_models_filter = ProblemModel.objects.order_by('-id')
         tmp = time()
         if request.method == 'GET':
             if 'problem_type' in request.GET:

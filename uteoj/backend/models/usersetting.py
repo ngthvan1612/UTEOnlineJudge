@@ -84,8 +84,7 @@ def context_processors_user_setting(request):
     }
 
 class UserProblemStatisticsModel(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    problem = models.ForeignKey(ProblemModel, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     totalSubmission = models.IntegerField(default=0)
     solvedCount = models.IntegerField(default=0)
     waCount = models.IntegerField(default=0)
@@ -95,23 +94,20 @@ class UserProblemStatisticsModel(models.Model):
     ceCount = models.IntegerField(default=0)
 
     @staticmethod
-    def createStatIfNotExists(user:User, problem:ProblemModel):
-        setting_filter = UserProblemStatisticsModel.objects.filter(user=user,problem=problem)
+    def createStatIfNotExists(user:User):
+        setting_filter = UserProblemStatisticsModel.objects.filter(user=user)
         if not setting_filter.exists():
-            new_setting = UserProblemStatisticsModel.objects.create(user=user,problem=problem)
+            new_setting = UserProblemStatisticsModel.objects.create(user=user)
             new_setting.save()
 
     @staticmethod
-    def getStat(user:User, problem:ProblemModel):
-        setting_filter = UserProblemStatisticsModel.objects.filter(user=user,problem=problem)
+    def getStat(user:User):
+        setting_filter = UserProblemStatisticsModel.objects.filter(user=user)
         if not setting_filter.exists():
-            return UserProblemStatisticsModel.createStatIfNotExists(user,problem=problem)
+            return UserProblemStatisticsModel.createStatIfNotExists(user)
         return setting_filter[0]
     
-    class Meta:
-        unique_together = ('user', 'problem')
-    
     def __str__(self) -> str:
-        return self.user.username + ' ----- ' + self.problem.shortname + ' -> total = ' + str(self.solvedCount)
+        return self.user.username + ' ----- '  + ' -> total = ' + str(self.solvedCount)
 
 
