@@ -5,8 +5,7 @@ from backend.models.language import LanguageModel
 import sys
 import inspect
 
-from judger.grader import CppGrader, JavaGrader, PythonGrader
-from judger.grader import GraderAbstract
+from judger.grader import *
 
 class Command(BaseCommand):
 
@@ -64,7 +63,7 @@ class Command(BaseCommand):
                         print('+ Thêm ngôn ngữ: class={}, name={}'.format(entry.class_name, entry.name))
                     else:
                         for entry in entries:
-                            print('# Sửa ngôn ngữ: class={}, name={}'.format(entry.class_name, entry.name))
+                            print('# Cập nhật ngôn ngữ: class={}, name={}'.format(entry.class_name, entry.name))
                             entry.class_name = name
                             entry.name = obj._name
                             entry.ext = obj._extension
@@ -74,3 +73,5 @@ class Command(BaseCommand):
                             entry.execute_name = obj._execute_name
                             entry.save()
         
+
+

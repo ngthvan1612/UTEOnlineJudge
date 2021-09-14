@@ -84,7 +84,6 @@ class OIScore(ScoreAbstract):
         self._result = SubmissionResultType.AC
 
     def onCompileError(self):
-        self._check()
         self._canContinue = False
         self._result = 'CE'
 
@@ -97,7 +96,7 @@ class OIScore(ScoreAbstract):
     def onCompleted(self):
         problemScore = 0.0
         
-        for testcase in self._problem.problemtestcasemodel.objects.all():
+        for testcase in self._problem.problemtestcasemodel_set.all():
             problemScore += testcase.points
         eps = 0.000001
 

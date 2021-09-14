@@ -183,7 +183,16 @@ STATICFILES_DIRS = [
 COMPILE_ROOT = 'tmp/compile/'
 RUNNING_ROOT = 'tmp/run/'
 
+# User chạy chương trình
+import pwd, grp
+
+COMPILER_UID = pwd.getpwnam('uteoj_compiler').pw_gid
+COMPILER_GID = grp.getgrnam('uteoj_compiler').gr_gid
+
+RUN_UID = pwd.getpwnam('uteoj_run').pw_gid
+RUN_GID = grp.getgrnam('uteoj_run').gr_gid
 
 # Default primary key field type ----------------------------------------------------------------------
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

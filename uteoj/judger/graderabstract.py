@@ -6,6 +6,7 @@ from posixpath import commonpath
 from re import sub
 from typing import Tuple, overload
 from subprocess import check_output
+from django.conf import settings
 
 from django.utils import timezone
 from django.db import transaction
@@ -32,12 +33,11 @@ class GraderAbstract(ABC):
     def __init__(self, compiler_workdir, run_workdir) -> None:
         self._compiler_workdir = compiler_workdir
         self._run_workdir = run_workdir
-        print('---> Init grader for {}'.format(self._name))
 
     def _prepare(self, source_code):
         #write
-        open(os.path.join(self._compiler_workdir, 'main.cpp'), 'w', encoding='utf-8').write(source_code)
-        self._source_file_name = 'main.cpp'
+        open(os.path.join(self._compiler_workdir, 'main' + self._extension), 'w', encoding='utf-8').write(source_code)
+        self._source_file_name = 'main' + self._extension
 
     def _compileSource(self):
         file_name_without_ext, ext = os.path.splitext(self._source_file_name)
@@ -66,7 +66,7 @@ class GraderAbstract(ABC):
 
     @staticmethod    
     def compileChecker(problem_dir):
-        raw_command = '/usr/bin/g++ -std=c++14 -O2 -Wall checker.cpp -o checker'
+        raw_command = '/usr/bin/g++ -std=c++14 -O2 -Wall checker.cpp -o checker.tmp'
         command = [x for x in raw_command.split() if x]
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE, cwd=os.path.join(problem_dir, 'checker'))
         process_stdout, process_stderr = process.communicate()
@@ -76,6 +76,8 @@ class GraderAbstract(ABC):
 
         if exit_code == 0:
             # Success
+            os.system('rm -rf ' + os.path.join(problem_dir, 'checker', 'checker'))
+            os.rename(os.path.join(problem_dir, 'checker', 'checker.tmp'), os.path.join(problem_dir, 'checker', 'checker'))
             return (True, '')
         
         #Failed
@@ -115,13 +117,13 @@ class GraderAbstract(ABC):
                 exe_path=command[0],
                 input_path=input,
                 output_path=output + '',
-                error_path='err.txt',
+                error_path='/dev/null',
                 args=command[1:],
                 env=[],
                 log_path='/dev/null',
                 seccomp_rule_name=None,
-                uid=0,
-                gid=0,
+                uid=settings.RUN_UID,
+                gid=settings.RUN_GID,
                 workDir=workDir,
                 memory_limit_check_only=1)
         
@@ -193,6 +195,7 @@ class GraderAbstract(ABC):
             submission.status = SubmissionStatusType.Completed # Xong
             submission.compile_message = compile_err
             submission.save()
+            scorer.onCompleted()
             return (status, result, 0, 0, compile_err)
         
         # CHẤM BÀI -------------------------------------------------------------------------------------
@@ -262,6 +265,7 @@ class GraderAbstract(ABC):
                     scorer.onWrongAnswer()
                 else: # ACCEPT ---------------------------------------------------------
                     submission_result.points = testcase.points
+                    submission_result.checker_message = checker_message
                     submission_result.result = SubmissionResultType.AC
                     submission_result.save()
                     scorer.onAccept(testcase.points)

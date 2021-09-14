@@ -1,4 +1,5 @@
 from hashlib import md5
+from re import sub
 from backend.models.language import LanguageModel
 from datetime import datetime
 from backend.models.usersetting import UserProblemStatisticsModel
@@ -19,6 +20,8 @@ from backend.models.filemanager import OverwriteStorage
 from judger.grader import *
 import inspect
 import sys
+
+from termcolor import colored
 
 logger = get_task_logger(__name__)
 
@@ -235,18 +238,18 @@ def SubmitSolution(submission_id:int) -> None:
             if obj._name == language.name:
                 #make compile & run directory
                 hash = RandomShuffleName(submission.id)
-                compile_dir = os.path.join(settings.MEDIA_ROOT, 'compiler', hash)
-                run_dir = os.path.join(settings.MEDIA_ROOT, 'run', hash)
+                compile_dir = os.path.join(settings.COMPILE_ROOT, 'compiler', hash)
+                run_dir = os.path.join(settings.RUNNING_ROOT, 'run', hash)
                 os.system('mkdir -p {}'.format(compile_dir))
                 os.system('mkdir -p {}'.format(run_dir))
                 grader = obj(compile_dir, run_dir)
     if grader == None:
         #SYSTEM ERROR
-        raise Exception('SYSTEM ERROR')
+        raise Exception('SYSTEM ERROR: NOT FOUND LANGUAGE')
 
     #starting
     #print('Đang chấm bài tập {} của {}, ngon ngu: {}'.format(problem.fullname, user.username, language.name))
-    logger.info('Đang chấm bài tập {} của {}, ngon ngu: {}, id = {}'.format(problem.fullname, user.username, language.name, submission))
+    logger.warning(colored('Đang chấm bài tập #{}'.format(submission.id), 'green'))
     submission.submission_judge_date = timezone.localtime(timezone.now())
 
     #grading ------------------------------------------------
@@ -266,11 +269,10 @@ def SubmitSolution(submission_id:int) -> None:
     # erase disk
     try:
         # remove compile dir
-        #os.system('rm -rf {}'.format(os.path.join(settings.MEDIA_ROOT, 'compiler', hash)))
+        os.system('rm -rf {}'.format(os.path.join(settings.COMPILE_ROOT, 'compiler', hash)))
 
         # remove run dir
-        #os.system('rm -rf {}'.format(os.path.join(settings.MEDIA_ROOT, 'run', hash)))
-        pass
+        os.system('rm -rf {}'.format(os.path.join(settings.RUNNING_ROOT, 'run', hash)))
     except: pass
-    logger.info('Chấm xong bài tập {} của {}, ngon ngu: {}, id = {}'.format(problem.fullname, user.username, language.name, submission))
+    logger.warning(colored('Chấm xong bài tập #{}'.format(submission.id), 'red'))
 

@@ -526,6 +526,9 @@ def AdminEditProblemSettingsview(request, problem_short_name):
 
         return render(request, 'admin-template/problem/edit/settings.html', context)
 
+import os
+from judger.grader import CppGrader
+
 @admin_member_required
 def AdminEditProblemCustomCheckerview(request, problem_short_name):
     filter_problem = ProblemModel.objects.filter(shortname=problem_short_name)
@@ -545,13 +548,30 @@ def AdminEditProblemCustomCheckerview(request, problem_short_name):
         use_checker = True if 'use_checker' in request.POST else False
         checker_source = str(request.POST['checker_source'])
 
+        context = {}
+        context['checker_source'] = checker_source
+        context['use_checker'] = use_checker
+
+        # biên dịch
+        if use_checker:
+            grader = CppGrader(None, None)
+            os.system('mkdir -p ' + os.path.join(settings.MEDIA_ROOT, 'problems/{}/checker'.format(problem.id)))
+            os.system('cp checker/testlib.h ' + os.path.join(settings.MEDIA_ROOT, 'problems/{}/checker/testlib.h'.format(problem.id)))
+            with open(os.path.join(settings.MEDIA_ROOT, 'problems/{}/checker/checker.cpp'.format(problem.id)), 'w', encoding='utf-8') as f:
+                f.write(checker_source)
+            result, msg = grader.compileChecker(os.path.join(settings.MEDIA_ROOT, 'problems/{}'.format(problem.id)))
+            if not result:
+                messages.add_message(request, messages.ERROR, 'Biên dịch gặp lỗi')
+                context['compile_error'] = msg
+                return render(request, 'admin-template/problem/edit/checker.html', context)
+            
         problem_grader.use_checker = use_checker
         problem_grader.checker = checker_source
         problem_grader.save()
 
         messages.add_message(request, messages.SUCCESS, 'Cập nhật thành công')
 
-        return HttpResponseRedirect(request.path_info)
+        return render(request, 'admin-template/problem/edit/checker.html', context)
 
     elif request.method == 'GET':
         context = {
