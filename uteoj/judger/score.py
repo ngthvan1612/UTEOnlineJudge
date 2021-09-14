@@ -70,7 +70,7 @@ class ACMScore(ScoreAbstract):
                     problemStatistics.mleCount = problemStatistics.mleCount + 1
                 elif self._result == SubmissionResultType.RTE:
                     problemStatistics.rteCount = problemStatistics.rteCount + 1
-                elif self.result == SubmissionResultType.CE:
+                elif self._result == SubmissionResultType.CE:
                     problemStatistics.ceCount = problemStatistics.ceCount + 1
                 else:
                     raise Exception('SYSTEM ERROR')
