@@ -1,9 +1,5 @@
+{%extends 'user-template/_layout/base.html' %}
 {%load static%}
-<html>
-    <head>
-        <link rel="stylesheet" href="{% static 'user/css/main.css'%}">
-    </head>
-    <body>
-        User
-    </body>
-</html>
+{%block website_content %}
+    User
+{% endblock %}

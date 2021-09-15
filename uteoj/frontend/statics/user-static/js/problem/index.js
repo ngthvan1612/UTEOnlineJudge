@@ -244,5 +244,6 @@ function goNewPage(page, orderString) {
         else query += "&" + listQuery[i];
     }
 
-    window.location = "/admin/problems/?" + query;
+    console.log(query);
+    window.location = "/problems?" + query;
 }
