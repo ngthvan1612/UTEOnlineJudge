@@ -36,9 +36,11 @@
 						<li class="nav-item">
 							<a class="nav-link" href="testcases">Test Case</a>
 						</li>
+						<!--
 						<li class="nav-item">
 							<a class="nav-link" href="languages">Languages</a>
 						</li>
+						-->
 						<li class="nav-item">
 							<a class="nav-link" href="settings">Setting</a>
 						</li>
@@ -55,8 +57,8 @@
                                     <input type="checkbox" class="custom-control-input" id="checker" {%if use_checker%} checked {%endif%} onchange="changeCheck()">
                                     <label class="custom-control-label" for="checker">Use Checker</label>
                                 </div>
-
                                 <div class="Source"> 
+									<!--
                                     <div class="select-languages">
                                         <div class="input-group mb-3 select-language">
                                             <div class="input-group-prepend">
@@ -69,9 +71,12 @@
                                                 <option value="node">NodeJS</option>
                                             </select>
                                         </div>
-                                    </div>                                       
+                                    </div>     
+									-->                                  
                                     <textarea id="checkerSource" style="display: none;">{{checker_source}}</textarea>
-                                    <div class="editor" id="editor"></div>
+									<div>
+                                    	<div class="editor" id="editor"></div>
+									</div>
                                 </div>
                                 <!--Submit-->
                                 <div class="col-12" style="margin-top: 50px;">
@@ -99,8 +104,8 @@
 
 <script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
 <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
-<script src="{% static 'problem/js/editProblemChecker.js'%}"></script>
 <script src="{% static 'plugins/aceJS/lib/ace.js' %}"></script>
 <script src="{% static 'plugins/aceJS/lib/theme-monokai.js' %}"></script>
+<script src="{% static 'problem/js/editProblemChecker.js'%}"></script>
 <!-- /.content -->
 {%endblock%}

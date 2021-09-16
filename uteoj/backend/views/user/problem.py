@@ -141,7 +141,6 @@ def UserSubmitSolution(request, shortname):
         if len(final_source) == 0:
             messages.add_message(request, messages.ERROR, 'Mã nguồn không được để trống')
             return HttpResponseRedirect(request.path_info)
-
         submission = SubmissionModel.objects.create(
             user=request.user,
             problem=problem,
@@ -150,7 +149,7 @@ def UserSubmitSolution(request, shortname):
             language=language)
         submission.status = SubmissionStatusType.InQueued
         submission.save()
-        
+
         SubmitSolution.delay(submission.id)
         return redirect('/submissions')
     elif request.method == 'GET':
