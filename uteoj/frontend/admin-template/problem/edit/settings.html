@@ -36,9 +36,11 @@
 						<li class="nav-item">
 							<a class="nav-link" href="testcases">Test Case</a>
 						</li>
+						<!--
 						<li class="nav-item">
 							<a class="nav-link" href="languages">Languages</a>
 						</li>
+						-->
 						<li class="nav-item">
 							<a class="nav-link active" href="settings">Setting</a>
 						</li>
@@ -89,7 +91,14 @@
 													{%endfor%}
 												</select>
 											</div>
-											
+											<div class="input-group mb-3"> <!--- FIX LAI NEU CAN -->
+												<span class="input-group-text" style="width: 150px;">Problem type</span>
+												<select  name="problem_type" class="custom-select">
+													{%for  x  in  problem_type_choices%}
+														<option  value="{{x.value}}"  {%if  problem_type  ==  x.value%}selected{%endif%}>{{x.display}}</option>
+													{%endfor%}
+												</select>
+											</div>
 										</div>
 										<div class="col-12 mb-3">
 											<div class="text-center">

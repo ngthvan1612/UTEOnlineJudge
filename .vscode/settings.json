@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "env-ubuntu/bin/python",
+    "python.pythonPath": "",
     "liveServer.settings.port": 5501,
     "git.ignoreLimitWarning": true,
     "cSpell.ignoreWords": [

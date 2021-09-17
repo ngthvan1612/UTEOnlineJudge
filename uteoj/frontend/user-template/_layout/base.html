@@ -1,1 +1,30 @@
-TEST
+{% load static %}
+<!-- Phai co dong nay !!! -->
+<html>
+	<head>
+		<title>{{website_header_title}}</title>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css'%}"/>
+		<link rel="stylesheet" href="{% static 'plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}"/>
+		<link rel="stylesheet" href="{% static 'admin-static/css/base.css'%}" />
+        <link rel="stylesheet" href="{% static 'user-static/css/base.css'%}" />
+		<!-- <meta name="viewport" content="width=device-width"> -->
+	</head>
+	<body style="margin-left: 0px"> 
+		<div class="wrapper">
+			{%include 'user-template/_layout/navbar.html' %} 
+			<div class="content-wrapper" style="height: auto;">
+				<!-- Main content -->
+					{%block website_content%} {%endblock%} 
+			</div>
+		</div>
+		
+		{%include 'user-template/_layout/footer.html' %} 
+		
+		<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+		<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+		<script src="{% static 'plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+		<script src="{% static 'admin-static/js/base.min.js'%}"></script>
+    </body>
+</html>

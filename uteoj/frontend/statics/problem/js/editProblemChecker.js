@@ -1,12 +1,8 @@
-let editor;
 let value = document.getElementById("checkerSource").textContent;
-
-window.onload = function() {
-    editor = ace.edit("editor");
-    editor.setTheme("ace/theme/monokai");
-    editor.session.setMode("ace/mode/c_cpp");
-    editor.setValue(value);
-}
+var editor = ace.edit("editor");
+editor.setTheme("ace/theme/monokai");
+editor.session.setMode("ace/mode/c_cpp");
+editor.setValue(value);
 
 function changeLanguage() {
 

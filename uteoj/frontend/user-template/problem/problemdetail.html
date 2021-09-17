@@ -1,0 +1,98 @@
+{%extends 'user-template/_layout/base.html'%}
+{%load static%}
+{%block website_content%}
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+        extensions: ["tex2jax.js"],
+        tex2jax: {inlineMath: [ ['$','$'], ["\\(","\\)"] ],processEscapes: true},
+        CommonHTML: {
+            scale: 100
+        }
+        });
+    </script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+ 
+    <div class="container">
+        <div class="row">
+            <h2 style="text-align:center;color:blue;">{{problem.fullname}}</h2>
+            <div class="text-center">
+                time limit per test: {{problem.problemgradermodel.time_limit}}ms
+                </br>
+                memory limit per test: {{problem.problemgradermodel.memory_limit}}KB
+                </br>
+                input:
+                    {%if problem.problemgradermodel.use_stdin %}
+                        Standard input
+                    {%else%}
+                        {{problem.problemgradermodel.input_filename}}
+                    {%endif%}
+                </br>
+                output:
+                    {%if problem.problemgradermodel.use_stdout %}
+                        Standard output
+                    {%else%}
+                        {{problem.problemgradermodel.output_filename}}
+                    {%endif%}
+                </br>
+                author:
+                {%for author in problem.author.all%}
+                    {{author}},
+                {%endfor%}
+                </br>
+                difficult: {{problem.difficult}}
+                </br>
+                tags:
+                {%for cate in problem.categories.all%}
+                {{cate}},
+                {%endfor%}
+                </br>
+                </br>
+                <div>
+                    <script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+                    <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+                        Total: {{problem.problemstatisticsmodel.totalSubmission}}</br>
+                        AC: {{problem.problemstatisticsmodel.solvedCount}}</br>
+                        WA: {{problem.problemstatisticsmodel.waCount}}</br>
+                        RTE: {{problem.problemstatisticsmodel.rteCount}}</br>
+                        MLE: {{problem.problemstatisticsmodel.mleCount}}</br>
+                        TLE: {{problem.problemstatisticsmodel.tleCount}}</br>
+                        TLE: {{problem.problemstatisticsmodel.ceCount}}</br>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <h4>Statement:</h4>
+            <br/>
+            <div id="statement">{{problem.problemsettingmodel.statement}}</div>
+            <hr/>
+        </div>
+        <div class="row">
+            <h4>Input:</h4>
+            <br/>
+            <div>
+                {{problem.problemsettingmodel.input_statement}}
+            </div>
+            <hr/>
+        </div>
+        <div class="row">
+            <h4>Constraints:</h4>
+            <br/>
+            <div>
+                {{problem.problemsettingmodel.constraints_statement}}
+            </div>
+            <hr/>
+        </div>
+        <div class="row">
+            <h4>Output:</h4>
+            <br/>
+            <div>
+                {{problem.problemsettingmodel.output_statement}}
+            </div>
+            <hr/>
+        </div>
+    </div>
+    <script>
+        document.getElementById('statement').innerHTML = marked(document.getElementById('statement').innerHTML);
+    </script>
+{%endblock%}

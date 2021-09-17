@@ -34,9 +34,11 @@
                             <li class="nav-item">
                                 <a class="nav-link active" href="testcases">Test Case</a>
                             </li>
+                            <!--
                             <li class="nav-item">
                                 <a class="nav-link" href="languages">Languages</a>
                             </li>
+                            -->
                             <li class="nav-item">
                                 <a class="nav-link" href="settings">Setting</a>
                             </li>
@@ -50,50 +52,48 @@
             <div class="row  justify-content-center" id ="tableData">
                 <div class="col-8">
                     <h2 style="margin-top: 10px;">{{problem.shortname}}</h2>
-
-                    <table class="table table-hover table-bordered" style="margin-top: 20px">
-                        <thead>
-                            <tr>
-                            <th scope="col">Testcase</th>
-                            <th scope="col">Input</th>
-                            <th scope="col">Output</th>
-                            <th scope="col">Time Limit</th>
-                            <th scope="col">Memory Limit</th>
-                            <th scope="col">Points</th>
-                            <th scope="col">Tag</th>
-                            <th scope="col">Is Sample</th>
-                            <th scope="col" style="width: 70px; text-align: center">Edit</th>
-                            <th scope="col" style="width: 70px;">Delete</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {%for x in list_testcases %}
-                                <tr style="align-items: center;">
-                                    <td scope="row">{{x.id}}</td>
-                                    <td><a href="{{x.input_file}}">input{{x.id}}</a></td>
-                                    <td><a href="{{x.output_file}}">output{{x.id}}</a></td>
-                                    <td>{{x.time_limit}} (ms)</td>
-                                    <td>{{x.memory_limit}} (Kb)</td>
-                                    <td>{{x.points}}</td>
-                                    <td>{{x.tag}}</td>
-                                    <td>
-                                        <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" id="is_sample" {%if problem.is_sample%} checked {%endif%} name="is_sample">
-                                            <label class="custom-control-label" for="is_sample"></label>
-                                          </div>
-                                    </td>
-                                    <td style="text-align: center; padding: 0.25rem"><a class="btn btn-warning"href="testcases/edit/{{x.pk}}"><i class="fas fa-edit"></i></a></td>
-                                    <td style="text-align: center; padding: 0.25rem"><button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="updateInfo('{{problem.shortname}}', '{{x.pk}}')"><i class="fas fa-trash"></i></button></td>
-                                </tr>
-                            {%endfor%}
-                        </tbody>
-                    </table>
-
                     <form method="post" url="">
+                        <table class="table table-hover table-bordered" style="margin-top: 20px">
+                            <thead>
+                                <tr>
+                                <th scope="col">Testcase</th>
+                                <th scope="col">Input</th>
+                                <th scope="col">Output</th>
+                                <th scope="col">Time Limit</th>
+                                <th scope="col">Memory Limit</th>
+                                <th scope="col">Points</th>
+                                <th scope="col">Tag</th>
+                                <th scope="col">Is Sample</th>
+                                <th scope="col" style="width: 70px; text-align: center">Edit</th>
+                                <th scope="col" style="width: 70px;">Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {%for x in list_testcases %}
+                                    <tr style="align-items: center;">
+                                        <td scope="row">{{x.id}}</td>
+                                        <td><a href="{{x.input_file}}">input{{x.id}}</a></td>
+                                        <td><a href="{{x.output_file}}">output{{x.id}}</a></td>
+                                        <td>{{x.time_limit}} (ms)</td>
+                                        <td>{{x.memory_limit}} (Kb)</td>
+                                        <td>{{x.points}}</td>
+                                        <td>{{x.tag}}</td>
+                                        <td>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="is_sample_{{x.id}}" {%if problem.is_sample%} checked {%endif%} name="is_sample_{{x.id}}">
+                                                <label class="custom-control-label" for="is_sample_{{x.id}}"></label>
+                                            </div>
+                                        </td>
+                                        <td style="text-align: center; padding: 0.25rem"><a class="btn btn-warning"href="testcases/edit/{{x.pk}}"><i class="fas fa-edit"></i></a></td>
+                                        <td style="text-align: center; padding: 0.25rem"><button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="updateInfo('{{problem.shortname}}', '{{x.pk}}')"><i class="fas fa-trash"></i></button></td>
+                                    </tr>
+                                {%endfor%}
+                            </tbody>
+                        </table>
                         {% csrf_token %}
                         <div class="col-12">
                             <div class="text-center">
-                                <input class="btn btn-primary" type="submit" value="Save change">
+                                <input class="btn btn-primary" type="submit" value="Save change 1">
                             </div>
                         </div>
                     </form>

@@ -116,13 +116,16 @@ function updateFilter() {
     var categoryBoxes = document.getElementsByClassName("listCatgories")[0];
     var selectType = document.getElementById("selectType");
     var searchBox = document.getElementById("search");
+    var minBox = document.getElementById("minDifficult");
+    var maxBox = document.getElementById("maxDifficult");
 
     var urlSearchParams = new URLSearchParams(window.location.search);
     var params = Object.fromEntries(urlSearchParams.entries())
 
+    console.log(params);
 
-    if (params["categories"] != null) {
-        var categories = params["categories"].split(',');
+    if (params["category"] != null) {
+        var categories = params["category"].split(',');
 
         for (var item of categories)
             categoryBoxes.appendChild(createNewCategory(item));
@@ -134,8 +137,21 @@ function updateFilter() {
         else selectType.selectedIndex = 2;
     }
 
-    if (params["problemnamelike"] != null) {
-        searchBox.value = params["problemnamelike"];
+    if (params["name"] != null) {
+        searchBox.value = params["name"];
+    }
+
+    if (params["difficult"] != null) {
+        var minMax = (params["difficult"]).split(',');
+        var min = new Number(minMax[0]);
+        var max = new Number(minMax[1]);
+        
+        if (min == 0) minBox.value = '';
+        else minBox.value = minMax[0];
+        if (max == 10) maxBox.value = '';
+        else maxBox.value = minMax[1];
+
+        console.log(min, max);
     }
 }
 
@@ -173,13 +189,15 @@ function goNewPage(page, orderString) {
     var searchBox = document.getElementById("search");
     var selectedBox = document.getElementById("selectType");
     var categoryAdds = document.getElementsByClassName("categoryAdd");
+    var minBox = document.getElementById("minDifficult");
+    var maxBox = document.getElementById("maxDifficult");
 
     var urlSearchParams = new URLSearchParams(window.location.search);
     var params = Object.fromEntries(urlSearchParams.entries())
 
     /*Cagetory*/
     var category = ""
-    if (categoryAdds.length != 0) category = "categories=";
+    if (categoryAdds.length != 0) category = "category=";
     for (var i = 0; i < categoryAdds.length; i++) {
         if (i == 0) category += categoryAdds[i].name
         else category += "," + categoryAdds[i].name
@@ -192,7 +210,7 @@ function goNewPage(page, orderString) {
 
     /*Problem Name*/
     var problem_name = "";
-    if (searchBox.value != "") problem_name = "problemnamelike=" + searchBox.value;
+    if (searchBox.value != "") problem_name = "name=" + searchBox.value;
 
     /*Order*/
     var order = "";
@@ -200,6 +218,16 @@ function goNewPage(page, orderString) {
         if (params["orderby"] == "difficult") order = "orderby=difficult"
         else order = "orderby=-difficult"
     }
+
+    /*Difficult*/
+    var difficult = "";
+    if (minBox.value != "") difficult = "difficult="+minBox.value;
+    if (maxBox.value != ""){
+        if (difficult == "") difficult = "difficult=0,"+maxBox.value;
+        else difficult += ","+maxBox.value;
+    }
+    else if (difficult != "") difficult += ","+maxBox.value;
+
     var listQuery = [];
     var query = "";
 
@@ -209,6 +237,7 @@ function goNewPage(page, orderString) {
     if (category != "") listQuery.push(category);
     if (problem_type != "") listQuery.push(problem_type);
     if (problem_name != "") listQuery.push(problem_name);
+    if (difficult != "") listQuery.push(difficult);
 
     for (var i = 0; i < listQuery.length; i++) {
         if (i == 0) query += listQuery[i];

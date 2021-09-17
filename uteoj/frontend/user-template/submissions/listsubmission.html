@@ -1,0 +1,125 @@
+{%extends 'user-template/_layout/base.html' %}
+{%load static%}
+{%block website_content %}
+    <!-- Content Header (Page header) -->
+	<div class="content-header">
+		<div class="container-fluid">
+			<div class="row mb-2">
+				<div class="col-sm-6">
+					<ol class="breadcrumb float-sm-left">
+						<li class="breadcrumb-item"><a href="/submissions">Status</a></li>
+					</ol>
+				</div>
+			</div>
+			{%include 'admin-template/_layout/error_handle.html' %} 
+				{%block error_handle %}{%endblock%}
+		</div>
+	</div>
+	<!-- /.content-header -->
+    <div class="content">
+		<div class="container-fluid">
+            <div class="row justify-content-md-center">
+                <div class="col col-xl-9">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                          <tr class="text-center">
+                            <th scope="col" style="width: 4.5rem">#</th>
+                            <th scope="col">User</th>
+                            <th scope="col">Problem</th>
+                            <th scope="col">Time</th>
+                            <th scope="col">Judge Time</th>
+                            <th scope="col">Language</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Memory</th>
+                            <th scope="col">Time Execute</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            {%for submission in page_obj%}
+                            <tr>
+                                <td class="text-center"><a style="text-decoration:none;" href="/submissions/{{submission.id}}">{{submission.id}}</a></td>
+                                <td><a style="text-decoration:none;" href="/profile/{{submission.user.username}}">{{submission.user.username}}</a></td>
+                                <td><a style="text-decoration:none;" href="/problem/{{submission.problem.shortname}}">{{submission.problem.fullname}}</a></td>
+                                <td>{{submission.submission_date}}</td>
+                                <td>
+                                    {%if submission.submission_judge_date%}
+                                        {{submission.submission_judge_date}}
+                                    {%else%}
+                                        Chưa chấm
+                                    {%endif%}
+                                </td>
+                                <td class="text-center">{{submission.language.name}}</td>
+                                <td class="text-center text-bold">
+                                    {%if submission.status == SUBMISSION_STATUS_TYPE.InQueued%}
+                                        Waiting for submission
+                                    {%elif submission.status == SUBMISSION_STATUS_TYPE.Compiling%}
+                                        Compiling
+                                    {%elif submission.status == SUBMISSION_STATUS_TYPE.Grading%}
+                                        Running on (Test #{{submission.lastest_test}})
+                                    {%else%}
+                                        {%if submission.problem.problem_type == PROBLEM_TYPE.OI%}
+                                            {%if submission.result == SUBMISSION_RESULT_TYPE.CE%}
+                                                <a style="color:red;">Compilation error</a>
+                                            {%else%}
+                                                <a style="color:darkgreen;">{{submission.points}} / {{submission.problem.totalPoints}} points</a>
+                                            {%endif%}
+                                        {%else%}
+                                            {%if submission.result == SUBMISSION_RESULT_TYPE.CE%}
+                                                <a style="color:red;">Compilation error</a>
+                                            {%elif submission.result == SUBMISSION_RESULT_TYPE.AC%}
+                                                <a style="color:green;">Accepted</a>
+                                            {%elif submission.result == SUBMISSION_RESULT_TYPE.TLE%}
+                                                <a style="color:#98A927;">Time limit exceeded on test {{submission.lastest_test}}</a>
+                                            {%elif submission.result == SUBMISSION_RESULT_TYPE.MLE%}
+                                                <a style="color:#98A927;">Memory limit exceeded on test {{submission.lastest_test}}</a>
+                                            {%elif submission.result == SUBMISSION_RESULT_TYPE.WA%}
+                                                <a style="color:red;">Wrong answer on test {{submission.lastest_test}}</a>
+                                            {%else%}
+                                                <a style="color:red;">Runtime error on test {{submission.lastest_test}} </a>
+                                            {%endif%}
+                                        {%endif%}
+                                    {%endif%}
+                                </td>
+                                <td class="text-center">{%if submission.memory_usage != None%}{{submission.memory_usage}} KB{%endif%}</td>
+                                <td class="text-center">{%if submission.executed_time != None%}{{submission.executed_time}} ms{%endif%}</td>
+                            </tr>
+                        {%endfor%}
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+            <div class="row  justify-content-md-center">
+                <div>
+                    <input type="hidden" id="page_current" value="{{page_obj.number}}">
+                    <input type="hidden" id="page_total" value="{{page_obj.paginator.num_pages}}">
+                    <nav aria-label="Page navigation example" style="margin-top: 2rem;">
+                        <ul class="pagination justify-content-center" id="Pagination">
+                            <li class="page-item" id="first" onclick="goFirst()">
+                                <a class="page-link" href = "javascript:;" tabindex="-1" style="height: 38px;">
+                                    <i class="fas fa-angle-double-left" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" id="previous" onclick="previous()">
+                                <a class="page-link" href="javascript:;" style="height: 38px;">
+                                    <i class="fas fa-angle-left" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" id="next" onclick="next()">
+                                <a class="page-link" href = "javascript:;" tabindex="-1" style="height: 38px;">
+                                    <i class="fas fa-angle-right" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" id="end" onclick="goEnd()">
+                                <a class="page-link" href="javascript:;" style="height: 38px;">
+                                    <i class="fas fa-angle-double-right" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'user-static/js/submissions.js' %}"></script>
+{% endblock %}

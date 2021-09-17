@@ -1,0 +1,146 @@
+{%extends 'user-template/_layout/base.html' %}
+{%load static %}
+<link href="{% static 'user-static/css/problem/listproblem.css' %}" rel="stylesheet" type="text/css" />
+
+{%block website_content %}
+	<!-- Content Header (Page header) -->
+	<div class="content-header">
+		<div class="container-fluid">
+			<div class="row mb-2">
+				<div class="col-sm-6">
+					<ol class="breadcrumb float-sm-left">
+						<li class="breadcrumb-item"><a href="/problems">Problem</a></li>
+					</ol>
+				</div>
+			</div>
+			{%include 'admin-template/_layout/error_handle.html' %} 
+				{%block error_handle %}{%endblock%}
+		</div>
+	</div>
+	<!-- /.content-header -->
+	<!-- Main content -->
+	<div class="content">
+		<div class="container-fluid">
+			<form>
+				<div class="row justify-content-md-center">
+					<div class="col col-lg-2 searchBox">
+						<input type="text" id = "search" class="form-control" placeholder="Enter the search text">
+					</div>
+					<div class="col col-lg-3">
+						<div class="row">
+							<div class="col col-lg-4">
+								<input type="text" id = "minDifficult" class="form-control" placeholder="Min">
+							</div>
+							<div class="col col-lg-4">
+								<input type="text" id = "maxDifficult"  class="form-control" placeholder="Max">
+							</div>
+							<div class="col col-lg-4">
+								<select class="form-control" id="selectType">
+									<option value=""></option>
+									<option value="ACM">ACM</option>
+									<option value="OI">OI</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col col-lg-2">
+						<div style="overflow: auto;" class="categoryBoxes">
+							<div class="listCatgories"></div>	
+						</div>
+					</div>
+					<div class="col col-lg-1">
+						<select class="form-control" id="selectCategory" style="display: none; float: right; width: 100%" onchange="chooseCategory()">
+							<option value=""></option>
+							{%for x in list_categories %}
+								<option value="{{x}}" title="{{x}}">{{x}}</option>
+							{% endfor %}
+						</select>
+						<a id="addCatetory" href="#" style="float: right;" onclick="showSelect()">Add tag</a>
+					</div>
+					<div class="col col-lg-2">
+						<div class="row">
+							<div class="col col-lg-6">
+							</div>
+							<div class="col col-lg-6">
+								<a class="btn btn-primary" onclick="goNewPage(1,'')">Find Problem</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+
+			{%for row in rows%}
+				<div class="row justify-content-md-center">
+					{%for problem in row%}
+					<div class="col col-2">
+						<div class="card text-center" style="height: 350px;">
+							<h5 class="card-header">
+								<div class="row align-items-center">
+									<a href="/problem/{{problem.shortname}}">{{problem.fullname}}</a>
+								</div>	
+							</h5>
+							<div class="card-body valueBox">
+								<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+								<a href="#" class="btn btn-primary">Go somewhere</a>
+
+
+								<ul class="row mb-2 mr-2" style="position: absolute; bottom: 3rem; width: 95%;">
+									{%for cate in problem.categories.all%}
+										<li class="btn btn-secondary ml-2 mt-2 pb-0">
+											<p class="mb-2"style="font-size: 14px">{{cate}}</p>
+										</li>
+									{%endfor%}
+								</ul>
+							</div>
+							<div class="card-footer">
+								<div class="row">
+									<div class="col col-6">
+										Accepted: {{problem.problemstatisticsmodel.solvedCount}} 
+									</div>
+									<div class="col col-6">
+										Difficult: {{problem.difficult}}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					{%endfor%}
+				</div>
+			{%endfor %}
+
+			<div>
+				<input type="hidden" id="page_current" value="{{page_obj.number}}">
+				<input type="hidden" id="page_total" value="{{page_obj.paginator.num_pages}}">
+				<nav aria-label="Page navigation example" style="margin-top: 2rem;">
+					<ul class="pagination justify-content-center" id="Pagination">
+						<li class="page-item" id="first" onclick="goFirst()">
+							<a class="page-link" href = "javascript:;" tabindex="-1" style="height: 38px;">
+								<i class="fas fa-angle-double-left" aria-hidden="true"></i>
+							</a>
+						</li>
+						<li class="page-item" id="previous" onclick="previous()">
+							<a class="page-link" href="javascript:;" style="height: 38px;">
+								<i class="fas fa-angle-left" aria-hidden="true"></i>
+							</a>
+						</li>
+						<li class="page-item" id="next" onclick="next()">
+							<a class="page-link" href = "javascript:;" tabindex="-1" style="height: 38px;">
+								<i class="fas fa-angle-right" aria-hidden="true"></i>
+							</a>
+						</li>
+						<li class="page-item" id="end" onclick="goEnd()">
+							<a class="page-link" href="javascript:;" style="height: 38px;">
+								<i class="fas fa-angle-double-right" aria-hidden="true"></i>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+
+	<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+	<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+	<script src="{% static 'user-static/js/problem/index.js' %}"></script>
+	<!-- /.content -->
+{%endblock%}
