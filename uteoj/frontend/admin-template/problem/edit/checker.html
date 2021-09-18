@@ -52,6 +52,8 @@
 					<div class="tab-content" id="nav-tabContent">
 						<div class="tab-pane fade show active" id="nav-home">
 							<div class="container">
+								
+
                                 <!--Source Checker-->
                                 <div class="custom-control custom-switch" style="margin-top: 25px;">
                                     <input type="checkbox" class="custom-control-input" id="checker" {%if use_checker%} checked {%endif%} onchange="changeCheck()">
@@ -78,12 +80,21 @@
                                     	<div class="editor" id="editor"></div>
 									</div>
                                 </div>
+								
+								<!--- compile error-->
+								<div class="compileError">
+									{%if compile_error%}
+										<textarea class = "mt-8" rows="10" cols="100" readonly>{{compile_error}}</textarea>
+									{%endif%}
+								</div>
+
                                 <!--Submit-->
                                 <div class="col-12" style="margin-top: 50px;">
                                     <div class="text-center">
                                         <button class="btn btn-primary" type="submit" onclick="getInfo()">Save Change</button>
                                     </div>
                                 </div>
+
 
                                 <form method="post" url="" hidden id ="form">
                                     {% csrf_token %}

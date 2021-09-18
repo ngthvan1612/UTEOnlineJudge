@@ -80,7 +80,7 @@
                                         <td>{{x.tag}}</td>
                                         <td>
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="is_sample_{{x.id}}" {%if problem.is_sample%} checked {%endif%} name="is_sample_{{x.id}}">
+                                                <input type="checkbox" class="custom-control-input" id="is_sample_{{x.id}}" {%if x.is_sample%} checked {%endif%} name="is_sample" value="{{x.pk}}">
                                                 <label class="custom-control-label" for="is_sample_{{x.id}}"></label>
                                             </div>
                                         </td>

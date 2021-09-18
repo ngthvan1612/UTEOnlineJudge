@@ -30,3 +30,7 @@
     display: none;
     visibility: hidden;
 }
+
+.toggle{
+    width: 150px;
+}

@@ -1,25 +1,17 @@
 {%extends 'user-template/_layout/base.html' %}
 {%load static%}
 {%block website_content %}
+    <link href="{% static 'plugins/bootstrap4-toggle/bootstrap4-toggle.min.css' %}" rel="stylesheet">
     <!-- Content Header (Page header) -->
-	<div class="content-header">
-		<div class="container-fluid">
-			<div class="row mb-2">
-				<div class="col-sm-6">
-					<ol class="breadcrumb float-sm-left">
-						<li class="breadcrumb-item"><a href="/submissions">Status</a></li>
-					</ol>
-				</div>
-			</div>
-			{%include 'admin-template/_layout/error_handle.html' %} 
-				{%block error_handle %}{%endblock%}
-		</div>
-	</div>
+	<div class="row">
+    </div>
 	<!-- /.content-header -->
-    <div class="content">
+    <div class="content" style="margin-top: 2rem;">
 		<div class="container-fluid">
             <div class="row justify-content-md-center">
-                <div class="col col-xl-9">
+                <div class="col col-xl-8">
+                    {%include 'admin-template/_layout/error_handle.html' %} 
+				    {%block error_handle %}{%endblock%}
                     <table class="table table-hover table-bordered">
                         <thead>
                           <tr class="text-center">
@@ -40,10 +32,9 @@
                                 <td class="text-center"><a style="text-decoration:none;" href="/submissions/{{submission.id}}">{{submission.id}}</a></td>
                                 <td><a style="text-decoration:none;" href="/profile/{{submission.user.username}}">{{submission.user.username}}</a></td>
                                 <td><a style="text-decoration:none;" href="/problem/{{submission.problem.shortname}}">{{submission.problem.fullname}}</a></td>
-                                <td>{{submission.submission_date}}</td>
                                 <td>
                                     {%if submission.submission_judge_date%}
-                                        {{submission.submission_judge_date}}
+                                        {{submission.submission_judge_date|date:"d/m/Y G:i"}}
                                     {%else%}
                                         Chưa chấm
                                     {%endif%}
@@ -87,6 +78,10 @@
                         </tbody>
                       </table>
                 </div>
+                <div class="col col-1">
+                    <p>Change View:</p>
+                    <input id="ChangeView" type="checkbox" checked data-toggle="toggle" data-on="All User" data-off="Owner  " data-onstyle="success" data-offstyle="Primary" onchange="ChangeView()">
+                </div>
             </div>
             <div class="row  justify-content-md-center">
                 <div>
@@ -120,6 +115,10 @@
             </div>
         </div>
     </div>
-
+    
+    
+    <script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+    <script src="{% static 'plugins/bootstrap4-toggle/bootstrap4-toggle.min.js'%}"></script>
     <script src="{% static 'user-static/js/submissions.js' %}"></script>
 {% endblock %}

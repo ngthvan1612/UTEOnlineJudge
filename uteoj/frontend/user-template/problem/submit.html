@@ -12,8 +12,6 @@
 					</ol>
 				</div>
 			</div>
-			{%include 'admin-template/_layout/error_handle.html' %} 
-				{%block error_handle %}{%endblock%}
 		</div>
 	</div>
 	<!-- /.content-header -->
@@ -29,6 +27,8 @@
                         <h2>{{problem.fullname}}</h2>
                     </div>
                     <form action="" method="post" class="form-group" enctype="multipart/form-data">
+                        {%include 'admin-template/_layout/error_handle.html' %} 
+                        {%block error_handle %}{%endblock%}
                         <div class="row" style="font-size: 18px; margin-top: 20px">
                             <div class="col col-3">Problem:</div>
                             <div class="col col-9">{{problem.fullname}}</div>
@@ -42,7 +42,7 @@
                                     {% endfor %}
                                 </select>                                
                             </div>
-                        </div>
+                        </div>                       
                         <div class="row" style="margin-top: 20px;">
                             <div class="col col-3" style="margin:auto">Source code:</div>
                             <div class="col col-9">
