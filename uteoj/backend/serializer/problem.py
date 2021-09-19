@@ -7,14 +7,14 @@ from rest_framework import viewsets
 from rest_framework import serializers
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
 
 class RequirePermissionForAdminSite(BasePermission):
     """
     Allows access only to admin users.
     """
     def has_permission(self, request, view):
-        return True
+        print('current user: ' + str(request.user))
         if request.method != 'GET':
             return request.user and request.user.is_staff
         return True
@@ -24,7 +24,7 @@ class RequirePermissionForAdminSite(BasePermission):
 class ProblemStatisticsModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProblemStatisticsModel
-        fields = ('id', 'solvedCount', 'submitCount')
+        fields = ('id', 'solvedCount')
 
 class ProblemStatisticsModelPagination(PageNumberPagination):
     page_size = 30
@@ -56,3 +56,18 @@ class ProblemModelView(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return ProblemModel.objects.all()
+
+
+# PROBLEM CATEGORY ---------------------------------------------------
+
+class ProblemCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProblemCategoryModel
+        fields = ('id', 'name', 'description')
+
+class ProblemCategoryView(viewsets.ModelViewSet):
+    serializer_class = ProblemCategoryModelSerializer
+    permission_classes = [RequirePermissionForAdminSite]
+
+    def get_queryset(self):
+        return ProblemCategoryModel.objects.all()    

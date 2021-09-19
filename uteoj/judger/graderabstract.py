@@ -306,5 +306,7 @@ class GraderAbstract(ABC):
             submission.memory_usage = sumMemoryUsage // numberOfAC if numberOfAC else 0
         
         submission.save()
+
+        scorer.onCompleted()
         return (status, result, 0, 0, '')
 

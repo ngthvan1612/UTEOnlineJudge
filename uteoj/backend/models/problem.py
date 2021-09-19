@@ -2,6 +2,7 @@ from re import S
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.query_utils import check_rel_lookup_compatibility
+from rest_framework import serializers
 
 
 class ProblemCategoryModel(models.Model):
@@ -97,6 +98,7 @@ class ProblemModel(models.Model):
 class ProblemSettingModel(models.Model):
     problem = models.OneToOneField(ProblemModel, on_delete=models.CASCADE)
     points_per_test = models.FloatField(default=1.0)
+    total_points = models.FloatField(default=0.0, null=True)
 
     statement = models.TextField(blank=False)
     input_statement = models.TextField(blank=False, null=True)

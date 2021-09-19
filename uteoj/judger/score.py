@@ -94,11 +94,9 @@ class OIScore(ScoreAbstract):
         self._totalScore += score
 
     def onCompleted(self):
-        problemScore = 0.0
-        
-        for testcase in self._problem.problemtestcasemodel_set.all():
-            problemScore += testcase.points
-        eps = 0.000001
+        problemScore = self._problem.problemsettingmodel.total_points
+        eps = 0.00005
+        print('Điểm: {}/{} -> {}'.format(self._totalScore, problemScore, abs(problemScore - self._totalScore) <= eps))
 
         with transaction.atomic():
             UserProblemStatisticsModel.createStatIfNotExists(self._user)

@@ -1,3 +1,5 @@
+from backend.models.settings import OJSettingModel
+from backend.models.language import LanguageModel
 from django.contrib import messages
 from backend.models.usersetting import UserProblemStatisticsModel
 from django.shortcuts import redirect, render
@@ -5,7 +7,8 @@ from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
 from backend.models.problem import ProblemModel, SubmissionVisibleModeType
 from backend.models.problem import ProblemCategoryModel
-from django.db.models import Q
+from django.db.models import Q, F, Sum
+from django.utils import timezone
 
 from datetime import datetime
 from random import random
@@ -14,12 +17,26 @@ from django.core import serializers
 
 
 from backend.task.submit import SubmitSolutionTest
-from backend.models.submission import SubmissionModel, SubmissionTestcaseResultModel
+from backend.models.submission import SubmissionModel, SubmissionTestcaseResultModel, SubmissionResultType, SubmissionStatusType
 from django.core.paginator import Paginator
 
 def UserListSubmissionView(request):
     if request.method == 'GET':
-        final_filter = SubmissionModel.objects.order_by('-id')
+        final_filter = SubmissionModel.objects.values(
+            'id',
+            'status',
+            'result',
+            'points',
+            'executed_time',
+            'memory_usage',
+            'lastest_test',
+            total_points=F('problem__problemsettingmodel__total_points'),
+            user_name=F('user__username'),
+            problem_shortname=F('problem__shortname'),
+            problem_fullname=F('problem__fullname'),
+            judge_date=F('submission_judge_date'),
+            language_name=F('language__name'),
+            problem_type=F('problem__problem_type')).order_by('-id')
         if 'my' in request.GET and request.user.is_authenticated:
             my = request.GET['my']
             if my == 'on':
@@ -37,11 +54,29 @@ def UserListSubmissionView(request):
         page_obj = paginator.get_page(page_number)
 
         for x in page_obj:
-            x.problem.totalPoints = sum([x.points for x in x.problem.problemtestcasemodel_set.all()])
+            pass
+            #x.problem.totalPoints = sum([x.points for x in x.problem.problemtestcasemodel_set.all()])
 
         context = {
             'page_obj': page_obj,
         }
+
+        # #testing
+        # problem = ProblemModel.objects.get(shortname='SUMAB_OI')
+        # language = LanguageModel.objects.get(name='C++ 14')
+        # prepare = []
+        # for i in range(0, 50000, 1):
+        #     prepare.append(SubmissionModel(
+        #         user=request.user,
+        #         problem=problem,
+        #         submission_date=timezone.localtime(timezone.now()),
+        #         source_code = 'hele',
+        #         language=language,
+        #         status = SubmissionStatusType.Completed))
+        # SubmissionModel.objects.bulk_create(prepare)
+
+        OJSettingModel.setSTMPEmail('hello world@gmail.com')
+        print('stmp.server = ' + str(OJSettingModel.getSTMPPassword()))
 
         return render(request, 'user-template/submissions/listsubmission.html', context)
     else:
@@ -85,4 +120,4 @@ def UserSubmissionView(request, submission_id):
 
         return render(request, 'user-template/submissions/submissiondetail.html', context)
     return HttpResponse(status=405)
-    
+
