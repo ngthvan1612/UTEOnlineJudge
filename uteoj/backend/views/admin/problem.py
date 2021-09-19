@@ -416,18 +416,11 @@ def AdminEditProblemTestcasesview(request, problem_short_name):
 
     #edit
     if request.method == 'POST':
-        data = request.POST.getlist('is_sample')
-        #clean data
-        try:
-            data = [int(x) for x in data]
-        except:
+        if 'input_file' not in request.FILES:
             return HttpResponse(status=500)
-        print(data)
-        #update
-        for testcase in problem.problemtestcasemodel_set.all():
-            testcase.is_sample = testcase.id in data
-            print('set {} to {}'.format(testcase.id, testcase.id in data))
-            testcase.save()
+        file = OverwriteStorage(settings.MEDIA_ROOT)
+        input_file = request.FILES['input_file']
+        file.save('test.txt', input_file)
         return HttpResponseRedirect(request.path_info)
 
     #show list testcases

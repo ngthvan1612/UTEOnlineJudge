@@ -8,6 +8,7 @@
 			href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
 			rel="stylesheet"
 		/>
+		<link rel="stylesheet" href="{% static 'plugins/bootstrap/bootstrap.min.css'%}"/>
 		<link rel="stylesheet" href="{% static 'auth-template/css/login.css' %}" />
 		<link rel="stylesheet" href="{% static 'admin-static/css/base.css'%}" />
 		<title>HCMUTE OJ | Sign In</title>
@@ -32,7 +33,7 @@
 								<input type="password" placeholder="Password" name="password"/>
 							</div>
 							
-							{%include 'admin-template/_layout/error_handle.html' %} 
+							{%include 'user-template/_layout/error_handle.html' %} 
 							{%block error_handle %}{%endblock%}
 
 							<button type = "submit">Sign in</button>
@@ -81,5 +82,7 @@
 		</div>
 
 		<script src="{% static 'auth-template/js/login.js' %}"></script>
+		<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+		<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
 	</body>
 </html>

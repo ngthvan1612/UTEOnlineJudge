@@ -1,4 +1,5 @@
 updatePage();
+updateView();
 
 function updatePage() {
     var pageArray = [];
@@ -72,4 +73,24 @@ function goFirst() {
 function goEnd() {
     var totalPage = parseInt(document.getElementById("page_total").value);
     window.location = "/submissions?page=" + (totalPage).toString();
+}
+
+function ChangeView(){
+    if (document.getElementById("ChangeView").checked == true){
+        window.location = "/submissions"
+    }
+    else window.location = "/submissions?my=on"
+}
+
+
+function updateView(){
+    var urlSearchParams = new URLSearchParams(window.location.search);
+    var params = Object.fromEntries(urlSearchParams.entries())
+    
+    
+    if (params["my"]!=null) {
+        document.getElementById("ChangeView").checked = false;
+    }
+    else 
+        document.getElementById("ChangeView").checked = true;
 }
