@@ -1,5 +1,7 @@
 {%extends 'admin-template/_layout/base.html' %}
+{%load static%}
 {%block website_content %}
+<link href="{% static 'plugins/bootstrap4-toggle/bootstrap4-toggle.min.css' %}" rel="stylesheet">
 	<!--begin::Subheader-->
 	<div class="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
 		<div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
@@ -44,8 +46,33 @@
                                 <div class="container">
 									<div class="row justify-content-md-center">
 										<div class="col-xl-6">
-											<form action="" class = "mt-10">
-												hello
+											<form method="POST" class="mt-10">
+												{%csrf_token%}
+												<div class="row">
+													<div class="col col-6">
+														<label for="allow_register" style="font-size: 20px;">Allow user register account</label>
+													</div>
+													<div class="col col-6">
+														<!--<input type="checkbox" id ="allow_register" {%if allow_register%}checked{%endif%}} name="allow_register" data-toggle="toggle" data-on="Allow" data-off="Not Allow" data-onstyle="success" data-offstyle="danger">-->
+														<input type="checkbox" id ="allow_register"  {%if allow_register%} checked {%endif%} name="allow_register" data-toggle="toggle" data-on="Allow" data-off="Not allow" data-onstyle="success" data-offstyle="danger" style="width:400px">
+													</div>
+												</div>
+												<div class="row mt-6">
+													<div class="col col-6">
+														<label for="allow_register" style="font-size: 20px;">Allow user submit problem</label>
+													</div>
+													<div class="col col-6">
+														<!--<input type="checkbox" id ="allow_register" {%if allow_register%}checked{%endif%}} name="allow_register" data-toggle="toggle" data-on="Allow" data-off="Not Allow" data-onstyle="success" data-offstyle="danger">-->
+														<input type="checkbox" id ="allow_submission"  {%if allow_submission%} checked {%endif%} name="allow_submission" data-toggle="toggle" data-on="Allow" data-off="Not allow" data-onstyle="success" data-offstyle="danger" style="width:400px">
+													</div>
+												</div>
+												<div class="row mt-10 justify-content-md-center">
+													<div class="col col-3">
+														<input class="btn btn-primary" value="Save Change" type="submit">
+													</div>
+													<div class="col col-2"></div>
+												</div>
+												
 											</form>
 										</div>
 									</div>
@@ -57,4 +84,7 @@
 			</div>
 		</div>
 	</div>
+
+	<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+	<script src="{% static 'plugins/bootstrap4-toggle/bootstrap4-toggle.min.js'%}"></script>
 {%endblock%}

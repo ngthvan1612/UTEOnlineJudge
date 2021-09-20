@@ -1,5 +1,7 @@
 {%extends 'admin-template/_layout/base.html' %}
+{%load static%}
 {%block website_content %}
+<link href="{% static 'plugins/bootstrap4-toggle/bootstrap4-toggle.min.css' %}" rel="stylesheet">
 	<!--begin::Subheader-->
 	<div class="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
 		<div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
@@ -24,4 +26,68 @@
 	<!--end::Subheader-->
 	{%include 'admin-template/_layout/error_handle.html' %} 
 	{%block error_handle%}{%endblock%}
+	<!-- Main content -->
+	<div class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12">
+					<div class="card-body p-0">
+						<ul class="nav nav-tabs">
+							<li class="nav-item">
+								<a class="nav-link" href="/admin/setting/">Setting</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link active" href="stmp">Problem Setter</a>
+							</li>
+						</ul>
+
+						<div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-home">
+                                <div class="container">
+									<div class="row justify-content-md-center">
+										<div class="col-xl-8">
+											<form method="post">
+												{%csrf_token%}
+												<div class="col-sm-12">
+													<div class="input-group mb-3 mt-8">
+														<span class="input-group-text" style="width: 100px;">Server</span>
+														<input name="input_filename" type="text" class="form-control" id="input-filename" value="{{server}}" name="server">
+													</div>
+													<div class="input-group mb-3 mt-8">
+														<span class="input-group-text" style="width: 100px;">Email</span>
+														<input name="input_filename" type="text" class="form-control" id="input-filename" value="{{email}}" name="email">
+													</div>
+													<div class="input-group mb-3 mt-8">
+														<span class="input-group-text" style="width: 100px;">Port</span>
+														<input name="input_filename" type="text" class="form-control" id="input-filename" value="{{port}}" name="port">
+													</div>
+													<div class="input-group mb-3 mt-8">
+														<span class="input-group-text" style="width: 100px;">Password</span>
+														<input name="input_filename" type="password" class="form-control" id="input-filename" name="password">
+													</div>
+													<div class="input-group mb-3 mt-8">
+														<span class="input-group-text" style="width: 100px;">Use TLS</span>
+														<input type="checkbox" class="ml-10" id ="tls" {%if tls%}checked{%endif%} name="tls" data-toggle="toggle" data-on="Use TLS" data-off="Not use" data-onstyle="success" data-offstyle="danger" style="width:400px">
+													</div>
+													<div class="row mt-10 justify-content-md-center">
+														<div class="col col-2"></div>
+														<div class="col col-3">
+															<input class="btn btn-primary" value="Save Change" type="submit">
+														</div>
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+	<script src="{% static 'plugins/bootstrap4-toggle/bootstrap4-toggle.min.js'%}"></script>
 {%endblock%}
