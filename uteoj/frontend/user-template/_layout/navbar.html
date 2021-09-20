@@ -20,6 +20,46 @@
 			<a href="/contact" class="nav-link">Contact</a>
 		</li>
 	</ul>
+	<!--End: Leftnavbar -->
+	
+	<!--Rightnavbar-->
+	<ul class ="navbar-nav ml-auto">
+		{%if user.is_authenticated%}
+			{%if user.is_staff%}
+				<li class="nav-item d-none d-sm-inline-block">
+					<a href="/admin" class="nav-link">Quan tri</a>
+				</li>
+			{%endif%}
+			<li class="nav-item d-none d-sm-inline-block">
+				
+				<div class="dropdown">
+					<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Chao, {{user.username}}
+					</button>
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<a class="dropdown-item" href="/profile">Tai khoan</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/profile/changepassword">Doi mat khau</a>
+					</div>
+				</div>
+			</li>
+			<li class="nav-item d-none d-sm-inline-block">
+				<a href="/logout" class="nav-link">Dang xuat</a>
+			</li>
+		{%else%}
+			<li class="nav-item d-none d-sm-inline-block">
+				<a href="/signup" class="nav-link">Dang ky</a>
+			</li>
+			<li class="nav-item d-none d-sm-inline-block">
+				<a href="/login" class="nav-link">Dang nhap</a>
+			</li>
+		{%endif%}
+	</ul>
+	<!--End: RightNumver-->
 </nav>
-<!-- /.navbar -->
+
+s
+<script src="{% static 'plugins/popper/js/popper.min.js'%}"></script>
+<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
 {%endblock%}
