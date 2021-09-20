@@ -48,6 +48,8 @@ class ACMScore(ScoreAbstract):
             for stat in userStatisticEntries:
                 if self._result == SubmissionResultType.AC:
                     stat.solvedCount = stat.solvedCount + 1
+                elif self._result == SubmissionResultType.WA:
+                    stat.waCount = stat.waCount + 1
                 elif self._result == SubmissionResultType.TLE:
                     stat.tleCount = stat.tleCount + 1
                 elif self._result == SubmissionResultType.MLE:
@@ -65,6 +67,8 @@ class ACMScore(ScoreAbstract):
             for problemStatistics in problemStatisticsEntries:
                 if self._result == SubmissionResultType.AC:
                     problemStatistics.solvedCount = problemStatistics.solvedCount + 1
+                elif self._result == SubmissionResultType.WA:
+                    problemStatistics.waCount = problemStatistics.waCount + 1
                 elif self._result == SubmissionResultType.TLE:
                     problemStatistics.tleCount = problemStatistics.tleCount + 1
                 elif self._result == SubmissionResultType.MLE:
