@@ -136,7 +136,11 @@ def UserSubmitSolution(request, shortname):
 
         if 'source_file' in request.FILES:
             source_file = request.FILES['source_file'].read()
-            final_source = source_file.decode('utf-8')
+            try:
+                final_source = source_file.decode('utf-8')
+            except:
+                messages.add_message(request, messages.ERROR, 'Không thể đọc mã nguồn, có thể bạn đã nộp một file thực thi.')
+                return HttpResponseRedirect(request.path_info)
 
         if len(final_source) == 0:
             messages.add_message(request, messages.ERROR, 'Mã nguồn không được để trống')

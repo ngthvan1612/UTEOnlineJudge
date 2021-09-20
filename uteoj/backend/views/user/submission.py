@@ -53,27 +53,9 @@ def UserListSubmissionView(request):
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
-        for x in page_obj:
-            pass
-            #x.problem.totalPoints = sum([x.points for x in x.problem.problemtestcasemodel_set.all()])
-
         context = {
             'page_obj': page_obj,
         }
-
-        # #testing
-        # problem = ProblemModel.objects.get(shortname='SUMAB_OI')
-        # language = LanguageModel.objects.get(name='C++ 14')
-        # prepare = []
-        # for i in range(0, 50000, 1):
-        #     prepare.append(SubmissionModel(
-        #         user=request.user,
-        #         problem=problem,
-        #         submission_date=timezone.localtime(timezone.now()),
-        #         source_code = 'hele',
-        #         language=language,
-        #         status = SubmissionStatusType.Completed))
-        # SubmissionModel.objects.bulk_create(prepare)
 
         OJSettingModel.setSTMPEmail('hello world@gmail.com')
         print('stmp.server = ' + str(OJSettingModel.getSTMPPassword()))

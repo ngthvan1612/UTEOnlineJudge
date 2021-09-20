@@ -48,7 +48,7 @@
                                     {%elif submission.status == SUBMISSION_STATUS_TYPE.Grading%}
                                         Running on (Test #{{submission.lastest_test}})
                                     {%else%}
-                                        {%if submission.problem.problem_type == PROBLEM_TYPE.OI%}
+                                        {%if submission.problem_type == PROBLEM_TYPE.OI%}
                                             {%if submission.result == SUBMISSION_RESULT_TYPE.CE%}
                                                 <a style="color:red;">Compilation error</a>
                                             {%else%}
