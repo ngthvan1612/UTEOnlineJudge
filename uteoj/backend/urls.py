@@ -24,6 +24,8 @@ from backend.views.user.problem import UserSubmitSolutionTest
 from backend.views.user.problem import UserListProblemView
 from backend.views.user.rank import UserRankView
 
+from backend.views.user.profile import UserEditMyProfile
+
 from backend.views.user.submission import UserListSubmissionView
 from backend.views.user.submission import UserSubmissionView
 
@@ -31,6 +33,7 @@ from backend.views.user.home import UserHomeView
 
 #admin
 from backend.views.admin.home import AdminHomeView
+from backend.views.admin.home import AdminSettingSTMP
 from backend.views.admin.home import Error404Page
 from backend.views.admin.home import AdminSubmissionStatusView
 from backend.views.admin.home import AdminRankingView
@@ -117,6 +120,7 @@ url_patterns_admin_sub = [
     path('topics/', AdminListTagView),
     path('topics/<str:topic_name>/', AdminEditTagView),
     path('setting/', AdminSettingView),
+    path('setting/stmp', AdminSettingSTMP),
 
     path('language/', AdminListLanguageView),
     path('language/edit/<int:lang_id>/', AdminEditLanguageView),
@@ -147,7 +151,8 @@ url_patterns_user = [
     path('problem/<str:shortname>/testsubmit', UserSubmitSolutionTest),
     path('submissions/', UserListSubmissionView),
     path('submissions/<int:submission_id>', UserSubmissionView),
-    path('ranks', UserRankView)
+    path('ranks', UserRankView),
+    path('profile',UserEditMyProfile),
 ]
 
 from backend.views.random.user import CreateRandomUser

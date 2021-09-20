@@ -1,0 +1,46 @@
+{%extends 'user-template/_layout/base.html' %}
+{%load static %}
+
+{%block website_content %}
+	<!-- Content Header (Page header) -->
+	<div class="content-header">
+		<div class="container-fluid">
+			<div class="row mb-2">
+				<div class="col-sm-6">
+					<ol class="breadcrumb float-sm-left">
+						<li class="breadcrumb-item"><a href="admin">Submit</a></li>
+					</ol>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /.content-header -->
+	<!-- Main content -->
+	<div class="content">
+		<div class="container-fluid">
+			<div class="row justify-content-md-center">
+                <div class="col-6">
+                    {%if avatar%}
+                        <img src="{{avatar}}"><br/>
+                    {%else%}
+                        Khong co avatar
+                    {%endif%}
+                    <form method="post" enctype="multipart/form-data">
+                        {%csrf_token%}
+                        Avatar: <input type="file" name="user_avatar"><br/>
+                        Ten: <input type="text" name="last_name" value="{{user.last_name}}"><br/>
+                        Ho: <input type="text" name="first_name" value="{{user.first_name}}"><br/>
+                        Nghe nghiep: <input type="text" name="job" value="{{user.usersetting.job}}"><br/>
+                        <input type="submit">
+                    </form>
+                </div>
+            </div>
+		</div>
+	</div>
+
+	<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+	<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+    <script src="{% static 'plugins/aceJS/lib/ace.js' %}"></script>
+    <script src="{% static 'user-static/js/problem/submit.js' %}"></script>
+	<!-- /.content -->
+{%endblock%}

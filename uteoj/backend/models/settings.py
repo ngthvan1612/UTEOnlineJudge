@@ -11,7 +11,7 @@ class OJSettingModel(models.Model):
     value = models.TextField()
 
     def __str__(self):
-        return self.name
+        return self.name + ' = ' + self.value
 
     @staticmethod 
     def get(setting_name):
@@ -28,7 +28,7 @@ class OJSettingModel(models.Model):
         entry.save()
 
     @staticmethod
-    def getSTMPServer():
+    def getSTMPServer() -> str:
         return OJSettingModel.get('stmp.server').value
     
     @staticmethod
@@ -36,16 +36,17 @@ class OJSettingModel(models.Model):
         OJSettingModel.set('stmp.server', server)
     
     @staticmethod
-    def getSTMPEmail():
+    def getSTMPEmail() -> str:
         return OJSettingModel.get('stmp.email').value
     
     @staticmethod
-    def setSTMPEmail(email):
+    def setSTMPEmail(email) -> str:
         OJSettingModel.set('stmp.email', email)
     
     @staticmethod
-    def getSTMPPort():
-        return OJSettingModel.get('stmp.port').value
+    def getSTMPPort() -> str:
+        tmp = OJSettingModel.get('stmp.port').value
+        return tmp
     
     @staticmethod
     def setSTMPPort(port):
@@ -60,18 +61,28 @@ class OJSettingModel(models.Model):
         OJSettingModel.set('stmp.password', password)
     
     @staticmethod
-    def getSTMPEnableTLS():
-        return OJSettingModel.get('stmp.tls')
+    def getSTMPEnableTLS() -> bool:
+        tmp = OJSettingModel.get('stmp.tls').value
+        return tmp == 'True'
     
     @staticmethod
     def setSTMPEnableTLS(tls):
         OJSettingModel.set('stmp.tls', tls)
 
     @staticmethod
-    def getAllowRegister():
-        return OJSettingModel.get('account.allow_register')
+    def getAllowRegister() -> bool:
+        tmp = OJSettingModel.get('account.allow_register').value
+        return tmp == 'True'
     
     @staticmethod
     def setAllowRegister(value):
         OJSettingModel.set('account.allow_register', value)
 
+    @staticmethod
+    def getAllowSubmission() -> bool:
+        tmp = OJSettingModel.get('submission.allow_submission').value
+        return tmp == 'True'
+    
+    @staticmethod
+    def setAllowSubmission(value):
+        OJSettingModel.set('submission.allow_submission', value)
