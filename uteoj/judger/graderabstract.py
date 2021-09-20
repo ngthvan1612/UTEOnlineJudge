@@ -258,10 +258,13 @@ class GraderAbstract(ABC):
                     checker_message += '\n'
                 checker_message += process_stdout
 
+                print('exit code = {}'.format(exit_code))
+
                 if exit_code: # WRONG ANSWER ---------------------------------------------------------
                     submission_result.result = SubmissionResultType.WA
                     submission_result.checker_message = checker_message
                     submission_result.save()
+                    print('on Wrong')
                     scorer.onWrongAnswer()
                 else: # ACCEPT ---------------------------------------------------------
                     submission_result.points = testcase.points
