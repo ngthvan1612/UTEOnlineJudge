@@ -18,7 +18,6 @@
                             <th scope="col" style="width: 4.5rem">#</th>
                             <th scope="col">User</th>
                             <th scope="col">Problem</th>
-                            <th scope="col">Time</th>
                             <th scope="col">Judge Time</th>
                             <th scope="col">Language</th>
                             <th scope="col">Status</th>
@@ -30,16 +29,16 @@
                             {%for submission in page_obj%}
                             <tr>
                                 <td class="text-center"><a style="text-decoration:none;" href="/submissions/{{submission.id}}">{{submission.id}}</a></td>
-                                <td><a style="text-decoration:none;" href="/profile/{{submission.user.username}}">{{submission.user.username}}</a></td>
-                                <td><a style="text-decoration:none;" href="/problem/{{submission.problem.shortname}}">{{submission.problem.fullname}}</a></td>
+                                <td><a style="text-decoration:none;" href="/profile/{{submission.user_name}}">{{submission.user_name}}</a></td>
+                                <td><a style="text-decoration:none;" href="/problem/{{submission.problem_shortname}}">{{submission.problem_fullname}}</a></td>
                                 <td>
-                                    {%if submission.submission_judge_date%}
-                                        {{submission.submission_judge_date|date:"d/m/Y G:i"}}
+                                    {%if submission.judge_date%}
+                                        {{submission.judge_date|date:"d/m/Y G:i"}}
                                     {%else%}
                                         Chưa chấm
                                     {%endif%}
                                 </td>
-                                <td class="text-center">{{submission.language.name}}</td>
+                                <td class="text-center">{{submission.language_name}}</td>
                                 <td class="text-center text-bold">
                                     {%if submission.status == SUBMISSION_STATUS_TYPE.InQueued%}
                                         Waiting for submission
@@ -48,11 +47,11 @@
                                     {%elif submission.status == SUBMISSION_STATUS_TYPE.Grading%}
                                         Running on (Test #{{submission.lastest_test}})
                                     {%else%}
-                                        {%if submission.problem.problem_type == PROBLEM_TYPE.OI%}
+                                        {%if submission.problem_type == PROBLEM_TYPE.OI%}
                                             {%if submission.result == SUBMISSION_RESULT_TYPE.CE%}
                                                 <a style="color:red;">Compilation error</a>
                                             {%else%}
-                                                <a style="color:darkgreen;">{{submission.points}} / {{submission.problem.totalPoints}} points</a>
+                                                <a style="color:darkgreen;">{{submission.points}} / {{submission.total_points}} points</a>
                                             {%endif%}
                                         {%else%}
                                             {%if submission.result == SUBMISSION_RESULT_TYPE.CE%}
