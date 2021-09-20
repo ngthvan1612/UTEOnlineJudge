@@ -34,7 +34,6 @@ def UserEditMyProfile(request):
             if user_avatar.size > 1024 * 1024 * 2:
                 messages.add_message(request, messages.ERROR, 'File ảnh đại diên không được vượt quá 2MB')
                 return HttpResponseRedirect(request.path_info)
-            print('OKKKKKKKKKKKK')
             request.user.usersetting.uploadAvatar(user_avatar.name, user_avatar.file)
         
         # success
