@@ -22,14 +22,16 @@ class UserSetting(models.Model):
 
     @staticmethod
     def createSettingIfNotExists(user:User):
-        hash_user_profile = uuid.uuid4().hex + '_' + user.username
-        new_setting = UserSetting.objects.create(
-            user=user,
-            hash_user_profile=hash_user_profile,
-            avatar='',
-            job='')
-        new_setting.save()
-        return new_setting
+        if not UserSetting.objects.filter(user=user).exists():
+            hash_user_profile = uuid.uuid4().hex + '_' + user.username
+            new_setting = UserSetting.objects.create(
+                user=user,
+                hash_user_profile=hash_user_profile,
+                avatar='',
+                job='')
+            new_setting.save()
+            return new_setting
+        return UserSetting.objects.get(user=user)
 
     @staticmethod
     def deleteUserSettingAndFile(user:User) -> None:

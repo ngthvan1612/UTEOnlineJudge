@@ -51,7 +51,7 @@ def LoginView(request):
                 return redirect(request.POST[REDIRECT_FIELD_NAME])
             if user.is_staff:
                 return redirect('/admin/')
-            return redirect('/who')
+            return redirect('/')
         messages.add_message(request, messages.ERROR, 'Tên đăng nhập hoặc mật khẩu sai')
     return render(request, 'auth-template/login.html', context)
 

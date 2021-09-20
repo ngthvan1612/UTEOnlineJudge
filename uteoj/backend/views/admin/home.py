@@ -1,3 +1,5 @@
+from backend.models.settings import OJSettingModel
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
 from backend.views.auth.login import LoginView
@@ -42,6 +44,44 @@ def AdminContactView(request):
 
 @admin_member_required
 def AdminSettingView(request):
+    if request.method == 'POST':
+        allow_submission = 'allow_submission' in request.POST
+        allow_register = 'allow_register' in request.POST
+        OJSettingModel.setAllowSubmission(allow_submission)
+        OJSettingModel.setAllowRegister(allow_register)
+        return HttpResponseRedirect(request.path_info) # remove post dasta
+    elif request.method == 'GET':
+        context = {
+            'allow_submission': OJSettingModel.getAllowSubmission(),
+            'allow_register': OJSettingModel.getAllowRegister(),
+        }
+        return render(request, 'admin-template/Setting/setting.html', context)
+    else:
+        return HttpResponse(status=405) # method is not allowed
+    
 
-
-    return render(request, 'admin-template/Setting/setting.html')
+@admin_member_required
+def AdminSettingSTMP(request):
+    if request.method == 'POST':
+        server = request.POST['server'] if 'server' in request.POST else ''
+        email = request.POST['email'] if 'email' in request.POST else ''
+        port = request.POST['port'] if 'port' in request.POST else ''
+        password = request.POST['password'] if 'password' in request.POST else ''
+        tls = 'tls' in request.POST
+        OJSettingModel.setSTMPServer(server)
+        OJSettingModel.setSTMPEmail(email)
+        OJSettingModel.setSTMPPort(port)
+        OJSettingModel.setSTMPPassword(password)
+        OJSettingModel.setSTMPEnableTLS(tls)
+        return HttpResponseRedirect(request.path_info) # remove post dasta
+    elif request.method == 'GET':
+        context = {
+            'server': OJSettingModel.getSTMPServer(),
+            'email': OJSettingModel.getSTMPEmail(),
+            'port': OJSettingModel.getSTMPPort(),
+            #'password': OJSettingModel.getSTMPPassword(),
+            'tls': OJSettingModel.getSTMPEnableTLS()
+        }
+        return render(request, 'admin-template/Setting/stmp.html', context)
+    else:
+        return HttpResponse(status=405) # method is not allowed
