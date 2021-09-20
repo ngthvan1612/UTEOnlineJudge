@@ -90,7 +90,7 @@ class OIScore(ScoreAbstract):
 
     def onCompileError(self):
         self._canContinue = False
-        self._result = 'CE'
+        self._result = SubmissionResultType.CE
 
     def onSYS_ERROR(self):
         raise Exception('SYSTEM ERROR')
@@ -108,7 +108,9 @@ class OIScore(ScoreAbstract):
             UserProblemStatisticsModel.createStatIfNotExists(self._user)
             userStatisticEntries = UserProblemStatisticsModel.objects.select_for_update().filter(user=self._user)
             for stat in userStatisticEntries:
-                if abs(problemScore - self._totalScore) <= eps:
+                if self._result == SubmissionResultType.CE:
+                    stat.ceCount = stat.ceCount + 1
+                elif abs(problemScore - self._totalScore) <= eps:
                     stat.solvedCount = stat.solvedCount + 1
                 else:
                     stat.waCount = stat.waCount + 1
@@ -117,7 +119,9 @@ class OIScore(ScoreAbstract):
         with transaction.atomic():
             problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=self._problem)
             for problemStatistics in problemStatisticsEntries:
-                if abs(problemScore - self._totalScore) <= eps:
+                if self._result == SubmissionResultType.CE:
+                    problemStatistics.ceCount = problemStatistics.ceCount + 1
+                elif abs(problemScore - self._totalScore) <= eps:
                     problemStatistics.solvedCount = problemStatistics.solvedCount + 1
                 else:
                     problemStatistics.waCount = problemStatistics.waCount + 1
