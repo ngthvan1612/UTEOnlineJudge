@@ -48,8 +48,6 @@ class ACMScore(ScoreAbstract):
             for stat in userStatisticEntries:
                 if self._result == SubmissionResultType.AC:
                     stat.solvedCount = stat.solvedCount + 1
-                elif self._result == SubmissionResultType.WA:
-                    stat.waCount = stat.waCount + 1
                 elif self._result == SubmissionResultType.TLE:
                     stat.tleCount = stat.tleCount + 1
                 elif self._result == SubmissionResultType.MLE:
@@ -63,12 +61,9 @@ class ACMScore(ScoreAbstract):
                 stat.save()
         with transaction.atomic():
             problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=self._problem)
-            print(self._result)
             for problemStatistics in problemStatisticsEntries:
                 if self._result == SubmissionResultType.AC:
                     problemStatistics.solvedCount = problemStatistics.solvedCount + 1
-                elif self._result == SubmissionResultType.WA:
-                    problemStatistics.waCount = problemStatistics.waCount + 1
                 elif self._result == SubmissionResultType.TLE:
                     problemStatistics.tleCount = problemStatistics.tleCount + 1
                 elif self._result == SubmissionResultType.MLE:
@@ -90,13 +85,12 @@ class OIScore(ScoreAbstract):
 
     def onCompileError(self):
         self._canContinue = False
-        self._result = SubmissionResultType.CE
+        self._result = 'CE'
 
     def onSYS_ERROR(self):
         raise Exception('SYSTEM ERROR')
 
     def onAccept(self, score):
-        print('up ' + str(score))
         self._totalScore += score
 
     def onCompleted(self):
@@ -108,23 +102,15 @@ class OIScore(ScoreAbstract):
             UserProblemStatisticsModel.createStatIfNotExists(self._user)
             userStatisticEntries = UserProblemStatisticsModel.objects.select_for_update().filter(user=self._user)
             for stat in userStatisticEntries:
-                if self._result == SubmissionResultType.CE:
-                    stat.ceCount = stat.ceCount + 1
-                elif abs(problemScore - self._totalScore) <= eps:
+                if abs(problemScore - self._totalScore) <= eps:
                     stat.solvedCount = stat.solvedCount + 1
-                else:
-                    stat.waCount = stat.waCount + 1
                 stat.save()
         
         with transaction.atomic():
             problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=self._problem)
             for problemStatistics in problemStatisticsEntries:
-                if self._result == SubmissionResultType.CE:
-                    problemStatistics.ceCount = problemStatistics.ceCount + 1
-                elif abs(problemScore - self._totalScore) <= eps:
+                if abs(problemScore - self._totalScore) <= eps:
                     problemStatistics.solvedCount = problemStatistics.solvedCount + 1
-                else:
-                    problemStatistics.waCount = problemStatistics.waCount + 1
                 problemStatistics.save()
 
 

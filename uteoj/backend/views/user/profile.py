@@ -34,6 +34,7 @@ def UserEditMyProfile(request):
             if user_avatar.size > 1024 * 1024 * 2:
                 messages.add_message(request, messages.ERROR, 'File ảnh đại diên không được vượt quá 2MB')
                 return HttpResponseRedirect(request.path_info)
+            print('OKKKKKKKKKKKK')
             request.user.usersetting.uploadAvatar(user_avatar.name, user_avatar.file)
         
         # success
@@ -43,8 +44,8 @@ def UserEditMyProfile(request):
     elif request.method == 'GET':
         context = {}
         context_user_avatar =  UserSetting.getSetting(request.user).getAvatar()
-        if context_user_avatar is not None and len(context_user_avatar) > 0:
-            context['avatar'] = context_user_avatar + '?v={}'.format(randint(0, 11111111111)) # Chống cached
+        if context_user_avatar is not None:
+            context['avatar'] = context_user_avatar + '?v={}'.format(randint(0, 11111111111))
         return render(request, 'user-template/profile.html', context)
     else:
         return HttpResponse(status=405)
