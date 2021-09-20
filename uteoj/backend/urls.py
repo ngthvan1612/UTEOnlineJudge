@@ -68,11 +68,20 @@ from backend.views.admin.language import AdminDeleteLanguage
 
 from django.views.static import serve
 
+# API ----------------------------------------------------------------
+
 from rest_framework import routers
-from backend.serializer.problem import ProblemModelView
+from backend.serializer.problem import ProblemCategoryView, ProblemModelView
 
 router = routers.DefaultRouter()
 router.register('problem', ProblemModelView, 'problem')
+router.register('problemcategory', ProblemCategoryView, 'problemcategory')
+
+url_patterns_api = [
+    path('api/', include(router.urls)),
+]
+
+# URL ----------------------------------------------------------------
 
 url_patterns_admin_sub = [
     path('', AdminHomeView),
@@ -139,11 +148,6 @@ url_patterns_user = [
     path('submissions/', UserListSubmissionView),
     path('submissions/<int:submission_id>', UserSubmissionView),
     path('ranks', UserRankView)
-    # path('submission', UserListSubmission),
-]
-
-url_patterns_api = [
-    path('api/', include(router.urls)),
 ]
 
 from backend.views.random.user import CreateRandomUser
@@ -157,6 +161,9 @@ url_pattern_random = [
     path('random/categories', CreateRandomCate),
     path('random/submission', CreateRandomSubmission),
 ]
+
+
+# MERGE ---------------------------------------------------------------
 
 from django.conf.urls import url
 import re

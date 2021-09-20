@@ -1,4 +1,4 @@
-from backend.models.problem import PROBLEM_TYPE_CHOICES
+from backend.models.problem import PROBLEM_TYPE_CHOICES, ProblemTestCaseModel
 import uuid
 import zipfile
 import os.path
@@ -93,7 +93,7 @@ def AdminEditProblemDeatailsview(request, problem_short_name):
             problem.shortname = shortname
 
             problem.difficult = difficult
-            problem_setting.points_per_test = points_per_test
+            problem_setting.points_per_test = round(points_per_test, 4)
             problem_setting.statement = statement
             problem_setting.input_statement = input_statement
             problem_setting.output_statement = output_statement
@@ -240,6 +240,10 @@ def AdminEditProblemTestcasesEditView(request, problem_short_name, testcase_pk):
         test = filter_testcase[0]
         test.time_limit = time_limit
         test.memory_limit = memory_limit
+        if problem.problemsettingmodel.total_points is None:
+            problem.problemsettingmodel.total_points = 0
+        problem.problemsettingmodel.total_points = problem.problemsettingmodel.total_points - test.points + points
+        problem.problemsettingmodel.save()
         test.points = points
         test.tag = tag
 
@@ -358,6 +362,9 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
                         os.mkdir(os.path.join(settings.MEDIA_ROOT, folderpath))
                     except: pass
                     problem.problemtestcasemodel_set.all().delete()
+                    problem.problemsettingmodel.total_points = problem.problemsettingmodel.points_per_test * len(list_testcases_folder)
+                    problem.problemsettingmodel.save()
+                    prepare_db = []
                     for tmp_id in range(0, len(list_testcases_folder), 1):
                         zip_folder = list_testcases_folder[tmp_id]
                         zip_input = list_input[tmp_id]
@@ -367,14 +374,15 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
                         os.mkdir(os.path.join(settings.MEDIA_ROOT, 'problems', str(problem.id), 'tests', zip_folder))
 
                         #update database
-                        testdb = problem.problemtestcasemodel_set.create(
+                        testdb = ProblemTestCaseModel(
                             problem=problem,
                             time_limit=problem_grader.time_limit,
-                            memory_limit=problem_grader.time_limit, points=1.0,
+                            memory_limit=problem_grader.time_limit,
+                            points=problem.problemsettingmodel.points_per_test,
                             name=zip_folder.strip('/').strip('\\'),
                             input_file=os.path.join('problems', str(problem.id), 'tests', zip_folder, problem.problemgradermodel.input_filename),
                             output_file=os.path.join('problems', str(problem.id), 'tests', zip_folder, problem.problemgradermodel.output_filename))
-                        testdb.save()
+                        prepare_db.append(testdb)
 
                         #write input
                         with open(os.path.join(settings.MEDIA_ROOT, 'problems', str(problem.id), 'tests', zip_folder, problem.problemgradermodel.input_filename), 'wb') as f:
@@ -383,8 +391,10 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
                         #write output
                         with open(os.path.join(settings.MEDIA_ROOT, 'problems', str(problem.id), 'tests', zip_folder, problem.problemgradermodel.output_filename), 'wb') as f:
                             f.write(z.read(zip_output))
+                    problem.problemtestcasemodel_set.bulk_create(prepare_db)
+
                     messages.add_message(request, messages.SUCCESS, 'Tải lên thành công')
-            
+                    
             file_manager.delete(filepath)
             return HttpResponseRedirect('/admin/problems/edit/{}/testcases'.format(problem.shortname))
             

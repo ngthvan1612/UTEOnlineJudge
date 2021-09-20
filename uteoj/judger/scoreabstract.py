@@ -13,7 +13,7 @@ class ScoreAbstract(ABC):
         return self._canContinue
     
     def getTotalScore(self) -> float:
-        return self._totalScore
+        return round(self._totalScore, 4)
 
     def getSubmissionResult(self) -> int:
         return self._result

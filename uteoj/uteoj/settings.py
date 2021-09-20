@@ -6,6 +6,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 CSRF_COOKIE_SECURE = False # For production if not have SSL
 
+SESSION_COOKIE_SAMESITE = None
+
 SECRET_KEY = 'django-insecure-t3wh9u9h4w&8$vn%*bxofwvqy(^*z*!^&u=7ia!^ecj7u^lkh1'
 
 IS_PRODUCTION = True if 'PRODUCT_UTE_ONLINE_JUDGE' in os.environ else False
@@ -64,7 +66,24 @@ INSTALLED_APPS = [
     'backend.apps.BackendConfig',
     'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
 ]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated', 
+    )
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -78,7 +97,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS=True 
+CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ORIGIN_WHITELIST = [
      'http://localhost:8000'
