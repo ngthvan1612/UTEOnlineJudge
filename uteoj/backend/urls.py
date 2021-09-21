@@ -25,6 +25,7 @@ from backend.views.user.problem import UserListProblemView
 from backend.views.user.rank import UserRankView
 
 from backend.views.user.profile import UserEditMyProfile
+from backend.views.user.changepassword import UserChangePassword
 
 from backend.views.user.submission import UserListSubmissionView
 from backend.views.user.submission import UserSubmissionView
@@ -155,6 +156,7 @@ url_patterns_user = [
     path('submissions/<int:submission_id>', UserSubmissionView),
     path('ranks', UserRankView),
     path('profile',UserEditMyProfile),
+    path('changepassword', UserChangePassword),
 ]
 
 from backend.views.random.user import CreateRandomUser
