@@ -75,10 +75,12 @@ from django.views.static import serve
 
 from rest_framework import routers
 from backend.serializer.problem import ProblemCategoryView, ProblemModelView
+from backend.serializer.announcement import AnnouncementView
 
 router = routers.DefaultRouter()
 router.register('problem', ProblemModelView, 'problem')
 router.register('problemcategory', ProblemCategoryView, 'problemcategory')
+router.register('announcement', AnnouncementView, 'announcement')
 
 url_patterns_api = [
     path('api/', include(router.urls)),

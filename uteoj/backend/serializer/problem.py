@@ -1,24 +1,12 @@
 from backend.models.problem import ProblemCategoryModel
-from django.contrib.auth.models import User
 from backend.models.problem import ProblemModel, ProblemStatisticsModel
 from rest_framework import serializers
 
 from rest_framework import viewsets
 from rest_framework import serializers
-from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
 
-class RequirePermissionForAdminSite(BasePermission):
-    """
-    Allows access only to admin users.
-    """
-    def has_permission(self, request, view):
-        print('current user: ' + str(request.user))
-        if request.method != 'GET':
-            return request.user and request.user.is_staff
-        return True
-
+from backend.serializer.permission import RequirePermissionForAdminSite
 
 # PROBLEM STATISTICS ---------------------------------------------------
 class ProblemStatisticsModelSerializer(serializers.ModelSerializer):

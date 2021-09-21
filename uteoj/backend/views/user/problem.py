@@ -100,8 +100,11 @@ def UserProblemView(request, shortname):
     if problems.exists() == False:
         return HttpResponse(status=404)
 
+    list_submission = SubmissionModel.objects.filter(problem=problems[0],user=request.user).all()
+
     context = {
         'problem': problems[0],
+        'list_submission': list_submission,
     }
 
     return render(request, 'user-template/problem/problemdetail.html', context)
@@ -141,6 +144,7 @@ def UserSubmitSolution(request, shortname):
         if len(final_source) == 0:
             messages.add_message(request, messages.ERROR, 'Mã nguồn không được để trống')
             return HttpResponseRedirect(request.path_info)
+        print('source = ' + str(final_source))
         submission = SubmissionModel.objects.create(
             user=request.user,
             problem=problem,
