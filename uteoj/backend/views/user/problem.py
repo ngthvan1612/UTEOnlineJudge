@@ -1,4 +1,5 @@
 from typing import final
+from backend.models.settings import OJSettingModel
 from backend.models.usersetting import UserProblemStatisticsModel
 from django.core.paginator import Paginator
 from django.http.response import HttpResponseNotAllowed, HttpResponseRedirect
@@ -100,8 +101,11 @@ def UserProblemView(request, shortname):
     if problems.exists() == False:
         return HttpResponse(status=404)
 
+    list_submission = SubmissionModel.objects.filter(problem=problems[0],user=request.user).all()
+
     context = {
         'problem': problems[0],
+        'list_submission': list_submission,
     }
 
     return render(request, 'user-template/problem/problemdetail.html', context)
@@ -123,9 +127,11 @@ def UserSubmitSolution(request, shortname):
     
     if request.method == 'POST':
         if 'language' not in request.POST:
-            return HttpResponse('Thiếu ngôn ngữ')
+            return HttpResponse(status=500)
         if 'source' not in request.POST:
-            return HttpResponse('Thiếu source code')
+            return HttpResponse(status=500)
+        if not OJSettingModel.getAllowSubmission():
+            return HttpResponseRedirect(request.path_info)
         language_filter = LanguageModel.objects.filter(name=request.POST['language'])
         if not language_filter.exists():
             return HttpResponse('Không có ngôn ngữ nào tên \'{}\''.format(request.POST['language']))
@@ -157,7 +163,8 @@ def UserSubmitSolution(request, shortname):
         SubmitSolution.delay(submission.id)
         return redirect('/submissions')
     elif request.method == 'GET':
-        
+        if not OJSettingModel.getAllowSubmission():
+            messages.add_message(request, messages.ERROR, 'Hiện tại không thể nộp bài')
         context = {
             'languages': [x.name for x in LanguageModel.objects.all()],
             'problem': problem

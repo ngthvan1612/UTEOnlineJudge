@@ -11,3 +11,4 @@ from backend.models.submission import SubmissionModel
 from backend.models.submission import SubmissionTestcaseResultModel
 
 from backend.models.usersetting import UserSetting
+from backend.models.announcement import AnnouncementModel

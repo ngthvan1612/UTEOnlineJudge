@@ -1,3 +1,5 @@
+from django.http.response import HttpResponseRedirect
+from backend.models.settings import OJSettingModel
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -12,7 +14,9 @@ def SignupView(request):
     context = {
         'website_header_title': 'Đăng ký',
     }
-    if request.method == 'POST':
+    if not OJSettingModel.getAllowRegister():
+        messages.add_message(request, messages.ERROR, 'Hiện tại không được đăng ký tài khoản mới')
+    elif request.method == 'POST':
         list_requirements = ['username', 'email', 'password1', 'password2']
         for x in list_requirements:
             if x not in request.POST:
