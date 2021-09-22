@@ -4,22 +4,29 @@
 
 {%block website_content %}
 	<link rel="stylesheet" href="{% static 'category/css/style.css' %}">
-	<!-- Content Header (Page header) -->
-	<div class="content-header">
-		<div class="container-fluid">
-			<div class="row mb-2">
-				<div class="col-sm-6">
-					<ol class="breadcrumb float-sm-left">
-						<li class="breadcrumb-item"><a href="#">Home</a></li>
-						<li class="breadcrumb-item active">Category</li>
-					</ol>
-				</div>
+	<div class="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
+		<div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+			<!--begin::Info-->
+			<div class="d-flex align-items-center flex-wrap mr-2" style="font-family: 'san-serif';">
+				<!--begin::Page Title-->
+				<h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Trang chủ</h5>
+				<!--end::Page Title-->
+				<!--begin::Actions-->
+				<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
+				<!--end::Actions-->
+				<!--begin::Page Title-->
+				<h6 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Thể loại</h6>
+				<!--end::Page Title-->
+				<!--begin::Actions-->
+				<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
+				<!--end::Actions-->
 			</div>
-			{%include 'admin-template/_layout/error_handle.html' %} 
-			{%block error_handle %}{%endblock%}
+			<!--end::Info-->
 		</div>
 	</div>
-	<!-- /.content-header -->
+	<!--end::Subheader-->
+    {%include 'admin-template/_layout/error_handle.html' %} 
+    {%block error_handle %}{%endblock%}
 
 	<div class="content">
 		<div class="container-fluid">
@@ -28,7 +35,7 @@
 					<div style="height: 50px">
 						<!-- Button trigger modal -->
 						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCategory">
-							Create New Category
+							Tạo danh mục mới
 						</button>
 					</div>
 
@@ -42,7 +49,7 @@
 				<div class="col-6">
 					<div class="card text-dark bg-light mb-3">
 						<div class="card-footer text-center"> 
-							Description 
+							Mô tả
 						</div>
 						<div class="card-body" style="height: 200px;">
 							<div class="tab-content" id="nav-tabContent">
@@ -50,12 +57,12 @@
 									<div class="tab-pane fade show" id="list-{{x.id}}" role="tabpanel" aria-labelledby="{{x.name}}">{{x.description}}</div>
 									
 									<div style="position: absolute; bottom: 1rem; left: 1rem" >
-										<a class="btn btn-secondary" role="button" onclick="showProblem()">View Problems</a>
+										<a class="btn btn-secondary" role="button" onclick="showProblem()">Xem danh sách bài tập</a>
 									</div>
 
 									<div style="position: absolute; bottom: 1rem; right: 1rem" >
-										<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editCategory" id="{{x.name}}" onclick="getCategoryInfo(0)">Edit Tag</button>	
-										<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteCategory" id="{{x.name}}" onclick="getCategoryInfo(1)">Delete Tag</button>	
+										<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editCategory" id="{{x.name}}" onclick="getCategoryInfo(0)">Chỉnh sửa</button>	
+										<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteCategory" id="{{x.name}}" onclick="getCategoryInfo(1)">Xoá</button>	
 									</div>
 
 								{% endfor %}
@@ -73,7 +80,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header text-center">
-					<h5 class="modal-title" id="exampleModalLabel">Create New Category</h5>
+					<h5 class="modal-title" id="exampleModalLabel" style="font-family: 'Roboto'; font-weight: bold;">Tạo mới danh mục</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -82,19 +89,19 @@
 					<form method="POST" url="/admin/categories/"> 
 						<p id = "addMessage"></p>
 						<div class="form-group">
-							<label for="inputName">Category Name</label>
+							<label for="inputName">Tên danh mục mới</label>
 							<input class="form-control" id="inputName" placeholder="Enter category name">
-							<small id="emailHelp" class="form-text text-muted">Category Name must be different "All"</small>
+							<small id="emailHelp" class="form-text text-muted">Tên danh mục phải khác với "All"</small>
 						</div>
 						<div class="form-group">
-							<label for="description">Description</label>
+							<label for="description">Mô tả</label>
 							<textarea class="form-control" cols="30" rows="10" id="description"></textarea>
 						</div>
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary" onclick="addNewCategory()">Save changes</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+					<button type="button" class="btn btn-primary" onclick="addNewCategory()">Lưu thay đổi</button>
 				</div>
 			</div>
 		</div>

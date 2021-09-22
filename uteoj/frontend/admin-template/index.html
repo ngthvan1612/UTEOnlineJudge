@@ -3,11 +3,11 @@
 {%block website_content %}
 	<!--begin::Subheader-->
 	<div class="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
-		<div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+		<div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap" style="font-family: 'Roboto'; font-weight: bold">
 			<!--begin::Info-->
 			<div class="d-flex align-items-center flex-wrap mr-2">
 				<!--begin::Page Title-->
-				<h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Dashboard</h5>
+				<h5 class="text-dark mt-2 mb-2 mr-5" style="font-weight: bold;">Trang chủ</h5>
 				<!--end::Page Title-->
 				<!--begin::Actions-->
 				<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
@@ -17,9 +17,9 @@
 			<!--begin::Toolbar-->
 			<div class="d-flex align-items-center">
 				<!--begin::Actions-->
-				<a href="#" class="btn btn-clean btn-sm font-weight-bold font-size-base mr-1">Today</a>
-				<a href="#" class="btn btn-clean btn-sm font-weight-bold font-size-base mr-1">Month</a>
-				<a href="#" class="btn btn-clean btn-sm font-weight-bold font-size-base mr-1">Year</a>
+				<a href="#" class="btn btn-clean btn-sm font-weight-bold font-size-base mr-1">Hôm nay</a>
+				<a href="#" class="btn btn-clean btn-sm font-weight-bold font-size-base mr-1">Tháng</a>
+				<a href="#" class="btn btn-clean btn-sm font-weight-bold font-size-base mr-1">Năm</a>
 				<!--end::Actions-->
 				<!--begin::Daterange-->
 				<a href="#" class="btn btn-sm btn-light font-weight-bold mr-2" id="kt_dashboard_daterangepicker"
@@ -31,7 +31,7 @@
 				</a>
 				<!--end::Daterange-->
 				<!--begin::Dropdowns-->
-				<div class="dropdown dropdown-inline" data-toggle="tooltip" title="Quick actions" data-placement="left">
+				<div class="dropdown dropdown-inline" data-toggle="tooltip" title="Hoạt động nhanh" data-placement="left">
 					<a href="#" class="btn btn-sm btn-clean btn-icon" data-toggle="dropdown" aria-haspopup="true"
 						aria-expanded="false">
 						<span class="svg-icon svg-icon-success svg-icon-lg">
@@ -59,7 +59,7 @@
 									<span class="navi-icon">
 										<i class="flaticon2-drop"></i>
 									</span>
-									<span class="navi-text">New Group</span>
+									<span class="navi-text">Tạo nhóm mới</span>
 								</a>
 							</li>
 							<li class="navi-item">
@@ -67,7 +67,7 @@
 									<span class="navi-icon">
 										<i class="flaticon2-list-3"></i>
 									</span>
-									<span class="navi-text">Contacts</span>
+									<span class="navi-text">Liên hệ</span>
 								</a>
 							</li>
 							<li class="navi-item">
@@ -75,7 +75,7 @@
 									<span class="navi-icon">
 										<i class="flaticon2-rocket-1"></i>
 									</span>
-									<span class="navi-text">Groups</span>
+									<span class="navi-text">Các nhóm</span>
 									<span class="navi-link-badge">
 										<span class="label label-light-primary label-inline font-weight-bold">new</span>
 									</span>
@@ -86,7 +86,7 @@
 									<span class="navi-icon">
 										<i class="flaticon2-bell-2"></i>
 									</span>
-									<span class="navi-text">Calls</span>
+									<span class="navi-text">Thông báo</span>
 								</a>
 							</li>
 							<li class="navi-item">
@@ -94,7 +94,7 @@
 									<span class="navi-icon">
 										<i class="flaticon2-gear"></i>
 									</span>
-									<span class="navi-text">Settings</span>
+									<span class="navi-text">Tuỳ chỉnh</span>
 								</a>
 							</li>
 							<li class="navi-separator my-3"></li>
@@ -103,7 +103,7 @@
 									<span class="navi-icon">
 										<i class="flaticon2-magnifier-tool"></i>
 									</span>
-									<span class="navi-text">Help</span>
+									<span class="navi-text">Trợ giúp</span>
 								</a>
 							</li>
 							<li class="navi-item">
@@ -111,7 +111,7 @@
 									<span class="navi-icon">
 										<i class="flaticon2-bell-2"></i>
 									</span>
-									<span class="navi-text">Privacy</span>
+									<span class="navi-text">Riêng tư</span>
 									<span class="navi-link-badge">
 										<span class="label label-light-danger label-rounded font-weight-bold">5</span>
 									</span>
@@ -132,7 +132,7 @@
 		{%block error_handle %}{%endblock%}
 	</div>
 
-	<div class="d-flex flex-column-fluid">
+	<div class="d-flex flex-column-fluid" style="font-family: 'Roboto'">
 		<!--begin::Container-->
 		<div class="container">
 			<div class="row">
@@ -141,7 +141,7 @@
 					<div class="card card-custom bg-gray-100 card-stretch gutter-b">
 						<!--begin::Header-->
 						<div class="card-header border-0 bg-dark py-5">
-							<h3 class="card-title font-weight-bolder text-white">Online Judge</h3>
+							<h3 class="card-title font-weight-bolder text-white font-size-h1">Online Judge</h3>
 						</div>
 						<!--end::Header-->
 						<!--begin::Body-->
@@ -167,7 +167,7 @@
 										</span>
 										<div class="row">
 											<div class="col">
-												<p class="text-warning font-weight-bold font-size-h6">New Problems</p>
+												<p class="text-warning font-weight-bold font-size-h3">Các bài tập mới</p>
 											</div>
 											<div class="col">
 												<p class="text-warning font-weight-bold font-size-h1">{{problems_count}}</p>
@@ -189,7 +189,7 @@
 										</span>
 										<div class="row">
 											<div class="col">
-												<p class="text-primary font-weight-bold font-size-h6">Registered User</p>
+												<p class="text-primary font-weight-bold font-size-h3">Số lượng tài khoản</p>
 											</div>
 											<div class="col">
 												<p class="text-primary font-weight-bold font-size-h1">{{users_count}}</p>
@@ -216,7 +216,7 @@
 										</span>
 										<div class="row">
 											<div class="col">
-												<p class="text-danger font-weight-bold font-size-h6">System Logs</p>
+												<p class="text-danger font-weight-bold font-size-h3">Nhật ký hệ thống</p>
 											</div>
 											<div class="col">
 												<p class="text-danger font-weight-bold font-size-h1">1k5</p>
@@ -237,7 +237,7 @@
 										</span>
 										<div class="row">
 											<div class="col">
-												<p class="text-success font-weight-bold font-size-h6">Queued Problems</p>
+												<p class="text-success font-weight-bold font-size-h3">Bài tập chờ duyệt</p>
 											</div>
 											<div class="col">
 												<p class="text-success font-weight-bold font-size-h1">100</p>
