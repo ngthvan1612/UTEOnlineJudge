@@ -63,7 +63,6 @@ class ACMScore(ScoreAbstract):
                 stat.save()
         with transaction.atomic():
             problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=self._problem)
-            print(self._result)
             for problemStatistics in problemStatisticsEntries:
                 if self._result == SubmissionResultType.AC:
                     problemStatistics.solvedCount = problemStatistics.solvedCount + 1
@@ -96,14 +95,11 @@ class OIScore(ScoreAbstract):
         raise Exception('SYSTEM ERROR')
 
     def onAccept(self, score):
-        print('up ' + str(score))
         self._totalScore += score
 
     def onCompleted(self):
         problemScore = self._problem.problemsettingmodel.total_points
         eps = 0.00005
-        print('Điểm: {}/{} -> {}'.format(self._totalScore, problemScore, abs(problemScore - self._totalScore) <= eps))
-
         with transaction.atomic():
             UserProblemStatisticsModel.createStatIfNotExists(self._user)
             userStatisticEntries = UserProblemStatisticsModel.objects.select_for_update().filter(user=self._user)

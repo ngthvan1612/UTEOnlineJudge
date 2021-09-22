@@ -76,10 +76,10 @@ class ProblemModel(models.Model):
 
         #setting
         problem_setting = ProblemSettingModel.objects.create(problem=problem)
-        problem_setting.statement = ""
-        problem_setting.input_statement = ""
-        problem_setting.output_statement = ""
-        problem_setting.constraints_statement = ""
+        problem_setting.statement = "Đề bài"
+        problem_setting.input_statement = "Dữ liệu đầu vào"
+        problem_setting.output_statement = "Dữ liệu đầu ra"
+        problem_setting.constraints_statement = "Ràng buộc"
         problem_setting.save()
 
         #Grader

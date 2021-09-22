@@ -57,9 +57,6 @@ def UserListSubmissionView(request):
             'page_obj': page_obj,
         }
 
-        OJSettingModel.setSTMPEmail('hello world@gmail.com')
-        print('stmp.server = ' + str(OJSettingModel.getSTMPPassword()))
-
         return render(request, 'user-template/submissions/listsubmission.html', context)
     else:
         return HttpResponse(status=405)
@@ -77,20 +74,17 @@ def UserSubmissionView(request, submission_id):
         submission = submission[0]
         vs_mode = submission.problem.problemsettingmodel.submission_visible_mode
         if vs_mode == SubmissionVisibleModeType.AllowedFromAll:
+            # Ok, ai cũng coi được
             allow = True
         elif vs_mode == SubmissionVisibleModeType.OnlySolved:
-            # check solved
-            if not request.user.is_authenticated:
-                allow = False
-            else:
-                userproblemstatistics = UserProblemStatisticsModel.objects.filter(user=request.user, problem=submission.problem)
-                if userproblemstatistics.exists():
-                    if userproblemstatistics[0].solvedCount > 0:
-                        allow = True
+            # check xem coi có giải được chưa?
+            submission_entries = SubmissionModel.objects.filter(user=request.user, problem=submission.problem, result=SubmissionResultType.AC)
+            if submission_entries.exists():
+                allow = True
         elif vs_mode == SubmissionVisibleModeType.OnlyMe:
+            # Người giải bài này có phải người đăng nhập hiện tại hay không?
             if request.user.id == submission.user.id:
                 allow = True
-
 
         context = {}
 
