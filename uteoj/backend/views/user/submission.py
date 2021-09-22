@@ -90,7 +90,6 @@ def UserSubmissionView(request, submission_id):
 
         if allow:
             context['submission'] = submission
-            context['list_testcases'] = SubmissionTestcaseResultModel.objects.filter(submission=submission).all()
         else:
             messages.add_message(request, messages.ERROR, 'Bạn không có quyền xem source code này')
 
