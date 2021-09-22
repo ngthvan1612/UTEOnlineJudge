@@ -32,7 +32,6 @@ def UserRankView(request):
     id = 0
     pre = -1
     for x in final_filter:
-        #print(x.solvedCount)
         if pre != x['total_solvedCount']:
             id = id + 1
             pre = x['total_solvedCount']
