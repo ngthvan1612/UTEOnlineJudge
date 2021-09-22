@@ -6,15 +6,15 @@
 	<div class="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
 		<div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
 			<!--begin::Info-->
-			<div class="d-flex align-items-center flex-wrap mr-2">
+			<div class="d-flex align-items-center flex-wrap mr-2" style="font-family: 'Roboto';">
 				<!--begin::Page Title-->
-				<h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Dashboard</h5>
+				<h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Danh mục</h5>
 				<!--end::Page Title-->
 				<!--begin::Actions-->
 				<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
 				<!--end::Actions-->
 				<!--begin::Page Title-->
-				<h6 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Setting</h6>
+				<h6 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Cài đặt</h6>
 				<!--end::Page Title-->
 				<!--begin::Actions-->
 				<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
@@ -34,10 +34,10 @@
 					<div class="card-body p-0">
 						<ul class="nav nav-tabs">
 							<li class="nav-item">
-								<a class="nav-link active" href="">Setting</a>
+								<a class="nav-link active" href="">Cài đặt chung</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="stmp">Problem Setter</a>
+								<a class="nav-link" href="stmp">Cài đặt mail</a>
 							</li>
 						</ul>
 
@@ -49,26 +49,26 @@
 											<form method="POST" class="mt-10">
 												{%csrf_token%}
 												<div class="row">
-													<div class="col col-6">
-														<label for="allow_register" style="font-size: 20px;">Allow user register account</label>
+													<div class="col col-8">
+														<label for="allow_register" style="font-size: 20px;">Cho phép người dùng đăng kí tài khoản</label>
 													</div>
-													<div class="col col-6">
+													<div class="col col-4">
 														<!--<input type="checkbox" id ="allow_register" {%if allow_register%}checked{%endif%}} name="allow_register" data-toggle="toggle" data-on="Allow" data-off="Not Allow" data-onstyle="success" data-offstyle="danger">-->
 														<input type="checkbox" id ="allow_register"  {%if allow_register%} checked {%endif%} name="allow_register" data-toggle="toggle" data-on="Allow" data-off="Not allow" data-onstyle="success" data-offstyle="danger" style="width:400px">
 													</div>
 												</div>
 												<div class="row mt-6">
-													<div class="col col-6">
-														<label for="allow_register" style="font-size: 20px;">Allow user submit problem</label>
+													<div class="col col-8">
+														<label for="allow_register" style="font-size: 20px;">Cho phép người dùng nộp bài tập</label>
 													</div>
-													<div class="col col-6">
+													<div class="col col-4">
 														<!--<input type="checkbox" id ="allow_register" {%if allow_register%}checked{%endif%}} name="allow_register" data-toggle="toggle" data-on="Allow" data-off="Not Allow" data-onstyle="success" data-offstyle="danger">-->
 														<input type="checkbox" id ="allow_submission"  {%if allow_submission%} checked {%endif%} name="allow_submission" data-toggle="toggle" data-on="Allow" data-off="Not allow" data-onstyle="success" data-offstyle="danger" style="width:400px">
 													</div>
 												</div>
 												<div class="row mt-10 justify-content-md-center">
 													<div class="col col-3">
-														<input class="btn btn-primary" value="Save Change" type="submit">
+														<input class="btn btn-primary" value="Lưu thay đổi" type="submit">
 													</div>
 													<div class="col col-2"></div>
 												</div>

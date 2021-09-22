@@ -1,14 +1,14 @@
 var triggerTabList = [].slice.call(document.querySelectorAll('#list-tab a'))
 var triggerDivList = [].slice.call(document.querySelectorAll('#nav-tabContent div'))
 
-var listActive = document.getElementsByClassName("active");
+var listActive = document.getElementsByClassName("active list-group-item");
 var oldInputName = null;
 
 triggerTabList[0].classList.add("active")
 triggerDivList[0].classList.add("show", "active")
 
 function showProblem() {
-  var value = listActive[1].id;
+  var value = listActive[0].id;
   console.log(value);
   window.location = "/admin/problems/?category=" + value;
 }
