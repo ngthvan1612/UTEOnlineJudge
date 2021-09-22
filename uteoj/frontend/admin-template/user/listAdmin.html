@@ -1,22 +1,30 @@
 {%extends 'admin-template/_layout/base.html' %}
 {%load static%}
 {%block website_content %}
-	<!-- Content Header (Page header) -->
-	<div class="content-header">
-		<div class="container-fluid">
-			<div class="row mb-2">
-				<div class="col-sm-6">
-					<ol class="breadcrumb float-sm-left">
-						<li class="breadcrumb-item"><a href="/admin/">Home</a></li>
-						<li class="breadcrumb-item active"><a href="/admin/users/">User</a></li>
-                        <li class="breadcrumb-item active"><a href="/admin/users/administrators/">Admin</a></li>
-					</ol>
-				</div>
+	<!--begin::Subheader-->
+	<div class="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
+		<div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+			<!--begin::Info-->
+			<div class="d-flex align-items-center flex-wrap mr-2" style="font-family: 'san-serif';">
+				<!--begin::Page Title-->
+				<h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Trang chủ</h5>
+				<!--end::Page Title-->
+				<!--begin::Actions-->
+				<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
+				<!--end::Actions-->
+				<!--begin::Page Title-->
+				<h6 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Tài khoản quản trị viên</h6>
+				<!--end::Page Title-->
+				<!--begin::Actions-->
+				<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
+				<!--end::Actions-->
 			</div>
-			{%include 'admin-template/_layout/error_handle.html' %} 
-			{%block error_handle %}{%endblock%}
+			<!--end::Info-->
 		</div>
 	</div>
+	<!--end::Subheader-->
+    {%include 'admin-template/_layout/error_handle.html' %} 
+    {%block error_handle %}{%endblock%}
 	<!-- /.content-header -->
 	<div class="content">
 		<div class="container-fluid">
@@ -27,11 +35,11 @@
 							<thead onclick="">
 								<tr>
 									<th style="width: 60px; text-align: center">#</th>
-									<th style="text-align: center">UserName</th>
-									<th style="width: 200px; text-align: center">First Name</th>
-									<th style="width: 200px; text-align: center">Last Name</th>
-									<th style="width: 250px; text-align: center">Date Joined</th>
-									<th style="width: 100px; text-align: center">Is Actived</th>
+									<th style="text-align: center">Tên đăng nhập</th>
+									<th style="width: 200px; text-align: center">Họ</th>
+									<th style="width: 200px; text-align: center">Tên</th>
+									<th style="width: 250px; text-align: center">Ngày tham giad</th>
+									<th style="width: 100px; text-align: center">Còn hoạt động</th>
 									<th style="width: 100px; text-align: center">&nbsp;</th>
 								</tr>
 							</thead>
@@ -61,10 +69,10 @@
 						<nav aria-label="Page navigation example" style="margin-top: 2rem;">
 							<ul class="pagination justify-content-center" id="Pagination">
 								<li class="page-item" id="previous" onclick="previous()">
-									<a class="page-link" href = "javascript:;" tabindex="-1">Previous</a>
+									<a class="page-link" href = "javascript:;" tabindex="-1">Trang trước</a>
 								</li>
 								<li class="page-item" id="next" onclick="next()">
-									<a class="page-link" href="javascript:;">Next</a>
+									<a class="page-link" href="javascript:;">Trang sau</a>
 								</li>
 								</ul>
 						</nav>
@@ -75,27 +83,27 @@
 
 				<div class = "col-xl-3 d-none d-xl-block">
 					<div class="card">
-						<div class="card-header text-center"><b>Filter Admin</b></div>
+						<div class="card-header text-center"><b>Lọc quản trị viên</b></div>
 						<div class="card-body">
 							<form>
 								<div class="filterByName">
-									<label for="search">User Name</label>
+									<label for="search">Tên đăng nhập</label>
 									<span style="float: right; width: 50%">
 										<input type="text" id="search" placeholder="User Name" style="width: 100%;">
 									</span>
 								</div>
 								
 								<div id = "listNumber">
-									<label>Number Users:</label>
-									<select class="custom-select float-right" style="width: 50%; font-size: 14px; height: 32px">
-										<option selected value="0"> 10 Users</option>
-										<option value="1">15 Users</option>
-										<option value="2">20 Users</option>
-										<option value="3">25 Users</option>
-										<option value="4">30 Users</option>
+									<label class="mt-3">Số lượng:</label>
+									<select class="custom-select float-right" style="width: 50%; font-size: 14px; height: 40px">
+										<option selected value="0"> 10 người</option>
+										<option value="1">15 người</option>
+										<option value="2">20 người</option>
+										<option value="3">25 người</option>
+										<option value="4">30 người</option>
 									</select>
 								</div>
-								<a class="btn btn-primary" style="margin-top: 10px" onclick="goNewPage(1)">Find</a>
+								<a class="btn btn-primary" style="margin-top: 10px" onclick="goNewPage(1)">Tìm kiếm</a>
 							</form>
 						</div>
 					</div>

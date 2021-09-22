@@ -1,6 +1,126 @@
 {%extends 'user-template/_layout/base.html'%}
 {%load static%}
 {%block website_content%}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+ 
+    <div class="container-fluid">
+        <div class="row"></div>
+        <div class="row justify-content-md-center mt-6" style="margin-top: 1.5rem;">
+            <div class="col col-xl-9 col-md-8" style="background-color: white;">
+                <h2 class="mt-4" style="text-align:center;color:blue;">{{problem.fullname}}</h2>
+                <div class="text-center">
+                    <span style="font-weight: bold;">INPUT:</span>
+                        {%if problem.problemgradermodel.use_stdin %}
+                            Standard input
+                        {%else%}
+                            {{problem.problemgradermodel.input_filename}}
+                        {%endif%}
+                    </br>
+                    output:
+                        {%if problem.problemgradermodel.use_stdout %}
+                            Standard output
+                        {%else%}
+                            {{problem.problemgradermodel.output_filename}}
+                        {%endif%}
+                    </br>
+                    <div class="row">
+                    </div>
+                </div>
+                <div class="row">
+                    <h4 style="margin-left: 2.5rem;">Đề bài:</h4>
+                </div>
+                <div class="row">
+                    <p id="statement" style="font-size: 18px; margin-left: 4.5rem; margin-right: 2.5rem; text-align: justify">{{problem.problemsettingmodel.statement}}</p>
+                </div>
+                <div class="row">
+                    <h4 style="margin-left: 2.5rem; margin-top: 1.5rem">Dữ liệu vào:</h4>
+                </div>
+                <div class="row">
+                    <p id="input" style="font-size: 18px; margin-left: 4.5rem; margin-right: 2.5rem; text-align: justify">{{problem.problemsettingmodel.input_statement}}</p>
+                </div>
+                <div class="row">
+                    <h4 style="margin-left: 2.5rem; margin-top: 1.5rem"">Giới hạn:</h4>
+                </div>
+                <div class="row">
+                    <p id="constraints" style="font-size: 18px; margin-left: 4.5rem; margin-right: 2.5rem; text-align: justify">{{problem.problemsettingmodel.constraints_statement}}</p>
+                </div>
+                <div class="row">
+                    <h4 style="margin-left: 2.5rem; margin-top: 1.5rem"">Dữ liệu ra:</h4>
+                </div>
+                <div class="row">
+                    <p id="output" style="font-size: 18px; margin-left: 4.5rem; margin-right: 2.5rem; text-align: justify">{{problem.problemsettingmodel.output_statement}}</p>
+                </div>
+            </div>
+            <div class="col col-xl-2 col-md-4" >
+                <div class="list-group" style="margin-left: 0.5rem">
+                    <a href="/problem/{{problem.shortname}}/submit" class="list-group-item list-group-item-action list-group-item-light">Submit Problem</a>
+                    <a href="submit" class="list-group-item list-group-item-action list-group-item-light">List Submit</a>
+                </div>
+                <div class="card bg-light mb-3 mt-4 ml-2" style="font-size: 15px">
+                    <div class="card-header">Problem Info</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-7">ID</div>
+                            <div class="col-5">{{problem.shortname}}</div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col col-7">Giới hạn thời gian</div>
+                            <div class="col col-5">{{problem.problemgradermodel.time_limit}}ms</div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col col-7">Giới hạn bộ nhớ</div>
+                            <div class="col col-5">{{problem.problemgradermodel.memory_limit}}KB</div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col col-7">Tạo bởi</div>
+                            <div class="col col-5">
+                                {%for author in problem.author.all%}
+                                    <a href="#" class="mr-1 mt-1" style="text-decoration: none; color: black">
+                                        {{author}}
+                                    </a>
+                                {%endfor%}
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col col-7">Độ khó</div>
+                            <div class="col col-5">{{problem.difficult}}</div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col col-7 mt-2">Tags</div>
+                            <div class="col col-5">
+                                <button type="button" class="btn btn-outline-secondary" data-toggle="popover" title="" 
+                                data-content='{%for cate in problem.categories.all%} <a class="btn btn-info ml-2 mt-2 text-white">{{cate}}</a> {%endfor%}'>
+                                    Hiện
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card ml-2">
+                    <div class="card-header">Problem Statistic</div>
+                    <div class="card-body ml-n5">
+                        
+                        <div style="display: none;">
+                            <p id="ac">{{problem.problemstatisticsmodel.solvedCount}}</p>
+                            <p id="wa">{{problem.problemstatisticsmodel.waCount}}</p>
+                            <p id="rte">{{problem.problemstatisticsmodel.rteCount}}</p>
+                            <p id="mle">{{problem.problemstatisticsmodel.mleCount}}</p>
+                            <p id="tle">{{problem.problemstatisticsmodel.tleCount}}</p>
+                            <p id="ce">{{problem.problemstatisticsmodel.ceCount}}</p>
+                        </div>
+                        <canvas id="myChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{%static 'plugins/chartjs/chart.js' %}"></script>
+    <script src="{%static 'plugins/chartjs/chartjs-plugin-datalabels.js' %}"></script>
+    <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
         extensions: ["tex2jax.js"],
@@ -12,87 +132,5 @@
     </script>
     <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
- 
-    <div class="container">
-        <div class="row">
-            <h2 style="text-align:center;color:blue;">{{problem.fullname}}</h2>
-            <div class="text-center">
-                time limit per test: {{problem.problemgradermodel.time_limit}}ms
-                </br>
-                memory limit per test: {{problem.problemgradermodel.memory_limit}}KB
-                </br>
-                input:
-                    {%if problem.problemgradermodel.use_stdin %}
-                        Standard input
-                    {%else%}
-                        {{problem.problemgradermodel.input_filename}}
-                    {%endif%}
-                </br>
-                output:
-                    {%if problem.problemgradermodel.use_stdout %}
-                        Standard output
-                    {%else%}
-                        {{problem.problemgradermodel.output_filename}}
-                    {%endif%}
-                </br>
-                author:
-                {%for author in problem.author.all%}
-                    {{author}},
-                {%endfor%}
-                </br>
-                difficult: {{problem.difficult}}
-                </br>
-                tags:
-                {%for cate in problem.categories.all%}
-                {{cate}},
-                {%endfor%}
-                </br>
-                </br>
-                <div>
-                    <script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
-                    <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
-                        Total: {{problem.problemstatisticsmodel.totalSubmission}}</br>
-                        AC: {{problem.problemstatisticsmodel.solvedCount}}</br>
-                        WA: {{problem.problemstatisticsmodel.waCount}}</br>
-                        RTE: {{problem.problemstatisticsmodel.rteCount}}</br>
-                        MLE: {{problem.problemstatisticsmodel.mleCount}}</br>
-                        TLE: {{problem.problemstatisticsmodel.tleCount}}</br>
-                        TLE: {{problem.problemstatisticsmodel.ceCount}}</br>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <h4>Statement:</h4>
-            <br/>
-            <div id="statement">{{problem.problemsettingmodel.statement}}</div>
-            <hr/>
-        </div>
-        <div class="row">
-            <h4>Input:</h4>
-            <br/>
-            <div>
-                {{problem.problemsettingmodel.input_statement}}
-            </div>
-            <hr/>
-        </div>
-        <div class="row">
-            <h4>Constraints:</h4>
-            <br/>
-            <div>
-                {{problem.problemsettingmodel.constraints_statement}}
-            </div>
-            <hr/>
-        </div>
-        <div class="row">
-            <h4>Output:</h4>
-            <br/>
-            <div>
-                {{problem.problemsettingmodel.output_statement}}
-            </div>
-            <hr/>
-        </div>
-    </div>
-    <script>
-        document.getElementById('statement').innerHTML = marked(document.getElementById('statement').innerHTML);
-    </script>
+    <script src="{%static 'user-static/js/problem/problemdetail.js' %}"></script>
 {%endblock%}

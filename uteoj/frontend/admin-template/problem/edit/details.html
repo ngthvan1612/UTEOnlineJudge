@@ -11,13 +11,13 @@
 		<!--begin::Info-->
 		<div class="d-flex align-items-center flex-wrap mr-2">
 			<!--begin::Page Title-->
-			<h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Dashboard</h5>
+			<h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Trang chủ</h5>
 			<!--end::Page Title-->
 			<!--begin::Actions-->
 			<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
 			<!--end::Actions-->
 			<!--begin::Page Title-->
-			<h6 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Edit Problems</h6>
+			<h6 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Chỉnh sửa bài tập</h6>
 			<!--end::Page Title-->
 			<!--begin::Actions-->
 			<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
@@ -37,10 +37,10 @@
 				<div class="card-body p-0">
 					<ul class="nav nav-tabs">
 						<li class="nav-item">
-							<a class="nav-link active" href="details">Details</a>
+							<a class="nav-link active" href="details">Chi tiết</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="problemsetter">Problem Setter</a>
+							<a class="nav-link" href="problemsetter">Ban ra đề</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="testcases">Test Case</a>
@@ -51,10 +51,10 @@
 						</li>
 						-->
 						<li class="nav-item">
-							<a class="nav-link" href="settings">Setting</a>
+							<a class="nav-link" href="settings">Cài đặt</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="customchecker">Custom Checker</a>
+							<a class="nav-link" href="customchecker">Tuỳ chỉnh kiểm tra</a>
 						</li>
 					</ul>
 
@@ -67,23 +67,23 @@
 										<div class="col-12 mb-3">
 											<div class="row">
 												<div class="input-group mb-3" style="margin-top: 15px">
-													<span class="input-group-text" style="width: 15%;">Problem name</span>
+													<span class="input-group-text" style="width: 15%;">Tên bài</span>
 													<input type="text"  class="form-control" placeholder="Problem name" value="{{problem.fullname}}" name="fullname" />
 												</div>
                                                 <div class="input-group mb-3" style="margin-top: 15px">
-													<span class="input-group-text" style="width: 15%;">Short name</span>
+													<span class="input-group-text" style="width: 15%;">Tến rút gọn</span>
 													<input type="text"  class="form-control" placeholder="Short name" value="{{problem.shortname}}" name="shortname" />
 												</div>
 												<div class="input-group mb-3" style="margin-top: 15px">
-													<span class="input-group-text" style="width: 15%;">Publish date</span>
+													<span class="input-group-text" style="width: 15%;">Ngày đăng bài</span>
 													<input type="text"  class="form-control" value="{{problem.publish_date}}" readonly/>
 												</div>
                                                 <div class="input-group mb-3" style="margin-top: 15px">
-													<span class="input-group-text" style="width: 15%;">Difficult</span>
+													<span class="input-group-text" style="width: 15%;">Độ khó</span>
 													<input type="text"  class="form-control" placeholder="Difficult" value="{{problem.difficult}}" name="difficult" />
 												</div>
                                                 <div class="input-group mb-3" style="margin-top: 15px; align-items: center">
-													<span class="input-group-text" style="width: 15%;">Categories</span>
+													<span class="input-group-text" style="width: 15%;">Danh mục</span>
 													{%for cate in list_categories %}
                                                         <div class="form-check">
                                                             <input  type="checkbox"
@@ -95,25 +95,25 @@
                                                     {%endfor%}
 												</div>
 												<div class="input-group mb-3">
-													<span class="input-group-text" style="width: 15%;">Points per test</span>
+													<span class="input-group-text" style="width: 15%;">Điểm mỗi test</span>
 													<input type="text"  class="form-control" placeholder="Point per test" value="{{problem.points_per_test}}" name="points_per_test" />
 												</div>
 												<div class="input-group mb-3">
-													<label class="input-group-text" style="width: 15%;">Statement</label>
+													<label class="input-group-text" style="width: 15%;">Đề bài</label>
                                                     <div style="width: 85%;">
                                                         <textarea class="form-control" id="statement" placeholder="Statment" name="statement">{{problem.statement}}</textarea>
                                                     </div>
 												</div>
                                                 
                                                 <div class="input-group mb-3">
-													<label class="input-group-text" style="width: 15%;">Constraints</label>
+													<label class="input-group-text" style="width: 15%;">Ràng buộc</label>
                                                     <div style="width: 85%;">
                                                         <textarea class="form-control" id="constraints_statement" placeholder="constraints_statement" name="constraints_statement" >{{problem.constraints_statement}}</textarea>
                                                     </div>
 												</div>
                                                 <div class="col-6" style="padding-left: 0;">
                                                     <div class="input-group mb-3" id="input">
-                                                        <label class="input-group-text" style="width: 100%;">Input</label>
+                                                        <label class="input-group-text" style="width: 100%;">Đầu vào</label>
 														<div style="width: 100%;">
 															<textarea class="form-control" id="input_statement" placeholder="input_statement" name="input_statement" >{{problem.input_statement}}</textarea>
 														</div>
@@ -121,7 +121,7 @@
                                                 </div>
                                                 <div class="col-6" style="padding-right: 0;">
                                                     <div class="input-group mb-3" id ="output">
-                                                        <label class="input-group-text" style="width: 100%;">Output</label>
+                                                        <label class="input-group-text" style="width: 100%;">Đầu ra</label>
 														<div style="width: 100%;">
 															<textarea class="form-control" id="output_statement" placeholder="output_statement" name="output_statement" >{{problem.output_statement}}</textarea>
 														</div>
@@ -131,7 +131,7 @@
 										</div>
 										<div class="col-12">
 											<div class="text-center">
-												<input class="btn btn-primary" type="submit" value="Save change">
+												<input class="btn btn-primary" type="submit" value="Lưu thay đổi">
 											</div>
 										</div>
 									</div>

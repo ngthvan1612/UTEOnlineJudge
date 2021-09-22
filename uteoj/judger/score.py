@@ -88,7 +88,7 @@ class OIScore(ScoreAbstract):
         super().__init__(user, problem)
         self._result = SubmissionResultType.AC
 
-    def onCompileError(self):
+    def onCompileError(self): 
         self._canContinue = False
         self._result = SubmissionResultType.CE
 

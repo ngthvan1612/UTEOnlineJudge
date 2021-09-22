@@ -5,15 +5,15 @@
 	<div class="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
 		<div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
 			<!--begin::Info-->
-			<div class="d-flex align-items-center flex-wrap mr-2">
+			<div class="d-flex align-items-center flex-wrap mr-2" style="font-family: 'Roboto';">
 				<!--begin::Page Title-->
-				<h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Dashboard</h5>
+				<h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Trang chủ</h5>
 				<!--end::Page Title-->
 				<!--begin::Actions-->
 				<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
 				<!--end::Actions-->
 				<!--begin::Page Title-->
-				<h6 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Edit Problems</h6>
+				<h6 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Tuỳ chỉnh bài tập</h6>
 				<!--end::Page Title-->
 				<!--begin::Actions-->
 				<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
@@ -33,10 +33,10 @@
 					<div class="card-body p-0">
                         <ul class="nav nav-tabs">
                             <li class="nav-item">
-                                <a class="nav-link" href="details">Details</a>
+                                <a class="nav-link" href="details">Chi tiết</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="problemsetter">Problem Setter</a>
+                                <a class="nav-link" href="problemsetter">Ban ra đề</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link active" href="testcases">Test Case</a>
@@ -47,10 +47,10 @@
                             </li>
                             -->
                             <li class="nav-item">
-                                <a class="nav-link" href="settings">Setting</a>
+                                <a class="nav-link" href="settings">Cài đặt</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="customchecker">Custom Checker</a>
+                                <a class="nav-link" href="customchecker">Tuỳ chỉnh kiểm tra</a>
                             </li>
                         </ul>
                     </div>
@@ -63,16 +63,16 @@
                         <table class="table table-hover table-bordered" style="margin-top: 20px">
                             <thead>
                                 <tr>
-                                <th scope="col">Testcase</th>
-                                <th scope="col">Input</th>
-                                <th scope="col">Output</th>
-                                <th scope="col">Time Limit</th>
-                                <th scope="col">Memory Limit</th>
-                                <th scope="col">Points</th>
-                                <th scope="col">Tag</th>
-                                <th scope="col">Is Sample</th>
-                                <th scope="col" style="width: 70px; text-align: center">Edit</th>
-                                <th scope="col" style="width: 70px;">Delete</th>
+                                <th scope="col">STT</th>
+                                <th scope="col">Đầu vào</th>
+                                <th scope="col">Đầu ra</th>
+                                <th scope="col">Giới hạn thời gian</th>
+                                <th scope="col">Giới hạn bộ nhớ</th>
+                                <th scope="col">Điểm</th>
+                                <th scope="col">Danh mục</th>
+                                <th scope="col">Là Ví dụ</th>
+                                <th scope="col" style="width: 70px; text-align: center">Chỉnh sửa</th>
+                                <th scope="col" style="width: 70px;">Xoá</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -100,7 +100,7 @@
                         {% csrf_token %}
                         <div class="col-12">
                             <div class="text-center">
-                                <input class="btn btn-primary" type="submit" value="Save change 1">
+                                <input class="btn btn-primary" type="submit" value="Lưu thay đổi">
                             </div>
                         </div>
                     </form>
@@ -112,7 +112,7 @@
                         <form method="post" action="testcases/uploadzip/" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div>
-                                <label class="form-label">Upload zip</label>
+                                <label class="form-label">Tải lên file zip</label>
                                 <select class="custom-select" name="filetype">
                                     {% for x in list_formats%}
                                         <option value="{{x.value}}">{{x.display}}</option>
@@ -125,7 +125,7 @@
                             </div>
                             <div class="col-12" style="margin-top: 10px">
                                 <div class="text-center">
-                                    <input class="btn btn-primary" type="submit" value="Save change">
+                                    <input class="btn btn-primary" type="submit" value="Lưu thay đổi">
                                 </div>
                             </div>
                         </form>
