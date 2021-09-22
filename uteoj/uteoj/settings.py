@@ -1,5 +1,4 @@
 from pathlib import Path
-from .dbutils import *
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -144,6 +143,7 @@ if IS_PRODUCTION: #docker file
         }
     }
 else:
+    from .dbutils import *
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
