@@ -80,8 +80,15 @@
 								</div>	
 							</h5>
 							<div class="card-body valueBox">
-								<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-								<a href="#" class="btn btn-primary">Go somewhere</a>
+								<div class="row">
+								{%for author in problem.author.all%}
+									<div class="col">
+										<img src="{{author.usersetting.avatar}}" height="auto" width="120" padding="5px">
+									</div>
+								{%endfor%}
+								</div>
+								<!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
+								<!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
 
 
 								<ul class="row mb-2 mr-2" style="position: absolute; bottom: 3rem; width: 95%;">
