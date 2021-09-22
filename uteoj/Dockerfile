@@ -2,6 +2,13 @@
 
 FROM python:3
 
+RUN apt-get update && \
+    DEBIAN_FRONTEND="noninteractive" apt-get install -y openjdk-11-jdk mono-mcs && \
+    apt-get clean;
+
+RUN adduser --disabled-password --gecos '' uteoj_compiler
+RUN adduser --disabled-password --gecos '' uteoj_run
+
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONWARNINGS="ignore"
@@ -18,7 +25,8 @@ COPY . /code/
 
 RUN python /code/manage.py collectstatic --noinput --clear
 
-RUN chmod -R 755 /code/static/
+RUN chmod -R 0755 /code/static/
 RUN chown -R "$USER":www-data /code/
+RUN chmod +x /code/libjudger/libjudger.so
 
 EXPOSE 8000

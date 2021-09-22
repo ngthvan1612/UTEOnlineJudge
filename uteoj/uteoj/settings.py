@@ -199,8 +199,16 @@ STATICFILES_DIRS = [
 # Judger file (CSS, JavaScript, Images) ----------------------------------------------------------------------
 # Các thư mục này để biên dịch + chạy chương trình
 
-COMPILE_ROOT = 'tmp/compile/'
-RUNNING_ROOT = 'tmp/run/'
+if DEBUG:
+    COMPILE_ROOT = 'tmp/compile/'
+    RUNNING_ROOT = 'tmp/run/'
+else:
+    try:
+        os.system('mkdir -p /uteoj_temp/compile/')
+        os.system('mkdir -p /uteoj_temp/run/')
+    except: pass
+    COMPILE_ROOT = '/uteoj_temp/compile/'
+    RUNNING_ROOT = '/uteoj_temp/run/'
 
 # User chạy chương trình
 import pwd, grp

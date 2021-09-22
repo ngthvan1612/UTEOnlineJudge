@@ -63,6 +63,7 @@ def AdminSettingView(request):
 @admin_member_required
 def AdminSettingSTMP(request):
     if request.method == 'POST':
+        print(request.POST)
         server = request.POST['server'] if 'server' in request.POST else ''
         email = request.POST['email'] if 'email' in request.POST else ''
         port = request.POST['port'] if 'port' in request.POST else ''
@@ -79,7 +80,6 @@ def AdminSettingSTMP(request):
             'server': OJSettingModel.getSTMPServer(),
             'email': OJSettingModel.getSTMPEmail(),
             'port': OJSettingModel.getSTMPPort(),
-            #'password': OJSettingModel.getSTMPPassword(),
             'tls': OJSettingModel.getSTMPEnableTLS()
         }
         return render(request, 'admin-template/Setting/stmp.html', context)
