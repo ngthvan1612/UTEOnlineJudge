@@ -6,20 +6,23 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
  
+{%include 'user-template/_layout/error_handle.html' %} 
+{%block error_handle%}{%endblock%}
+
     <div class="container-fluid">
         <div class="row"></div>
         <div class="row justify-content-md-center mt-6" style="margin-top: 1.5rem;">
             <div class="col col-xl-9 col-md-8" style="background-color: white;">
                 <h2 class="mt-4" style="text-align:center;color:blue;">{{problem.fullname}}</h2>
-                <div class="text-center">
-                    <span style="font-weight: bold;">INPUT:</span>
+                <div class="text-center font-weight-bold">
+                    <span >INPUT:</span>
                         {%if problem.problemgradermodel.use_stdin %}
                             Standard input
                         {%else%}
                             {{problem.problemgradermodel.input_filename}}
                         {%endif%}
                     </br>
-                    output:
+                    <span >OUPUT:</span>
                         {%if problem.problemgradermodel.use_stdout %}
                             Standard output
                         {%else%}
@@ -57,7 +60,7 @@
             <div class="col col-xl-2 col-md-4" >
                 <div class="list-group" style="margin-left: 0.5rem">
                     <a href="/problem/{{problem.shortname}}/submit" class="list-group-item list-group-item-action list-group-item-light">Submit Problem</a>
-                    <a href="submit" class="list-group-item list-group-item-action list-group-item-light">List Submit</a>
+                    <!--<a href="submit" class="list-group-item list-group-item-action list-group-item-light" >List Submit</a>-->
                 </div>
                 <div class="card bg-light mb-3 mt-4 ml-2" style="font-size: 15px">
                     <div class="card-header">Problem Info</div>
@@ -104,6 +107,7 @@
                     <div class="card-body ml-n5">
                         
                         <div style="display: none;">
+                            <p id="total">{{problem.problemstatisticsmodel.totalSubmission}}</p>
                             <p id="ac">{{problem.problemstatisticsmodel.solvedCount}}</p>
                             <p id="wa">{{problem.problemstatisticsmodel.waCount}}</p>
                             <p id="rte">{{problem.problemstatisticsmodel.rteCount}}</p>
