@@ -66,9 +66,9 @@ class UserSetting(models.Model):
         # optimize content
         image_file = BytesIO(content.read())
         image = Image.open(image_file)
-        image = image.resize((256, 256), Image.ANTIALIAS)
-        image = image.convert("RGB")
-        image_file = BytesIO()
+        #image = image.resize((256, 256), Image.ANTIALIAS)
+        #image = image.convert("RGB")
+        #image_file = BytesIO()
         image.save(image_file, 'PNG', quality=90)
         # end
 
