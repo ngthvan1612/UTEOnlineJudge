@@ -1,23 +1,30 @@
 {%extends 'admin-template/_layout/base.html' %}
 {%load static%}
 {%block website_content %}
-	<!-- Content Header (Page header) -->
-	<div class="content-header">
-		<div class="container-fluid">
-			<div class="row mb-2">
-				<div class="col-sm-6">
-					<ol class="breadcrumb float-sm-left">
-						<li class="breadcrumb-item"><a href="/admin/">Home</a></li>
-						<li class="breadcrumb-item active"><a href="/admin/users/">Users</a></li>
-						<li class="breadcrumb-item active"><a href="/admin/users/edit/{{username}}">{{username}}</a></li>
-					</ol>
-				</div>
+	<!--begin::Subheader-->
+	<div class="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
+		<div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+			<!--begin::Info-->
+			<div class="d-flex align-items-center flex-wrap mr-2" style="font-family: 'san-serif';">
+				<!--begin::Page Title-->
+				<h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Trang chủ</h5>
+				<!--end::Page Title-->
+				<!--begin::Actions-->
+				<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
+				<!--end::Actions-->
+				<!--begin::Page Title-->
+				<h6 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Thông tin cá nhân</h6>
+				<!--end::Page Title-->
+				<!--begin::Actions-->
+				<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
+				<!--end::Actions-->
 			</div>
-			{%include 'admin-template/_layout/error_handle.html' %} 
-			{%block error_handle %}{%endblock%}
+			<!--end::Info-->
 		</div>
 	</div>
-	<!-- /.content-header -->
+	<!--end::Subheader-->
+    {%include 'admin-template/_layout/error_handle.html' %} 
+    {%block error_handle %}{%endblock%}
 	<div class="content">
         <div class="container-fluid">
             <form method="POST" url="" enctype="multipart/form-data">
@@ -25,27 +32,27 @@
 				<div class="row justify-content-xl-center">
 					<div class="col-xl-7">
                         <div class="form-group">
-                            <label for="lang_name">User Name:</label>
+                            <label for="lang_name">Tên đăng nhập:</label>
                             <input type="text" class="form-control" id="lang_name" name="user_name" value="{{username}}" readonly />
                         </div>
 						
 						<div class="row">
 							<div class="col-6">
 								<div class="form-group">
-									<label for="first_name">First Name:</label>
+									<label for="first_name">Họ:</label>
 									<input type="text" class="form-control" id="first_name" name="first_name" value="{{first_name}}" />
 								</div>
 							</div>
 							<div class="col-6">
 								<div class="form-group">
-									<label for="last_name">Last Name:</label>
+									<label for="last_name">Tên:</label>
 									<input type="text" class="form-control" id="last_name" name="last_name" value="{{last_name}}" />
 								</div>
 							</div>
 						</div>
                         
 						<div class="form-group">
-                            <label for="last_name">Date Joined:</label>
+                            <label for="last_name">Ngày tham gia:</label>
                             <input type="text" class="form-control" id="date_joined" name="date_joined" value="{{date_joined}}" readonly/>
                         </div>
                         <div class="form-group">
@@ -53,16 +60,16 @@
                             <input type="email" class="form-control" id="email" name="email" value="{{email}}" />
                         </div>
                         <div class="form-group">
-                            <label for="job">Job:</label>
+                            <label for="job">Nghề nghiệp:</label>
                             <input type="text" class="form-control" id="job" name="user_job" value="{{job}}" />
                         </div>
                         <div class="custom-control custom-switch">
                             <input type="checkbox" class="custom-control-input" id="is_admin" {%if is_admin%} checked {%endif%} name="is_admin">
-                            <label class="custom-control-label" for="is_admin">Is admin</label>
+                            <label class="custom-control-label" for="is_admin">Là admin</label>
                         </div>
 						<div class="custom-control custom-switch">
                             <input type="checkbox" class="custom-control-input" id="is_active" {%if is_active%} checked {%endif%} name="is_active">
-                            <label class="custom-control-label" for="is_active">Is active</label>
+                            <label class="custom-control-label" for="is_active">Còn hoạt động</label>
                         </div>
 					</div>
 
@@ -74,7 +81,7 @@
 						{% endif %}
 						<div class="custom-file" style="margin-top: 10px;">
 							<input type="file" class="custom-file-input" id="user_avatar" name="user_avatar" onchange="updateImage()">
-							<label class="custom-file-label" for="customFile">Choose file</label>
+							<label class="custom-file-label" for="customFile">Chọn file</label>
 						  </div>
 					</div>
 				</div>
@@ -82,8 +89,8 @@
 				<div class="row" style="margin-top:5px;">
 					<div class="col-12">
 						<div class="text-center">
-							<input class="btn btn-primary" role="button" type="submit" value="Save change">
-							<button class="btn btn-danger" role="button" type="button" onclick="deleteUser()">Delete user</button>
+							<input class="btn btn-primary" role="button" type="submit" value="Lưu thay đổi">
+							<button class="btn btn-danger" role="button" type="button" onclick="deleteUser()">Xoá người dùng</button>
 						</div>
 					</div>
 				</div>
