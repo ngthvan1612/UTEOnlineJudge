@@ -59,11 +59,11 @@
             </div>
             <div class="col col-xl-2 col-md-4" >
                 <div class="list-group" style="margin-left: 0.5rem">
-                    <a href="/problem/{{problem.shortname}}/submit" class="list-group-item list-group-item-action list-group-item-light">Submit Problem</a>
+                    <a href="/problem/{{problem.shortname}}/submit" class="list-group-item list-group-item-action list-group-item-light">Nộp bài</a>
                     <!--<a href="submit" class="list-group-item list-group-item-action list-group-item-light" >List Submit</a>-->
                 </div>
                 <div class="card bg-light mb-3 mt-4 ml-2" style="font-size: 15px">
-                    <div class="card-header">Problem Info</div>
+                    <div class="card-header">Thông tin bài tập</div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-7">ID</div>
@@ -92,7 +92,7 @@
                             <div class="col col-5">{{problem.difficult}}</div>
                         </div>
                         <div class="row mt-2">
-                            <div class="col col-7 mt-2">Tags</div>
+                            <div class="col col-7 mt-2">Danh mục</div>
                             <div class="col col-5">
                                 <button type="button" class="btn btn-outline-secondary" data-toggle="popover" title="" 
                                 data-content='{%for cate in problem.categories.all%} <a class="btn btn-info ml-2 mt-2 text-white">{{cate}}</a> {%endfor%}'>
@@ -103,7 +103,7 @@
                     </div>
                 </div>
                 <div class="card ml-2">
-                    <div class="card-header">Problem Statistic</div>
+                    <div class="card-header">Thống kê bài tập</div>
                     <div class="card-body ml-n5">
                         
                         <div style="display: none;">

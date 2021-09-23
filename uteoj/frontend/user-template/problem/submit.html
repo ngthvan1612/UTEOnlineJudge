@@ -8,7 +8,7 @@
 			<div class="row mb-2">
 				<div class="col-sm-6">
 					<ol class="breadcrumb float-sm-left">
-						<li class="breadcrumb-item"><a href="admin">Submit</a></li>
+						<li class="breadcrumb-item"><a href="admin">Nộp bài</a></li>
 					</ol>
 				</div>
 			</div>
@@ -21,7 +21,7 @@
 			<div class="row justify-content-md-center">
                 <div class="col-6">
                     <div class="row justify-content-center"">
-                        <h3>Submit Solution</h3>
+                        <h3>Nộp bài</h3>
                     </div>
                     <div class="row justify-content-center" style="margin-top: 20px">
                         <h2>{{problem.fullname}}</h2>
@@ -34,7 +34,7 @@
                             <div class="col col-9">{{problem.fullname}}</div>
                         </div>
                         <div class="row" style="margin-top: 20px">
-                            <div class="col col-3" style="margin:auto">Language:</div>
+                            <div class="col col-3" style="margin:auto">Ngôn ngữ:</div>
                             <div class="col col-9">
                                 <select class="form-control" name="language">
                                     {% for lang in languages %}
@@ -44,24 +44,24 @@
                             </div>
                         </div>                       
                         <div class="row" style="margin-top: 20px;">
-                            <div class="col col-3" style="margin:auto">Source code:</div>
+                            <div class="col col-3" style="margin:auto">Mã nguồn:</div>
                             <div class="col col-9">
                                 <div id="editor" name="source2" style="height: 400px; font-size: 24px;"></div>
                             </div>
                             <textarea name="source" style="display: none" id="source"></textarea>
                         </div>
                         <div class="row" style="margin-top: 20px;">
-                            <div class="col col-3 align-items-center" style="margin:auto">Or choose file:</div>
+                            <div class="col col-3 align-items-center" style="margin:auto">Hoặc chọn file:</div>
                             <div class="col col-9">
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input" id="customFileLang" lang="us" name="source_file">
-                                    <label class="custom-file-label" for="customFileLang">Choose file here</label>
+                                    <label class="custom-file-label" for="customFileLang">Chọn ở đây</label>
                                 </div>
                             </div>
                         </div>
                         <div class="row justify-content-md-center" style="margin-top: 20px;">
                             <div class="col-1 justify-content-center">
-                                <button class="btn btn-primary" onclick="check()" type="submit">Submit</button>
+                                <button class="btn btn-primary" onclick="check()" type="submit">Nộp bài</button>
                             </div>
                         </div>
                     </form>

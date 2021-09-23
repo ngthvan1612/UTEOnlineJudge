@@ -8,7 +8,7 @@
 			<div class="row mb-2">
 				<div class="col-sm-6">
 					<ol class="breadcrumb float-sm-left">
-						<li class="breadcrumb-item"><a href="admin">Submit</a></li>
+						<li class="breadcrumb-item"><a href="admin">Thông tin cá nhân</a></li>
 					</ol>
 				</div>
 			</div>
@@ -33,24 +33,25 @@
 							<div class="col col-8">
 								<div class="input-group mt-3">
 									<div class="input-group-prepend">
-									  <span class="input-group-text">First name</span>
+									  <span class="input-group-text" style="width: 130px">Họ</span>
 									</div>
 									<input type="text" class="form-control" name="first_name" value="{{user.first_name}}">
 								</div>
 								<div class="input-group mt-3">
 									<div class="input-group-prepend">
-									  <span class="input-group-text">Last name</span>
+									  <span class="input-group-text" style="width: 130px">Tên</span>
 									</div>
 									<input type="text" class="form-control" name="last_name" value="{{user.last_name}}">
 								</div>
 								<div class="input-group mt-3">
 									<div class="input-group-prepend">
-									  <span class="input-group-text">Job</span>
+									  <span class="input-group-text" style="width: 130px">Nghề nghiệp</span>
 									</div>
 									<input type="text" class="form-control" name="job" value="{{user.usersetting.job}}">
 								</div>
-								
+
 								<input type="submit" class="btn btn-primary float-right mt-3">
+								<a href="/changepassword" class="btn btn-danger float-right mt-3 mr-4">Đổi mật khẩu</a>
 							</div>
 						</div>
                     </form>
