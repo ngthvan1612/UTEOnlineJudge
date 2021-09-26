@@ -11,7 +11,6 @@ import json
 from random import randint, random
 
 from backend.views.admin.tools import Remove_accents
-from backend.task.submit import RandomSubmission
 
 
 def RandomFromList(input:list, size) -> list:
@@ -40,5 +39,4 @@ def CreateRandomSubmission(request):
         count = int(request.GET['count'])
     except:
         return HttpResponse('count phải là số')
-    RandomSubmission.delay(count)
     return HttpResponse('Đang chạy nền...')

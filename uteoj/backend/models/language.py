@@ -1,4 +1,3 @@
-from rest_framework import serializers
 from django.db import models
 
 class LanguageModel(models.Model):

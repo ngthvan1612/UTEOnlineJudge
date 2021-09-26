@@ -22,6 +22,8 @@ WEBSITE_HOST_NAME = '127.0.0.1:8000'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 
 # Celery backend ----------------------------------------------------------------------
 
@@ -34,7 +36,10 @@ timezone = 'Asia/Ho_Chi_Minh'
 
 # Media backend ----------------------------------------------------------------------
 
-MEDIA_ROOT = os.environ['MEDIA_ROOT'] if 'MEDIA_ROOT' in os.environ else 'ADMIN_DATA_MEDIA/'
+MEDIA_ROOT = '../../uteoj_data/media'
+PROBLEM_ROOT = '../../uteoj_data/problems'
+USER_ROOT = '../../uteoj_data/user'
+IMPORT_USER_ROOT = '../../uteoj_data/importuser'
 MEDIA_URL = '/media/'
 
 
@@ -70,12 +75,6 @@ INSTALLED_APPS = [
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-    ),
-    'DEFAULT_PARSER_CLASSES': (
-        'rest_framework.parsers.JSONParser',
-    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
     ),
@@ -172,6 +171,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+PASSWORD_HASHERS = [
+    'backend.auth.password_hasher.UTEOJ_PBKDF2PasswordHasher'
+]
 
 # Internationalization ----------------------------------------------------------------------
 
@@ -200,8 +202,8 @@ STATICFILES_DIRS = [
 # Các thư mục này để biên dịch + chạy chương trình
 
 if DEBUG:
-    COMPILE_ROOT = 'tmp/compile/'
-    RUNNING_ROOT = 'tmp/run/'
+    COMPILE_ROOT = '../../tmp/compile/'
+    RUNNING_ROOT = '../../tmp/run/'
 else:
     try:
         os.system('mkdir -p /uteoj_temp/compile/')

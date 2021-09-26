@@ -13,10 +13,12 @@ from django.db import transaction
 
 from backend.models.submission import SubmissionResultType, SubmissionStatusType, SubmissionModel, SubmissionTestcaseResultModel
 from backend.models.usersetting import UserProblemStatisticsModel
-from backend.models.problem import ProblemStatisticsModel, ProblemType
+from backend.models.problem import ProblemModel, ProblemType
 
 from judger.score import ACMScore, OIScore
 from judger import judger
+
+import shutil
 
 class GraderAbstract(ABC):
 
@@ -68,7 +70,7 @@ class GraderAbstract(ABC):
     def compileChecker(problem_dir):
         raw_command = '/usr/bin/g++ -std=c++14 -O2 -Wall checker.cpp -o checker.tmp'
         command = [x for x in raw_command.split() if x]
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE, cwd=os.path.join(problem_dir, 'checker'))
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE, cwd=os.path.join(problem_dir))
         process_stdout, process_stderr = process.communicate()
         process_stdout = process_stdout.decode('utf-8')
         process_stderr = process_stderr.decode('utf-8')
@@ -76,8 +78,8 @@ class GraderAbstract(ABC):
 
         if exit_code == 0:
             # Success
-            os.system('rm -rf ' + os.path.join(problem_dir, 'checker', 'checker'))
-            os.rename(os.path.join(problem_dir, 'checker', 'checker.tmp'), os.path.join(problem_dir, 'checker', 'checker'))
+            os.system('rm -rf ' + os.path.join(problem_dir, 'checker'))
+            os.rename(os.path.join(problem_dir, 'checker.tmp'), os.path.join(problem_dir, 'checker'))
             return (True, '')
         
         #Failed
@@ -174,7 +176,7 @@ class GraderAbstract(ABC):
         submission.save()
 
         with transaction.atomic():
-            problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=problem)
+            problemStatisticsEntries = ProblemModel.objects.select_for_update().filter(pk=problem.pk)
             for problemStatistics in problemStatisticsEntries:
                 problemStatistics.totalSubmission = problemStatistics.totalSubmission + 1
                 problemStatistics.save()
@@ -202,7 +204,7 @@ class GraderAbstract(ABC):
         # Copy all tests to dest
         submission.status = SubmissionStatusType.Grading
         submission.save()
-        os.system('cp -Rf ' + os.path.join(problem_dir, 'tests', '*') + ' ' + self._run_workdir)
+        shutil.copytree(os.path.join(problem_dir, 'tests'), self._run_workdir, dirs_exist_ok=True)
 
         # Chạy test
         currentTestId = 1
@@ -216,7 +218,7 @@ class GraderAbstract(ABC):
             submission.lastest_test = currentTestId
             currentTestId = currentTestId + 1
             submission.save()
-            testdir = os.path.join(self._run_workdir, testcase.input_file.split('/')[3])
+            testdir = os.path.join(self._run_workdir, testcase.name)
 
             # Đổi tên output của bài lại (thêm .answer)
             os.rename(os.path.join(testdir, output_file), os.path.join(testdir, output_file) + '.answer')

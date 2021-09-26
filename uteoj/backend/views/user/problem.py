@@ -14,16 +14,16 @@ from backend.models.submission import SubmissionModel, SubmissionResultType, Sub
 from django.shortcuts import redirect, get_object_or_404
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
-from backend.models.problem import ProblemStatisticsModel
 
-from datetime import datetime
 from random import random
 from django.http import HttpResponse
-from django.core import serializers
 
-from backend.task.submit import SubmitSolutionTest
 from backend.task.submit import SubmitSolution
+from backend.filemanager.problemstorage import ProblemStorage
 
+def ProblemStatementViewer(request, id):
+    file_manager = ProblemStorage(problem=get_object_or_404(ProblemModel, shortname=id))
+    return file_manager.loadStatement()
 
 def UserListProblemView(request):
 
@@ -160,7 +160,9 @@ def UserSubmitSolution(request, shortname):
         submission.status = SubmissionStatusType.InQueued
         submission.save()
 
-        SubmitSolution.delay(submission.id)
+        SubmitSolution.apply_async(
+            args=[submission.id],
+            queue='uteoj_judger')
         return redirect('/submissions')
     elif request.method == 'GET':
         if not OJSettingModel.getAllowSubmission():

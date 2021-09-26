@@ -1,21 +1,6 @@
 # File này phải chạy trên quyền root
 
-from backend.models.submission import SubmissionModel
-from backend.models.submission import SubmissionTestcaseResultModel
-from backend.models.language import LanguageModel
-
-from backend.models.filemanager import OverwriteStorage
-from django.core.files.base import ContentFile
-from backend.models.submission import SubmissionResultType
-
-from django.conf import settings
-import uuid
-import os
-import shutil
-import time
 import subprocess
-from subprocess import check_output
-from subprocess import PIPE
 
 import json
 import subprocess

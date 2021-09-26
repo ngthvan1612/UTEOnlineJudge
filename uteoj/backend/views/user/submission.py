@@ -15,8 +15,6 @@ from random import random
 from django.http import HttpResponse
 from django.core import serializers
 
-
-from backend.task.submit import SubmitSolutionTest
 from backend.models.submission import SubmissionModel, SubmissionTestcaseResultModel, SubmissionResultType, SubmissionStatusType
 from django.core.paginator import Paginator
 
@@ -30,7 +28,7 @@ def UserListSubmissionView(request):
             'executed_time',
             'memory_usage',
             'lastest_test',
-            total_points=F('problem__problemsettingmodel__total_points'),
+            total_points=F('problem__total_points'),
             user_name=F('user__username'),
             problem_shortname=F('problem__shortname'),
             problem_fullname=F('problem__fullname'),
@@ -72,7 +70,7 @@ def UserSubmissionView(request, submission_id):
 
         #check visible
         submission = submission[0]
-        vs_mode = submission.problem.problemsettingmodel.submission_visible_mode
+        vs_mode = submission.problem.submission_visible_mode
         if vs_mode == SubmissionVisibleModeType.AllowedFromAll:
             # Ok, ai cũng coi được
             allow = True

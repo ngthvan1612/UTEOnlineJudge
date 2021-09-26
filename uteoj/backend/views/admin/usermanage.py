@@ -1,21 +1,26 @@
 from random import randint
 import re
-import os.path
-import json
+from backend.filemanager.importuser import ImportUserStorage
+from backend.task.importuser import ImportUserAsync
 from django.conf import settings
 from django.contrib import messages
 from django.db.models.query_utils import Q
-from django.http.response import HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.http.response import Http404, HttpResponseRedirect
+from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.contrib.admin.views.decorators import staff_member_required
 from backend.views.auth.login import LoginView
 from backend.views.admin.require import admin_member_required
 from django.contrib.auth.models import User
-from backend.models.usersetting import UserSetting
+from backend.models.usersetting import ImportUserFileModel, UserSetting
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from PIL import Image
+import pandas as pd
+import numpy as np
+from django.utils import timezone
+import uuid
+from django.db.models import Q
 
 def AdminFilterListUser(request, is_staff, template):
     list_user_filter = User.objects.all()
@@ -76,6 +81,88 @@ def AdminDeleteUser(request, user_name):
     else:
         return HttpResponse(status=405)
 
+@admin_member_required
+def AdminImportUserResultViewer(request, huid, token, name):
+    fid = ImportUserFileModel.DecryptId(huid)
+    fileModel = get_object_or_404(ImportUserFileModel, id=fid)
+    if token != fileModel.token or name != fileModel.name:
+        raise Http404()
+    file_manager = ImportUserStorage()
+    return file_manager.loadImportUser(fileModel.name)
+
+@admin_member_required
+def AdminImportUser(request):
+    if request.method == 'POST':
+        if 'userexcelfile' not in request.FILES:
+            messages.add_message(request, messages.WARNING, 'Bạn phải upload một file lên')
+            return HttpResponseRedirect(request.path_info)
+        prefix = request.POST.get('prefix')
+        suffix = request.POST.get('suffix')
+        xls = request.FILES.get('userexcelfile')
+        if prefix == None or suffix == None:
+            return HttpResponse(status=500)
+        if not re.match("^[A-Za-z0-9_]*$", prefix):
+            messages.add_message(request, messages.ERROR, 'Tiền tố chỉ gồm các kí tự A-Za-z0-9 và _')
+            return HttpResponseRedirect(request.path_info)
+        if not re.match("^[A-Za-z0-9_]*$", suffix):
+            messages.add_message(request, messages.ERROR, 'Hậu tố chỉ gồm các kí tự A-Za-z0-9 và _')
+            return HttpResponseRedirect(request.path_info)
+
+        # preprocessing
+        try:
+            df = pd.read_excel(BytesIO(xls.read()))
+        except:
+            messages.add_message(request, messages.ERROR, 'Không đọc được file')
+            return HttpResponseRedirect(request.path_info)
+        
+        listFilterUser = User.objects.values_list('username').filter(username__startswith=prefix,username__endswith=suffix).all()
+        listFilterUser = {x[0] for x in listFilterUser}
+
+        data = df.to_numpy()
+        lsSinhVien = []
+
+        for x in data:
+            mssv, ho, ten = str(x[1]), str(x[3]), str(x[4])
+            if mssv.isdigit() and ho != 'nan' and ten != 'nan':
+                username = prefix + mssv + suffix
+                if username in listFilterUser:
+                    messages.add_message(request, messages.ERROR, f"Tên đăng nhập {username} đã có")
+                    return HttpResponseRedirect(request.path_info)
+
+                password = uuid.uuid4().hex[:8]
+                lsSinhVien.append((mssv, ho.strip(), ten.strip(), username, password))
+
+        # importing
+        fileModel = ImportUserFileModel.objects.create(
+            name=f"UTEOJ_IMPORT_USERS_{timezone.localtime(timezone.now()).strftime('%m-%d-%Y__%H-%M-%S')}.xls",
+            token=uuid.uuid4().hex + uuid.uuid4().hex)
+        fileModel.save()
+
+        messages.add_message(request, messages.SUCCESS, f"Đang nhập")
+        lsOutput = np.array(lsSinhVien)
+        stream = BytesIO()
+
+        pdOutput = pd.DataFrame(lsOutput, columns=('Mã số SV', 'Họ và tên lót', 'Tên', 'Tên đăng nhập', 'Mật khẩu'))
+        pdOutput.index += 1
+        pdOutput.to_excel(stream, engine='xlwt')
+
+        file_manager = ImportUserStorage()
+        file_manager.saveImportUser(fileModel.name, stream)
+
+        ImportUserAsync.apply_async(
+            args=[prefix, suffix, lsSinhVien],
+            queue='uteoj_system')
+        
+        context = {
+            'exportFile': f"/admin/users/import/{ImportUserFileModel.EncryptId(fileModel.id)}/{fileModel.token}/{fileModel.name}"
+        }
+
+        return render(request, 'admin-template/user/importuser.html', context)
+    elif request.method == 'GET':
+
+        return render(request, 'admin-template/user/importuser.html')
+    else:
+        return HttpResponse(status=405)
 
 @admin_member_required
 def AdminCreateUserView(request):
@@ -128,7 +215,7 @@ def AdminCreateUserView(request):
         return HttpResponse(status=405)
 
 from PIL import Image
-from io import StringIO
+from io import BytesIO, StringIO
 
 @admin_member_required
 def AdminEditUserView(request, user_name):
@@ -175,7 +262,7 @@ def AdminEditUserView(request, user_name):
                 if user_avatar.size > 1024 * 1024 * 200:
                     messages.add_message(request, messages.ERROR, 'File ảnh đại diên không được vượt quá 2MB')
                     return HttpResponseRedirect(request.path_info)
-                user_setting.uploadAvatar(user_avatar.name, user_avatar.file)
+                user_setting.uploadAvatar(user_avatar.file)
             
             user_setting.save()
             messages.add_message(request, messages.SUCCESS, 'Cập nhật thành công')
@@ -194,7 +281,7 @@ def AdminEditUserView(request, user_name):
             'job': user_setting.job,
         }
 
-        context_user_avatar =  UserSetting.getSetting(user).getAvatar()
+        context_user_avatar =  UserSetting.getSetting(user).avatar
         if context_user_avatar is not None:
             context['avatar'] = context_user_avatar + '?v={}'.format(randint(0, 11111111111))
         
