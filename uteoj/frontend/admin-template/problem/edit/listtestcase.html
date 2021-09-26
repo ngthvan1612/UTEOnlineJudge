@@ -26,8 +26,8 @@
 	{%include 'admin-template/_layout/error_handle.html' %} 
 	{%block error_handle%}{%endblock%}
 	<!-- Main content -->
-    <div class="content">
-		<div class="container-fluid">
+    <div class="conten">
+		<div class="container-flui">
 			<div class="row">
 				<div class="col-12">
 					<div class="card-body p-0">
@@ -56,43 +56,47 @@
                     </div>
                 </div>
             </div>
-            <div class="row  justify-content-center" id ="tableData">
-                <div class="col-8">
-                    <h2 style="margin-top: 10px;">{{problem.shortname}}</h2>
+            <div class="row justify-content-center" id ="tableData">
+                <div class="col-11" id="content">
+                    <h2 style="margin-top:10px; text-align:center;">{{problem.fullname}}</h2>
                     <form method="post" url="">
-                        <table class="table table-hover table-bordered" style="margin-top: 20px">
+                        <table class="table table-hover table-bordered w-100 p-3" style="margin-top: 20px;">
                             <thead>
-                                <tr>
-                                <th scope="col">STT</th>
-                                <th scope="col">Đầu vào</th>
-                                <th scope="col">Đầu ra</th>
-                                <th scope="col">Giới hạn thời gian</th>
-                                <th scope="col">Giới hạn bộ nhớ</th>
-                                <th scope="col">Điểm</th>
-                                <th scope="col">Danh mục</th>
-                                <th scope="col">Là Ví dụ</th>
-                                <th scope="col" style="width: 70px; text-align: center">Chỉnh sửa</th>
-                                <th scope="col" style="width: 70px;">Xoá</th>
+                                <tr class="text-center">
+                                    <th scope="col">STT</th>
+                                    <th scope="col">Đầu vào</th>
+                                    <th scope="col">Đầu ra</th>
+                                    <th scope="col">Giới hạn thời gian</th>
+                                    <th scope="col">Giới hạn bộ nhớ</th>
+                                    <th scope="col">Điểm</th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {%for x in list_testcases %}
                                     <tr style="align-items: center;">
-                                        <td scope="row">{{x.id}}</td>
-                                        <td><a href="{{x.input_file}}">input{{x.id}}</a></td>
-                                        <td><a href="{{x.output_file}}">output{{x.id}}</a></td>
-                                        <td>{{x.time_limit}} (ms)</td>
-                                        <td>{{x.memory_limit}} (Kb)</td>
-                                        <td>{{x.points}}</td>
-                                        <td>{{x.tag}}</td>
+                                        <td scope="row">{{x.name}}</td>
+                                        <td><a href="/admin/problems/{{problem.shortname}}/testcases/{{x.name}}/input" target="_blank">input{{x.id}}</a></td>
+                                        <td><a href="/admin/problems/{{problem.shortname}}/testcases/{{x.name}}/output" target="_blank">output{{x.id}}</a></td>
                                         <td>
-                                            <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="is_sample_{{x.id}}" {%if x.is_sample%} checked {%endif%} name="is_sample" value="{{x.pk}}">
-                                                <label class="custom-control-label" for="is_sample_{{x.id}}"></label>
+                                            <div class="input-group">
+                                                <input name="list_time_limit[]" type="number" class="form-control text-center" value="{{x.time_limit}}" min="1" required onfocusout="validity.valid||(value='{{problem.time_limit}}');">
+                                                <span class="input-group-text">ms</span>
                                             </div>
                                         </td>
-                                        <td style="text-align: center; padding: 0.25rem"><a class="btn btn-warning"href="testcases/edit/{{x.pk}}"><i class="fas fa-edit"></i></a></td>
-                                        <td style="text-align: center; padding: 0.25rem"><button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="updateInfo('{{problem.shortname}}', '{{x.pk}}')"><i class="fas fa-trash"></i></button></td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input name="list_memo_limit[]" type="number" class="form-control text-center" value="{{x.memory_limit}}" min="1" required onfocusout="validity.valid||(value='{{problem.memory_limit}}');">
+                                                <span class="input-group-text">KB</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input name="list_points[]" type="number" class="form-control text-center" step="any" value="{{x.points}}" min="0.0001" required onfocusout="validity.valid||(value='{{problem.points_per_test}}');">
+                                                <span class="input-group-text">điểm</span>
+                                            </div>
+                                        </td>
+                                        <td style=""><button class="btn btn-danger" type="button" onclick="deleteTestCase({{x.pk}})">Xóa</button></td>
                                     </tr>
                                 {%endfor%}
                             </tbody>
@@ -125,7 +129,7 @@
                             </div>
                             <div class="col-12" style="margin-top: 10px">
                                 <div class="text-center">
-                                    <input class="btn btn-primary" type="submit" value="Lưu thay đổi">
+                                    <input class="btn btn-primary" type="submit" value="Upload">
                                 </div>
                             </div>
                         </form>
@@ -162,6 +166,28 @@
     <script src="{% static 'problem/js/editProblemTestcase.js' %}"></script>
     <script>
 		var CSRF_TOKEN = '{{ csrf_token }}';
+        list_time_limit = document.getElementsByName('list_time_limit[]');
+        list_memo_limit = document.getElementsByName('list_memo_limit[]');
+        list_points = document.getElementsByName('list_points[]');
+        for (i = 0; i < list_time_limit.length; ++i) {
+            list_time_limit[i].tabIndex = i + 1;
+            list_memo_limit[i].tabIndex = i + 1;
+            list_points[i].tabIndex = i + 1;
+        }
+
+        function deleteTestCase(pk) {
+            addr = '/admin/problems/edit/{{problem.shortname}}/testcases/delete/' + '' + pk + '/';
+            console.log(addr);
+            $.ajax(addr, {
+                type: 'post',
+                success: function (data,status,xhr) {
+                    location.reload();
+                },
+                error: function (jqXhr, textStatus, errorMessage) {
+                    //alert('that bai');
+                }
+            });
+        }
 	 </script>
 	<!-- /.content -->
 {%endblock%}

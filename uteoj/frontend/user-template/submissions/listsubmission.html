@@ -7,9 +7,9 @@
     </div>
 	<!-- /.content-header -->
     <div class="content" style="margin-top: 2rem;">
-		<div class="container-fluid">
-            <div class="row justify-content-md-center">
-                <div class="col col-xl-8">
+		<div class="container-flui">
+            <div class="justify-content-md-center">
+                <div class="">
                     {%include 'admin-template/_layout/error_handle.html' %} 
 				    {%block error_handle %}{%endblock%}
                     <table class="table table-hover table-bordered">
@@ -29,9 +29,9 @@
                             {%for submission in page_obj%}
                             <tr>
                                 <td class="text-center"><a style="text-decoration:none;" href="/submissions/{{submission.id}}" target="_blank">{{submission.id}}</a></td>
-                                <td><a style="text-decoration:none;" href="/profile/{{submission.user_name}}">{{submission.user_name}}</a></td>
-                                <td><a style="text-decoration:none;" href="/problem/{{submission.problem_shortname}}">{{submission.problem_fullname}}</a></td>
-                                <td>
+                                <td class="text-center"><a style="text-decoration:none;" href="/profile/{{submission.user_name}}">{{submission.user_name}}</a></td>
+                                <td class="text-center"><a style="text-decoration:none;"  href="/problem/{{submission.problem_shortname}}">{{submission.problem_fullname}}</a></td>
+                                <td class="text-center">
                                     {%if submission.judge_date%}
                                         {{submission.judge_date|date:"d/m/Y G:i"}}
                                     {%else%}
@@ -76,10 +76,6 @@
                         {%endfor%}
                         </tbody>
                       </table>
-                </div>
-                <div class="col col-1">
-                    <p>Chế độ xem:</p>
-                    <input id="ChangeView" type="checkbox" checked data-toggle="toggle" data-on="Xem tất cả" data-off="Chỉ mình tôi" data-onstyle="success" data-offstyle="Primary" onchange="ChangeView()">
                 </div>
             </div>
             <div class="row  justify-content-md-center">
