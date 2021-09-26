@@ -66,18 +66,16 @@
 									<div class="row" >
 										<div class="col-12">
 											<div class="row">
-												<div class="col col-10">
-													<div class="input-group mb-3 mt-8">
+												<div class="col-10">
+													<div class="input-group mb-3">
 														<span class="input-group-text" style="width: 150px;">Tên file đầu vào</span>
 														<input name="input_filename" type="text" class="form-control" id="input-filename" value="{{input_filename}}">
 														<span class="input-group-text">ms</span>
 													</div>
 												</div>
-												<div class="col col-2">
-													<div class="custom-control custom-switch mt-8">
-														<!--<input type="checkbox" class="custom-control-input" id="use_stdin" {%if use_stdin%} checked {%endif%} name="use_stdin">
-														<label class="custom-control-label" for="use_stdin">Use Stdin</label>-->
-														<input type="checkbox" id ="use_stdin" {%if use_stdin%} checked {%endif%} name="use_stdin" data-toggle="toggle" data-on="Dùng STDIN" data-off="Không dùng" data-onstyle="success" data-offstyle="danger" style="width:450px">
+												<div class="col-2">
+													<div class="input-group mb-3">
+														<input type="checkbox" id ="use_stdin" {%if use_stdin%} checked {%endif%} name="use_stdin" data-toggle="toggle" data-on="Dùng STDIN" data-off="Không dùng" data-onstyle="success" data-offstyle="danger">
 													</div>
 												</div>
 											</div>
@@ -90,18 +88,16 @@
 													</div>
 												</div>
 												<div class="col col-2">
-													<div class="custom-control custom-switch mb-3">
-														<!--<input type="checkbox" class="custom-control-input" id="use_stdin" {%if use_stdin%} checked {%endif%} name="use_stdin">
-														<label class="custom-control-label" for="use_stdin">Use Stdin</label>-->
-														<input type="checkbox" id ="use_stdout"  {%if use_stdout%} checked {%endif%} name="use_stdout" data-toggle="toggle" data-on="Dùng STDOUT" data-off="Không dùng" data-onstyle="success" data-offstyle="danger" style="width:450px">
+													<div class="input-group mb-3">
+														<input type="checkbox" id ="use_stdout"  {%if use_stdout%} checked {%endif%} name="use_stdout" data-toggle="toggle" data-on="Dùng STDOUT" data-off="Không dùng" data-onstyle="success" data-offstyle="danger">
 													</div>
 												</div>
 											</div>
 											<div class="input-group mb-3">
 												<span class="input-group-text" style="width: 150px;">Loại bài tập</span>
 												<select  name="problem_type" class="custom-select">
-													{%for  x  in  problem_type_choices%}
-														<option  value="{{x.value}}"  {%if problem_type == x.value%}selected{%endif%}>{{x.display}}</option>
+													{%for  x  in  list_problemtype%}
+														<option  value="{{x.value}}"  {%if problem_type == x.value%}selected{%endif%}>{{x.name}}</option>
 													{%endfor%}
 												</select>
 											</div>
@@ -118,12 +114,36 @@
 											<div class="input-group mb-3">
 												<span class="input-group-text" style="width: 150px;">Xem bài nộp</span>
 												<select  name="submission_visible_mode" class="custom-select">
-													{%for  x  in  submission_visible_mode_choices%}
-														<option  value="{{x.value}}"  {%if  submission_visible_mode  ==  x.value%}selected{%endif%}>{{x.display}}</option>
+													{%for  x  in  list_submode%}
+														<option  value="{{x.value}}"  {%if  submission_visible_mode  ==  x.value%}selected{%endif%}>{{x.name}}</option>
 													{%endfor%}
 												</select>
 											</div>
-											
+											<div class="input-group mb-3" style="margin-top: 15px">
+												<span class="input-group-text" style="width: 150px;">Độ khó</span>
+												<select class="custom-select" name="difficult">
+													{%for x in list_difficult%}
+														<option value="{{x.value}}" {%if difficult == x.value%}selected{%endif%}>{{x.name}}</option>
+													{%endfor%}
+												</select>
+											</div>
+
+											<div class="input-group mb-3" style="margin-top: 15px; align-items: center">
+												<span class="input-group-text" style="width: 150px;">Dạng bài</span>
+												{%for cate in list_categories %}
+													<div class="form-check">
+														<input  type="checkbox"
+																value="{{cate.value}}" 
+																name="list_categories[]"
+																{% if cate.value in categories%}checked{%endif%}>
+														<label class="form-check-label">{{cate.name}}</label>
+														</div>
+												{%endfor%}
+											</div>
+											<div class="input-group mb-3">
+												<span class="input-group-text" style="width: 150px;">Điểm mỗi test</span>
+												<input type="text"  class="form-control" placeholder="Point per test" value="{{points_per_test}}" name="points_per_test" />
+											</div>
 										</div>
 										<div class="col-12 mb-3">
 											<div class="text-center">
