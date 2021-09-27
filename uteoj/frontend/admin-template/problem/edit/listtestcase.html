@@ -31,39 +31,18 @@
 			<div class="row">
 				<div class="col-12">
 					<div class="card-body p-0">
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item">
-                                <a class="nav-link" href="details">Chi tiết</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="problemsetter">Ban ra đề</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" href="testcases">Test Case</a>
-                            </li>
-                            <!--
-                            <li class="nav-item">
-                                <a class="nav-link" href="languages">Languages</a>
-                            </li>
-                            -->
-                            <li class="nav-item">
-                                <a class="nav-link" href="settings">Cài đặt</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="customchecker">Tuỳ chỉnh kiểm tra</a>
-                            </li>
-                        </ul>
+                        {%include 'admin-template/problem/edit/_layout/menu.html'%}
                     </div>
                 </div>
             </div>
             <div class="row justify-content-center" id ="tableData">
-                <div class="col-11" id="content">
+                <div class="col-12" id="content">
                     <h2 style="margin-top:10px; text-align:center;">{{problem.fullname}}</h2>
                     <form method="post" url="">
-                        <table class="table table-hover table-bordered w-100 p-3" style="margin-top: 20px;">
+                        <table class="table table-hover table-bordered w-auto" style="margin-top: 20px;">
                             <thead>
                                 <tr class="text-center">
-                                    <th scope="col">STT</th>
+                                    <th scope="col">ID</th>
                                     <th scope="col">Đầu vào</th>
                                     <th scope="col">Đầu ra</th>
                                     <th scope="col">Giới hạn thời gian</th>
@@ -76,8 +55,8 @@
                                 {%for x in list_testcases %}
                                     <tr style="align-items: center;">
                                         <td scope="row">{{x.name}}</td>
-                                        <td><a href="/admin/problems/{{problem.shortname}}/testcases/{{x.name}}/input" target="_blank">input{{x.id}}</a></td>
-                                        <td><a href="/admin/problems/{{problem.shortname}}/testcases/{{x.name}}/output" target="_blank">output{{x.id}}</a></td>
+                                        <td><a href="/admin/problems/{{problem.shortname}}/testcases/{{x.name}}/input" target="_blank">Xem</a></td>
+                                        <td><a href="/admin/problems/{{problem.shortname}}/testcases/{{x.name}}/output" target="_blank">Xem</a></td>
                                         <td>
                                             <div class="input-group">
                                                 <input name="list_time_limit[]" type="number" class="form-control text-center" value="{{x.time_limit}}" min="1" required onfocusout="validity.valid||(value='{{problem.time_limit}}');">

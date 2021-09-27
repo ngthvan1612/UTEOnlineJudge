@@ -31,29 +31,8 @@
 		<div class="row">
 			<div class="col-12">
 				<div class="card-body p-0">
-					<ul class="nav nav-tabs">
-						<li class="nav-item">
-							<a class="nav-link" href="details">Details</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="problemsetter">Problem Setter</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="testcases">Test Case</a>
-						</li>
-						<!--
-						<li class="nav-item">
-							<a class="nav-link" href="languages">Languages</a>
-						</li>
-						-->
-						<li class="nav-item">
-							<a class="nav-link" href="settings">Setting</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="customchecker">Custom Checker</a>
-						</li>
-					</ul>
-
+					{%include 'admin-template/problem/edit/_layout/menu.html'%}
+					
 					<div class="tab-content" id="nav-tabContent">
 						<div class="tab-pane fade show active" id="nav-home">
 							<div class="container">

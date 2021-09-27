@@ -31,28 +31,7 @@
 			<div class="row">
 				<div class="col-xl-12">
 					<div class="card-body p-0">
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item">
-                                <a class="nav-link" href="details">Chi tiết</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" href="problemsetter">Ban ra đề</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="testcases">Test Case</a>
-                            </li>
-                            <!--
-                            <li class="nav-item">
-                                <a class="nav-link" href="languages">Languages</a>
-                            </li>
-                            -->
-                            <li class="nav-item">
-                                <a class="nav-link" href="settings">Cài đặt</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="customchecker">Tuỳ chỉnh kiểm tra</a>
-                            </li>
-                        </ul>
+                        {%include 'admin-template/problem/edit/_layout/menu.html'%}
 
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-home">
