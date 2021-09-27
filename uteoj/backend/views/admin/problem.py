@@ -165,7 +165,6 @@ def AdminEditProblemProblemSetterview(request, problem_short_name):
                 messages.add_message(request, messages.SUCCESS, 'Cập nhật thành công')
         return HttpResponseRedirect(request.path_info)
     else:
-        print(problem)
         context = {
             'list_authors': [x.username for x in problem.author.all()]
         }

@@ -144,7 +144,6 @@ def AdminEditUserView(request, user_name):
         list_requirements = ['first_name', 'last_name', 'user_job', 'email',]
         for x in list_requirements:
             if x not in request.POST:
-                print('missing ' + x)
                 return HttpResponse(status=500)
         
         is_admin = True if 'is_admin' in request.POST else False
