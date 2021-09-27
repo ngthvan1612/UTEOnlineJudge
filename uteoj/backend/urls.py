@@ -1,6 +1,5 @@
 from django.urls.conf import re_path
 from backend.views.admin.problem import AdminEditProblemTestcasesDeleteView
-from backend.views.admin.problem import AdminEditProblemTestcasesEditView
 from django.contrib.auth.decorators import user_passes_test
 from django.urls import path, include
 
@@ -25,10 +24,13 @@ from backend.views.user.problem import UserListProblemView
 from backend.views.user.rank import UserRankView
 
 from backend.views.user.profile import UserEditMyProfile
+from backend.views.user.profile import UserAvatarViewer
 from backend.views.user.changepassword import UserChangePassword
 
 from backend.views.user.submission import UserListSubmissionView
 from backend.views.user.submission import UserSubmissionView
+
+from backend.views.user.problem import ProblemStatementViewer
 
 from backend.views.user.home import UserHomeView
 
@@ -44,12 +46,12 @@ from backend.views.admin.home import AdminSettingView
 from backend.views.admin.problem import AdminListProblemView
 from backend.views.admin.problem import AdminEditProblemDeatailsview
 from backend.views.admin.problem import AdminEditProblemProblemSetterview
-from backend.views.admin.problem import AdminEditProblemLanguagesview
 from backend.views.admin.problem import AdminEditProblemSettingsview
 from backend.views.admin.problem import AdminEditProblemTestcasesview
 from backend.views.admin.problem import AdminEditProblemCustomCheckerview
 from backend.views.admin.problem import AdminEditProblemTestcasesUploadZipView
 from backend.views.admin.problem import AdminCreateProblemView
+from backend.views.admin.problem import AdminViewTestcase
 
 from backend.views.admin.contest import AdminListContestView
 from backend.views.admin.contest import AdminCreateContestView
@@ -61,6 +63,8 @@ from backend.views.admin.usermanage import AdminListUsersView
 from backend.views.admin.usermanage import AdminEditUserView
 from backend.views.admin.usermanage import AdminCreateUserView
 from backend.views.admin.usermanage import AdminDeleteUser
+from backend.views.admin.usermanage import AdminImportUser
+from backend.views.admin.usermanage import AdminImportUserResultViewer
 
 from backend.views.admin.tag import AdminEditTagView
 from backend.views.admin.tag import AdminListTagView
@@ -75,12 +79,11 @@ from django.views.static import serve
 # API ----------------------------------------------------------------
 
 from rest_framework import routers
-from backend.serializer.problem import ProblemCategoryView, ProblemModelView
+from backend.serializer.problem import ProblemModelView
 from backend.serializer.announcement import AnnouncementView
 
 router = routers.DefaultRouter()
 router.register('problem', ProblemModelView, 'problem')
-router.register('problemcategory', ProblemCategoryView, 'problemcategory')
 router.register('announcement', AnnouncementView, 'announcement')
 
 url_patterns_api = [
@@ -98,11 +101,10 @@ url_patterns_admin_sub = [
     path('problems/edit/<str:problem_short_name>/problemsetter', AdminEditProblemProblemSetterview),
     path('problems/edit/<str:problem_short_name>/testcases', AdminEditProblemTestcasesview),
     path('problems/edit/<str:problem_short_name>/testcases/uploadzip/', AdminEditProblemTestcasesUploadZipView),
-    path('problems/edit/<str:problem_short_name>/testcases/edit/<int:testcase_pk>/', AdminEditProblemTestcasesEditView),
     path('problems/edit/<str:problem_short_name>/testcases/delete/<int:testcase_pk>/', AdminEditProblemTestcasesDeleteView),
-    path('problems/edit/<str:problem_short_name>/languages', AdminEditProblemLanguagesview),
     path('problems/edit/<str:problem_short_name>/settings', AdminEditProblemSettingsview),
     path('problems/edit/<str:problem_short_name>/customchecker', AdminEditProblemCustomCheckerview),
+    path('problems/<str:id>/testcases/<str:test_name>/<str:io>', AdminViewTestcase),
 
     path('contests/create/', AdminCreateContestView),
     path('contests/', AdminListContestView),
@@ -119,6 +121,8 @@ url_patterns_admin_sub = [
     path('users/edit/<str:user_name>/', AdminEditUserView),
     path('users/create/', AdminCreateUserView),
     path('users/delete/<str:user_name>/', AdminDeleteUser),
+    path('users/import/', AdminImportUser),
+    path('users/import/<int:huid>/<str:token>/<str:name>', AdminImportUserResultViewer),
 
     path('topics/', AdminListTagView),
     path('topics/<str:topic_name>/', AdminEditTagView),
@@ -148,6 +152,7 @@ url_patterns_auth = [
 
 url_patterns_user = [
     path('', UserHomeView),
+    path('problem/<str:id>/statement', ProblemStatementViewer),
     path('problems/', UserListProblemView),
     path('problem/<str:shortname>', UserProblemView),
     path('problem/<str:shortname>/submit', UserSubmitSolution),
@@ -157,6 +162,7 @@ url_patterns_user = [
     path('ranks', UserRankView),
     path('profile',UserEditMyProfile),
     path('changepassword', UserChangePassword),
+    path('media/user/<int:token>/<str:sha>/avatar', UserAvatarViewer),
 ]
 
 from backend.views.random.user import CreateRandomUser
@@ -184,7 +190,6 @@ def merge_static(prefix, view=serve, **kwargs):
 
 urlpatterns = [
     path('who/', WhoView),
-    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 ] + url_patterns_api + url_pattern_random + url_patterns_admin + url_patterns_auth + url_patterns_user + merge_static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

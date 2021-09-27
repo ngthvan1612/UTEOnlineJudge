@@ -1,4 +1,3 @@
-from re import S
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.query_utils import check_rel_lookup_compatibility
@@ -12,6 +11,10 @@ class ProblemCategoryModel(models.Model):
     def __str__(self):
         return self.name
 
+class ProblemDifficultType:
+    Easy = -10
+    Medium = 0
+    Hard = 10
 
 class ProblemType:
     ACM = 0
@@ -36,6 +39,11 @@ PROBLEM_TYPE_CHOICES = (
     (ProblemType.OI, "OI"),
 )
 
+PROBLEM_DIFFICULT_CHOICES = (
+    (ProblemDifficultType.Easy, 'Dễ'),
+    (ProblemDifficultType.Medium, 'Trung bình'),
+    (ProblemDifficultType.Hard, 'Khó'),
+)
 
 SUBMISSION_VISIBLE_MODE_CHOICES = (
     (SubmissionVisibleModeType.AllowedFromAll, "Ai cũng có thể xem được"),
@@ -46,12 +54,13 @@ SUBMISSION_VISIBLE_MODE_CHOICES = (
 
 import django
 import uuid
+from django.utils import timezone
 
 
 class ProblemModel(models.Model):
-    author = models.ManyToManyField(User,blank=False)
+    author = models.ForeignKey(User,on_delete=models.CASCADE, blank=False)
 
-    publish_date = models.DateTimeField(blank=False, default=django.utils.timezone.now)
+    publish_date = models.DateTimeField(blank=False, default=timezone.localtime(timezone.now()))
 
     categories = models.ManyToManyField(ProblemCategoryModel, blank=True)
 
@@ -60,59 +69,16 @@ class ProblemModel(models.Model):
 
     problem_type = models.IntegerField(default=0, choices=PROBLEM_TYPE_CHOICES)
 
-    difficult = models.FloatField(default=5.0)
+    difficult = models.IntegerField(default=ProblemDifficultType.Easy, choices=PROBLEM_DIFFICULT_CHOICES)
 
     hash_problem = models.CharField(max_length=255, blank=True)
 
-    def __str__(self):
-        return self.shortname + ' - ' + self.fullname
-
-    @staticmethod
-    def CreateNewProblem(shortname:str, fullname:str, first_author:User) -> None:
-        problem = ProblemModel.objects.create(shortname = shortname,fullname = fullname,)
-        problem.author.set([first_author.id])
-        problem.hash_problem = str(uuid.uuid4().hex) + '_' + shortname
-        problem.save()
-
-        #setting
-        problem_setting = ProblemSettingModel.objects.create(problem=problem)
-        problem_setting.statement = "Đề bài"
-        problem_setting.input_statement = "Dữ liệu đầu vào"
-        problem_setting.output_statement = "Dữ liệu đầu ra"
-        problem_setting.constraints_statement = "Ràng buộc"
-        problem_setting.save()
-
-        #Grader
-        problem_grader = ProblemGraderModel.objects.create(problem=problem)
-        problem_grader.input_filename = shortname.upper() + '.INP'
-        problem_grader.output_filename = shortname.upper() + '.OUT'
-        problem_grader.save()
-
-        #Statistics
-        problem_statistics = ProblemStatisticsModel.objects.create(problem=problem)
-        problem_statistics.save()
-
-        return problem
-
-
-class ProblemSettingModel(models.Model):
-    problem = models.OneToOneField(ProblemModel, on_delete=models.CASCADE)
     points_per_test = models.FloatField(default=1.0)
-    total_points = models.FloatField(default=0.0, null=True)
+    total_points = models.FloatField(default=0.0)
 
-    statement = models.TextField(blank=False)
-    input_statement = models.TextField(blank=False, null=True)
-    output_statement = models.TextField(blank=False, null=True)
-    constraints_statement = models.TextField(blank=False, null=True)
+    statement = models.CharField(max_length=2048)
 
     submission_visible_mode = models.IntegerField(default=0, choices=SUBMISSION_VISIBLE_MODE_CHOICES)
-
-    def __str__(self) -> str:
-        return self.problem.shortname + ' settings'
-
-
-class ProblemGraderModel(models.Model):
-    problem = models.OneToOneField(ProblemModel, on_delete=models.CASCADE)
 
     input_filename = models.CharField(max_length=32)
     output_filename = models.CharField(max_length=32)
@@ -125,12 +91,6 @@ class ProblemGraderModel(models.Model):
     use_checker = models.BooleanField(default=False)
     checker = models.TextField(blank=True,default='')
 
-    def __str__(self) -> str:
-        return self.problem.shortname + ' graders'
-
-
-class ProblemStatisticsModel(models.Model):
-    problem = models.OneToOneField(ProblemModel, on_delete=models.CASCADE)
     solvedCount = models.IntegerField(default=0)
     totalSubmission = models.IntegerField(default=0)
     waCount = models.IntegerField(default=0)
@@ -140,8 +100,23 @@ class ProblemStatisticsModel(models.Model):
     ceCount = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.problem.shortname + ' ' + str(self.solvedCount)
+        return self.shortname + ' - ' + self.fullname
 
+    @staticmethod
+    def CreateNewProblem(shortname:str, fullname:str, first_author:User) -> None:
+        problem = ProblemModel.objects.create(shortname = shortname,fullname = fullname, author=first_author)
+        problem.hash_problem = str(uuid.uuid4().hex) + '_' + shortname
+
+        #setting
+        problem.statement = ""
+
+        #Grader
+        problem.input_filename = shortname.upper() + '.INP'
+        problem.output_filename = shortname.upper() + '.OUT'
+
+        problem.save()
+
+        return problem
 
 class ProblemTestCaseModel(models.Model):
     problem = models.ForeignKey(ProblemModel, on_delete=models.CASCADE)

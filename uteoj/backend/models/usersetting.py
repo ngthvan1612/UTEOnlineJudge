@@ -1,9 +1,12 @@
+from django.contrib.auth.decorators import user_passes_test
+from django.core.files.base import ContentFile
+from django.http.response import FileResponse
+from backend.filemanager.userstorage import UserStorage
+from django.utils.translation import npgettext
 from backend.models.problem import ProblemModel
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-
-from backend.models.filemanager import OverwriteStorage
 
 import uuid
 import os
@@ -14,6 +17,7 @@ from PIL import Image
 class UserSetting(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
     hash_user_profile = models.CharField(max_length=255, blank=True, null=True)
+    public_key = models.CharField(max_length=255, blank=True, null=True)
     avatar = models.CharField(max_length=255, blank=True)
     job = models.CharField(max_length=255, blank=True)
 
@@ -23,10 +27,10 @@ class UserSetting(models.Model):
     @staticmethod
     def createSettingIfNotExists(user:User):
         if not UserSetting.objects.filter(user=user).exists():
-            hash_user_profile = uuid.uuid4().hex + '_' + user.username
             new_setting = UserSetting.objects.create(
                 user=user,
-                hash_user_profile=hash_user_profile,
+                hash_user_profile=uuid.uuid4().hex + '_' + uuid.uuid4().hex,
+                public_key=uuid.uuid4().hex + '_' + uuid.uuid4().hex,
                 avatar='',
                 job='')
             new_setting.save()
@@ -35,14 +39,7 @@ class UserSetting(models.Model):
 
     @staticmethod
     def deleteUserSettingAndFile(user:User) -> None:
-        """
-        Xóa toàn bộ dữ liệu trong database và file liên quan (avatar)
-        """
-        file_manager = OverwriteStorage(settings.MEDIA_ROOT)
-        setting_filter = UserSetting.objects.filter(user=user)
-        for user_setting in setting_filter:
-            file_manager.delete(user_setting.avatar)
-            user_setting.delete()
+        pass
     
     @staticmethod
     def getSetting(user:User):
@@ -52,37 +49,29 @@ class UserSetting(models.Model):
         return setting_filter[0]
     
     def getAvatar(self):
-        return self.avatar
+        file_manager = UserStorage(self.user)
+        return file_manager.loadUserAvatar()
 
-    def uploadAvatar(self, file_name_with_ext, content) -> None:
-        file_manager = OverwriteStorage()
-        #file path = usermedia/hash_profile/avatar_with_ext
-        self.avatar = settings.MEDIA_URL + 'usermedia/' + self.hash_user_profile + '/avatar' + os.path.splitext(file_name_with_ext)[1]
-        path = 'usermedia/' + self.hash_user_profile + '/avatar' + os.path.splitext(file_name_with_ext)[1]
-        
-        print('save to ' + path)
+    def uploadAvatar(self, content) -> None:
+        file_manager = UserStorage(self.user)
+        self.public_key = uuid.uuid4().hex + '_' + uuid.uuid4().hex
         self.save()
+        self.avatar = f"/media/user/{UserSetting.encryptUserId(self.user.id)}/{self.public_key}/avatar"
+        file_manager.saveUserAvatar(content)
+    
+    @staticmethod
+    def encryptUserId(userId) -> int:
+        return (userId * 347983247) ^ 320392843
+    
+    @staticmethod
+    def decryptUserId(token) -> int:
+        return (token ^ 320392843) // 347983247
 
-        # optimize content
-        image_file = BytesIO(content.read())
-        image = Image.open(image_file)
-        #image = image.resize((256, 256), Image.ANTIALIAS)
-        #image = image.convert("RGB")
-        #image_file = BytesIO()
-        image.save(image_file, 'PNG', quality=90)
-        # end
-
-        file_manager.save(path, image_file)
+from random import random
 
 def context_processors_user_setting(request):
-    if request.user.is_authenticated:
-        avatar = UserSetting.getSetting(request.user).avatar
-        if avatar is not None and len(avatar) != 0:
-            return {
-                'user.avatar': UserSetting.getSetting(request.user).avatar
-            }
     return {
-
+        
     }
 
 class UserProblemStatisticsModel(models.Model):
@@ -113,3 +102,14 @@ class UserProblemStatisticsModel(models.Model):
         return self.user.username + ' ----- '  + ' -> total = ' + str(self.solvedCount)
 
 
+class ImportUserFileModel(models.Model):
+    name = models.CharField(max_length=512, unique=True)
+    token = models.CharField(max_length=4096)
+
+    @staticmethod
+    def EncryptId(id:int) -> int:
+        return (id * 347329) ^ 123456
+    
+    @staticmethod
+    def DecryptId(token:int) -> int:
+        return (token ^ 123456) // 347329

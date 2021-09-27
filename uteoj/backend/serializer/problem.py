@@ -1,61 +1,39 @@
 from backend.models.problem import ProblemCategoryModel
-from backend.models.problem import ProblemModel, ProblemStatisticsModel
+from backend.models.problem import ProblemModel
 from rest_framework import serializers
 
 from rest_framework import viewsets
 from rest_framework import serializers
 from rest_framework.pagination import PageNumberPagination
 
+from rest_framework.response import Response
+
 from backend.serializer.permission import RequirePermissionForAdminSite
 
-# PROBLEM STATISTICS ---------------------------------------------------
-class ProblemStatisticsModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProblemStatisticsModel
-        fields = ('id', 'solvedCount')
 
-class ProblemStatisticsModelPagination(PageNumberPagination):
-    page_size = 30
-    page_size_query_param = 'page_size'
-    max_page_size = 30
-
-# PROBLEM STATISTICS ---------------------------------------------------
-class ProblemCategoryModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProblemCategoryModel
-        fields = ('id', 'name', 'description')
-
-# PROBLEM MODEL ---------------------------------------------------
-class ProblemModelSerializer(serializers.ModelSerializer):
-    problemstatisticsmodel = ProblemStatisticsModelSerializer()
+class ProblemSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProblemModel
-        fields = ('id', 'author', 'publish_date', 'categories', 'shortname', 'fullname', 'problem_type', 'difficult', 'problemstatisticsmodel')
+        fields = ('id', 'author', 'publish_date',
+                'categories', 'shortname', 'fullname',
+                'problem_type', 'difficult', 'points_per_test',
+                'total_points', 'statement', 'submission_visible_mode',
+                'input_filename', 'output_filename', 'use_stdin',
+                'use_stdout', 'time_limit', 'memory_limit',
+                'use_checker', 'checker', 'totalSubmission',
+                'solvedCount', 'ceCount', 'tleCount', 'mleCount', 'rteCount')
 
-class ProblemModelPagination(PageNumberPagination):
-    page_size = 30
-    page_size_query_param = 'page_size'
-    max_page_size = 30
 
 class ProblemModelView(viewsets.ModelViewSet):
-    serializer_class=ProblemModelSerializer
-    # pagination_class=ProblemModelPagination
-    permission_classes=[RequirePermissionForAdminSite]
+    serializer_class=ProblemSerializer
+    #permission_classes=[RequirePermissionForAdminSite]
 
     def get_queryset(self):
         return ProblemModel.objects.all()
 
+    def list(self, request, *args, **kwargs):
+        return Response(ProblemModel.objects.values('id', 'shortname', 'fullname'))
 
-# PROBLEM CATEGORY ---------------------------------------------------
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
 
-class ProblemCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProblemCategoryModel
-        fields = ('id', 'name', 'description')
-
-class ProblemCategoryView(viewsets.ModelViewSet):
-    serializer_class = ProblemCategoryModelSerializer
-    permission_classes = [RequirePermissionForAdminSite]
-
-    def get_queryset(self):
-        return ProblemCategoryModel.objects.all()    

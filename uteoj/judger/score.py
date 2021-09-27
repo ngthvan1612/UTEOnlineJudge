@@ -1,6 +1,6 @@
+from backend.models.problem import ProblemModel
 from django.db import transaction
 from backend.models.usersetting import UserProblemStatisticsModel
-from backend.models.problem import ProblemStatisticsModel
 from backend.models.submission import SubmissionResultType
 from judger.scoreabstract import ScoreAbstract
 
@@ -62,7 +62,7 @@ class ACMScore(ScoreAbstract):
                     raise Exception('SYSTEM ERROR')
                 stat.save()
         with transaction.atomic():
-            problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=self._problem)
+            problemStatisticsEntries = ProblemModel.objects.select_for_update().filter(pk=self._problem.pk)
             for problemStatistics in problemStatisticsEntries:
                 if self._result == SubmissionResultType.AC:
                     problemStatistics.solvedCount = problemStatistics.solvedCount + 1
@@ -98,7 +98,7 @@ class OIScore(ScoreAbstract):
         self._totalScore += score
 
     def onCompleted(self):
-        problemScore = self._problem.problemsettingmodel.total_points
+        problemScore = self._problem.total_points
         eps = 0.00005
         with transaction.atomic():
             UserProblemStatisticsModel.createStatIfNotExists(self._user)
@@ -113,7 +113,7 @@ class OIScore(ScoreAbstract):
                 stat.save()
         
         with transaction.atomic():
-            problemStatisticsEntries = ProblemStatisticsModel.objects.select_for_update().filter(problem=self._problem)
+            problemStatisticsEntries = ProblemModel.objects.select_for_update().filter(pk=self._problem.pk)
             for problemStatistics in problemStatisticsEntries:
                 if self._result == SubmissionResultType.CE:
                     problemStatistics.ceCount = problemStatistics.ceCount + 1

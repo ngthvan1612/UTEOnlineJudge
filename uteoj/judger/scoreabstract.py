@@ -1,4 +1,5 @@
 from abc import ABC, abstractclassmethod
+from django.conf import settings
 
 class ScoreAbstract(ABC):
     
@@ -13,7 +14,7 @@ class ScoreAbstract(ABC):
         return self._canContinue
     
     def getTotalScore(self) -> float:
-        return round(self._totalScore, 4)
+        return round(self._totalScore, settings.NUMBER_OF_DECIMAL)
 
     def getSubmissionResult(self) -> int:
         return self._result
