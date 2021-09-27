@@ -24,6 +24,8 @@ LOGIN_REDIRECT_URL = 'home'
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
+NUMBER_OF_DECIMAL = 2
+
 
 # Celery backend ----------------------------------------------------------------------
 
@@ -172,7 +174,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 PASSWORD_HASHERS = [
-    'backend.auth.password_hasher.UTEOJ_PBKDF2PasswordHasher'
+    'backend.auth.password_hasher.UTEOJ_PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.MD5PasswordHasher'
 ]
 
 # Internationalization ----------------------------------------------------------------------

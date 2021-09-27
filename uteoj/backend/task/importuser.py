@@ -23,7 +23,7 @@ def ImportUserAsync(prefix, suffix, lsSinhVien):
         mssv, ho, ten, username, password = sv
         prepare_query.append(User(
             username=username,
-            password=make_password(password),
+            password=make_password(password, None, 'md5'),
             first_name=ten,
             last_name=ho,
             is_active=True,

@@ -114,7 +114,7 @@ class GraderAbstract(ABC):
                 max_real_time=time_limit,
                 max_memory=mem_limit * 1024,
                 max_process_number=200,
-                max_output_size=10000,
+                max_output_size=1024 * 1024 * 128,
                 max_stack=mem_limit * 1024,
                 exe_path=command[0],
                 input_path=input,
@@ -243,7 +243,7 @@ class GraderAbstract(ABC):
                 else:
                     # Dùng diff của linux, --> cần fix lại
                     checker = '/usr/bin/diff'
-                    command = [checker, '--strip-trailing-cr', output_file, output_file + '.answer']
+                    command = [checker, '--strip-trailing-cr', '-Z', '-bB', output_file, output_file + '.answer']
                 
                 # Chạy
                 process = subprocess.Popen(command, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE, cwd=testdir)

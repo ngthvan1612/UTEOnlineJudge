@@ -1,6 +1,7 @@
 import zipfile
 import os.path
 from io import BytesIO
+from natsort import natsorted, ns
 
 from django.views.decorators.cache import never_cache
 from django.conf import settings
@@ -165,8 +166,10 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
             problem_input_file_name = problem.input_filename
             problem_output_file_name = problem.output_filename
             list_testcases_folder = []
+
             # Kiểm tra lại xem đúng định dạng của themis hay không?
             all_path = zipf.namelist()
+            all_path = natsorted(all_path, alg=ns.IGNORECASE)
             all_path_lower = [x.lower() for x in all_path]
             reverse_all_path = {x.lower():x for x in all_path}
             list_testcases_folder = [x for x in all_path if x.endswith('/') or x.endswith('\\')]
@@ -198,7 +201,7 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
                 
                 # Xóa hết test cũ đi + cập nhật tổng điểm
                 problem.problemtestcasemodel_set.all().delete()
-                problem.total_points = round(problem.points_per_test * len(list_testcases_folder), 4)
+                problem.total_points = round(problem.points_per_test * len(list_testcases_folder), settings.NUMBER_OF_DECIMAL)
                 problem.save()
 
                 # Optimize: Cho tất cả testcase model vào prepare_db sau đó comit vào database một lượt
@@ -246,12 +249,16 @@ def AdminEditProblemTestcasesview(request, problem_short_name):
         list_memo_limit = [int(x) for x in request.POST.getlist('list_memo_limit[]')]
         list_points = [float(x) for x in request.POST.getlist('list_points[]')]
         it = 0
+        total_points = 0.0
         for x in problem.problemtestcasemodel_set.all():
             x.time_limit = list_time_limit[it]
             x.memory_limit = list_memo_limit[it]
-            x.points = round(list_points[it], 4)
+            x.points = round(list_points[it], settings.NUMBER_OF_DECIMAL)
+            total_points += round(list_points[it], settings.NUMBER_OF_DECIMAL)
             x.save()
             it += 1
+        problem.total_points = round(total_points, settings.NUMBER_OF_DECIMAL)
+        problem.save()
         return HttpResponseRedirect(request.path_info)
 
     #show list testcases
@@ -296,7 +303,7 @@ def AdminEditProblemSettingsview(request, problem_short_name):
         submission_visible_mode = int(request.POST.get('submission_visible_mode'))
         difficult = int(request.POST.get('difficult'))
         problem_type = int(request.POST.get('problem_type'))
-        points_per_test = round(float(request.POST.get('points_per_test')), 4)
+        points_per_test = round(float(request.POST.get('points_per_test')), settings.NUMBER_OF_DECIMAL)
         
         try:
             time_limit = int(request.POST.get('time_limit'))
