@@ -31,28 +31,7 @@
 			<div class="row">
 				<div class="col-12">
 					<div class="card-body p-0">
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item">
-                                <a class="nav-link" href="/admin/problems/edit/{{problem.shortname}}/details">Chi tiết</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/admin/problems/edit/{{problem.shortname}}/problemsetter">Ban ra đề</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" href="/admin/problems/edit/{{problem.shortname}}/testcases">Test Case</a>
-                            </li>
-                            <!--
-                            <li class="nav-item">
-                                <a class="nav-link" href="languages">Languages</a>
-                            </li>
-                            -->
-                            <li class="nav-item">
-                                <a class="nav-link" href="/admin/problems/edit/{{problem.shortname}}/settings">Cài đặt</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/admin/problems/edit/{{problem.shortname}}/customchecker">Tuỳ chỉnh kiểm tra</a>
-                            </li>
-                        </ul>
+                        {%include 'admin-template/problem/edit/_layout/menu.html'%}
                     </div>
                 </div>
             </div>
