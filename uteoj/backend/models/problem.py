@@ -1,3 +1,4 @@
+from django.http.request import MediaType
 from backend.models.contest import ContestModel
 from django.db import models
 from django.contrib.auth.models import User
@@ -17,6 +18,29 @@ class ProblemDifficultType:
     Medium = 0
     Hard = 10
 
+    @staticmethod
+    def getAcceptValue():
+        return ['easy', 'medium', 'hard']
+
+    @staticmethod
+    def getModeName(mode):
+        build = {
+            ProblemDifficultType.Easy: "easy",
+            ProblemDifficultType.Medium: "medium",
+            ProblemDifficultType.Hard: "hard"
+        }
+        return build[mode]
+    
+    @staticmethod
+    def getValueFromName(name):
+        build = {
+            "easy": ProblemDifficultType.Easy,
+            "medium": ProblemDifficultType.Medium,
+            "hard": ProblemDifficultType.Hard
+        }
+
+        return build[name]
+
 class ProblemType:
     ACM = 0
     OI = 1
@@ -33,6 +57,29 @@ class SubmissionVisibleModeType:
     AllowedFromAll = 0
     OnlySolved = 1
     OnlyMe = 2
+
+    @staticmethod
+    def getAcceptValue():
+        return ['AllowFromAll', 'OnlySolved', 'OnlyMe']
+
+    @staticmethod
+    def getModeName(mode):
+        build = {
+            SubmissionVisibleModeType.AllowedFromAll: "AllowFromAll",
+            SubmissionVisibleModeType.OnlySolved: "OnlySolved",
+            SubmissionVisibleModeType.OnlyMe: "OnlyMe",
+        }
+        return build[mode]
+    
+    @staticmethod
+    def getValueFromName(name):
+        build = {
+            "AllowFromAll": SubmissionVisibleModeType.AllowedFromAll,
+            "OnlySolved": SubmissionVisibleModeType.OnlySolved,
+            "OnlyMe": SubmissionVisibleModeType.OnlyMe,
+        }
+
+        return build[name]
 
 
 PROBLEM_TYPE_CHOICES = (

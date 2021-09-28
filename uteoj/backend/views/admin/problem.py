@@ -6,7 +6,7 @@ from natsort import natsorted, ns
 from django.views.decorators.cache import never_cache
 from django.conf import settings
 from django.contrib import messages
-from django.http.response import Http404, HttpResponse, HttpResponseRedirect
+from django.http.response import Http404, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -16,13 +16,14 @@ from django.core.files.base import ContentFile
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 
-from backend.models.problem import PROBLEM_TYPE_CHOICES, PROBLEM_DIFFICULT_CHOICES, ProblemTestCaseModel
+from backend.models.problem import PROBLEM_TYPE_CHOICES, PROBLEM_DIFFICULT_CHOICES, ProblemDifficultType, ProblemTestCaseModel, ProblemType, SubmissionVisibleModeType
 from backend.models.problem import ProblemModel
 from backend.models.problem import ProblemCategoryModel
 from backend.views.admin.require import admin_member_required
 from backend.filemanager.problemstorage import ProblemStorage
 from backend.models.problem import SUBMISSION_VISIBLE_MODE_CHOICES
 
+import json
 
 @admin_member_required
 def AdminEditProblemDeatailsview(request, problem_short_name):
@@ -521,4 +522,128 @@ def AdminCreateProblemView(request):
         return render(request, 'admin-template/problem/createproblem.html')
     else:
         return HttpResponse(status=405)
+
+def AdminExportProblemConfigDownload(request, shortname):
+    
+    problem = get_object_or_404(ProblemModel, shortname=shortname)
+
+    res = {}
+    res['input_filename'] = problem.input_filename
+    res['output_filename'] = problem.output_filename
+    res['problem_type'] = 'ACM' if problem.problem_type == ProblemType.ACM else 'OI'
+    res['time_limit'] = problem.time_limit
+    res['memory_limit'] = problem.memory_limit
+    res['submission_visible_mode'] = SubmissionVisibleModeType.getModeName(problem.submission_visible_mode)
+    res['difficult'] = ProblemDifficultType.getModeName(problem.problem_type)
+    res['points_per_test'] = problem.points_per_test
+
+    tmp = []
+    for test in problem.problemtestcasemodel_set.all():
+        testcase_json = {
+            'name': test.name,
+            'time_limit': test.time_limit,
+            'memory_limit': test.memory_limit,
+            'points': test.points,
+        }
+        tmp.append(testcase_json)
+    
+    res['testcases'] = tmp
+    # sinh test có testcases rỗng: chưa làm
+
+    json_str = json.dumps(res, indent=4)
+    response = HttpResponse(json_str, content_type='application/json')
+    response['Content-Disposition'] = f"attachment; filename={problem.shortname}_config.json"
+
+    return response
+
+def AdminExportProblemConfigView(request, shortname):
+    return render(request, 'admin-template/problem/edit/export.html')
+
+def AdminImportProblemConfig(request, shortname):
+    problem = get_object_or_404(ProblemModel, shortname=shortname)
+
+    if request.method == 'POST':
+        """
+            check dấu của số: chưa làm
+            check chuỗi có rỗng hay không: chưa làm
+        """
+
+        config = request.FILES.get('config')
+        if not config:
+            messages.add_message(request, messages.ERROR, 'Bạn phải chọn một file')
+            return HttpResponseRedirect(request.path_info)
+        
+        # check file correct format (.json)
+        try:
+            data = config.read().decode('utf-8')
+            data = json.loads(data)
+        except:
+            messages.add_message(request, messages.ERROR, 'Định dạng file lỗi')
+            return HttpResponseRedirect(request.path_info)
+        
+        # check file correct format (web) [name & datatype]
+        list_requirements = {'input_filename' : str, 'output_filename': str, 'problem_type': str, 'time_limit': int, 'memory_limit': int,
+            'submission_visible_mode': str, 'difficult': str, 'points_per_test':float, 'testcases':list}
+        name_of_type = {str: 'chuỗi', int: 'số nguyên', list: 'danh sách', float: 'số thực'}
+        accept_values = {
+            'problem_type': ['ACM', 'OI'],
+            'submission_visible_mode': SubmissionVisibleModeType.getAcceptValue(),
+            'difficult': ProblemDifficultType.getAcceptValue(),
+        }
+        for key in list_requirements:
+            if key not in data:
+                messages.add_message(request, messages.ERROR, f"Thiếu tường: {key}")
+                return HttpResponseRedirect(request.path_info)
+            elif type(data[key]) != list_requirements[key]:
+                messages.add_message(request, messages.ERROR, f"Trường {key} phải là một {name_of_type[list_requirements[key]]}")
+                return HttpResponseRedirect(request.path_info)
+            elif key in accept_values:
+                if data[key] not in accept_values[key]:
+                    messages.add_message(request, messages.ERROR, f"Không rõ giá trị \"{data[key]}\" của trường {key}")
+                    return HttpResponseRedirect(request.path_info)
+
+        list_requirements = {'name': str, 'time_limit':int, 'memory_limit': int, 'points': float}
+
+        list_testcases = {}
+        # check testcases
+        for test in data['testcases']:
+            for key in list_requirements:
+                if key not in test:
+                    if key != 'name':
+                        messages.add_message(request, messages.ERROR, f"Test {test['name']} không có trường {key}")
+                        return HttpResponseRedirect(request.path_info)
+                    else:
+                        messages.add_message(request, messages.ERROR, f"Một hoặc nhiều testcase có không có tên")
+                        return HttpResponseRedirect(request.path_info)
+                elif type(test[key]) != list_requirements[key]:
+                    messages.add_message(request, messages.ERROR, f"Trường {key} phải là một {name_of_type[list_requirements[key]]}")
+                    return HttpResponseRedirect(request.path_info)
+            if test['name'] in list_testcases:
+                messages.add_message(request, messages.ERROR, f"Có 2 (hoặc nhiều) testcase có tên {test['name']}")
+                return HttpResponseRedirect(request.path_info)
+            list_testcases[test['name']] = test
+
+        # update to database
+
+        problem.input_filename = data['input_filename']
+        problem.output_filename = data['output_filename']
+        problem.problem_type = ProblemType.ACM if data['problem_type'] == 'ACM' else ProblemType.OI
+        problem.time_limit = data['time_limit']
+        problem.memory_limit = data['memory_limit']
+        problem.submission_visible_mode = SubmissionVisibleModeType.getValueFromName(data['submission_visible_mode'])
+        problem.difficult = ProblemDifficultType.getValueFromName(data['difficult'])
+        problem.points_per_test = data['points_per_test']
+        problem.save()
+
+        for testcase in problem.problemtestcasemodel_set.all():
+            if testcase.name in list_testcases:
+                test_json = list_testcases[testcase.name]
+                testcase.time_limit = test_json['time_limit']
+                testcase.memory_limit = test_json['memory_limit']
+                testcase.points = test_json['points']
+                testcase.save()
+        
+        messages.add_message(request, messages.SUCCESS, 'Nhập cấu hình thành công')
+        return HttpResponseRedirect(request.path_info)
+    return render(request, 'admin-template/problem/edit/import.html')
 

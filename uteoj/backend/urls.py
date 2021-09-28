@@ -79,6 +79,9 @@ url_patterns_admin_sub = [
     path('problems/edit/<str:problem_short_name>/testcases/delete/<int:testcase_pk>/', AdminEditProblemTestcasesDeleteView),
     path('problems/edit/<str:problem_short_name>/settings', AdminEditProblemSettingsview),
     path('problems/edit/<str:problem_short_name>/customchecker', AdminEditProblemCustomCheckerview),
+    path('problems/edit/<str:shortname>/export', AdminExportProblemConfigView),
+    path('problems/edit/<str:shortname>/export/download', AdminExportProblemConfigDownload),
+    path('problems/edit/<str:shortname>/import', AdminImportProblemConfig),
     path('problems/<str:id>/testcases/<str:test_name>/<str:io>', AdminViewTestcase),
 
     path('contests/create', AdminCreateContestView),
