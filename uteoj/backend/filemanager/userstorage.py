@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
-from backend.models.problem import ProblemModel
 from backend.filemanager.filemanager import OverwriteStorage
 
 from django.http import FileResponse, Http404

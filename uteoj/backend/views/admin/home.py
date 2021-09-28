@@ -1,12 +1,13 @@
 from backend.models.settings import OJSettingModel
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.contrib.admin.views.decorators import staff_member_required
 from backend.views.auth.login import LoginView
 from backend.views.admin.require import admin_member_required
 from backend.models.problem import ProblemModel
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django.contrib import messages
 
 def Error404Page(request, exception):
 
@@ -68,10 +69,16 @@ def AdminSettingSTMP(request):
         port = request.POST['port'] if 'port' in request.POST else ''
         password = request.POST['password'] if 'password' in request.POST else ''
         tls = 'tls' in request.POST
+
+        if not port.isdigit():
+            messages.add_message(request, messages.ERROR, 'Port phải là số nguyên')
+            return redirect('/admin/setting/stmp')
+
         OJSettingModel.setSTMPServer(server)
         OJSettingModel.setSTMPEmail(email)
         OJSettingModel.setSTMPPort(port)
-        OJSettingModel.setSTMPPassword(password)
+        if len(password) > 0:
+            OJSettingModel.setSTMPPassword(password)
         OJSettingModel.setSTMPEnableTLS(tls)
         return HttpResponseRedirect(request.path_info) # remove post dasta
     elif request.method == 'GET':

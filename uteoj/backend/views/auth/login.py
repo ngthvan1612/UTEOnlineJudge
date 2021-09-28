@@ -1,6 +1,7 @@
 import re
 from django.conf import settings
 from django.contrib import messages
+from django.http.response import Http404
 from django.template.loader import render_to_string
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib.auth.tokens import default_token_generator
@@ -10,11 +11,12 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
+from backend.task.sendmail import SendMail
 from backend.models.settings import OJSettingModel
 from backend.models.settings import CHANGE_PASSWORD_EMAIL_HANDLE_SETTING_NAME, CHANGE_PASSWORD_EMAIL_PASSWORD_SETTING_NAME
 from backend.views.settings import REDIRECT_FIELD_NAME
-from uteoj.settings import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 
 
 def WhoView(request):
@@ -45,11 +47,11 @@ def LoginView(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            if REDIRECT_FIELD_NAME in request.POST:
-                return redirect(request.POST[REDIRECT_FIELD_NAME])
-            if user.is_staff:
-                return redirect('/admin/')
-            return redirect('/')
+            next_url = request.POST.get('next')
+            if not next_url or len(next_url) == 0:
+                next_url = '/admin' if user.is_staff else '/'
+            print('redir to ' + str(next_url))
+            return redirect(next_url)
         messages.add_message(request, messages.ERROR, 'Tên đăng nhập hoặc mật khẩu sai')
     return render(request, 'auth-template/login.html', context)
 
@@ -60,6 +62,8 @@ def LogoutView(request):
 
 
 def ForgotPasswordView(request):
+    if request.user.is_authenticated:
+        return redirect('/')
     context = {
         'website_header_title': 'Quen mat khau',
     }
@@ -70,7 +74,7 @@ def ForgotPasswordView(request):
                 return HttpResponse(status=500)
         reset_email = request.POST['reset_email']
         if not re.match(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', reset_email):
-            context['error_forgot_password'] = 'Vui lòng nhập đúng địa chỉ email'
+            messages.add_message(request, messages.ERROR, 'Vui lòng nhập đúng định dạng email')
         else:
             users = User.objects.filter(email=reset_email)
             if users.exists():
@@ -88,12 +92,13 @@ def ForgotPasswordView(request):
                 }
                 email = render_to_string(email_template, c)
                 try:
-                    settings.EMAIL_HOST_USER = OJSettingModel.get(CHANGE_PASSWORD_EMAIL_HANDLE_SETTING_NAME)
-                    settings.EMAIL_HOST_PASSWORD = OJSettingModel.get(CHANGE_PASSWORD_EMAIL_PASSWORD_SETTING_NAME)
-                    send_mail(subject, email, EMAIL_HOST_USER, [user.email], fail_silently=False)
+                    SendMail.apply_async(
+                        args=[subject, email, user.email],
+                        queue='uteoj_system'
+                    )
                 except BadHeaderError:
-                    context['error_forgot_password'] = 'Có lỗi trong quá trình xử lý'
-            context['success_forgot_password'] = 'Nếu email này đã được được đăng ký, vui lòng kiểm tra hộp thư đến để đi đến liên kết đặt lại mật khẩu'
+                    messages.add_message(request, messages.ERROR, 'Có lỗi trong quá trình xử lý')
+            messages.add_message(request, messages.SUCCESS, 'Nếu email này đã được được đăng ký, vui lòng kiểm tra hộp thư đến để đi đến liên kết đặt lại mật khẩu')
     return render(request, 'auth-template/forgotpassword.html', context)
 
 
@@ -101,13 +106,13 @@ def ForgotPasswordResetView(request, uidb64, token):
     try:
         uid = int(urlsafe_base64_decode(uidb64).decode('utf-8'))
     except UnicodeDecodeError:
-        return HttpResponse(status=500)
+        raise Http404()
     users = User.objects.filter(id=uid)
     if users.exists() == False:
-        return HttpResponse(status=500)
+        raise Http404()
     user = users[0]
     if default_token_generator.check_token(user, token) == False:
-        return HttpResponse(status=500)
+        raise Http404()
     context = {
         'website_header_title': 'New password',
     }
@@ -119,11 +124,12 @@ def ForgotPasswordResetView(request, uidb64, token):
         password1 = request.POST['password1']
         password2 = request.POST['password2']
         if len(password1) < 8:
-            context['error_new_password'] = 'Mật khẩu phải ít nhất 8 kí tự'
+            messages.add_message(request, messages.ERROR, 'Mật khẩu phải dài ít nhất 8 ký tự')
         elif password1 != password2:
-            context['error_new_password'] = 'Mật khẩu không khớp'
+            messages.add_message(request, messages.ERROR, 'Mật khẩu không khớp')
         else:
             user.set_password(password1)
             user.save()
-            context['success_new_password'] = 'Đổi mật khẩu thành công'
+            messages.add_message(request, messages.SUCCESS, 'Đổi mật khẩu thành công')
+            return redirect('/login')
     return render(request, 'auth-template/newpassword.html', context)

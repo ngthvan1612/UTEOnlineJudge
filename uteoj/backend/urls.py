@@ -35,44 +35,19 @@ from backend.views.user.problem import ProblemStatementViewer
 from backend.views.user.home import UserHomeView
 
 #admin
-from backend.views.admin.home import AdminHomeView
-from backend.views.admin.home import AdminSettingSTMP
-from backend.views.admin.home import Error404Page
-from backend.views.admin.home import AdminSubmissionStatusView
-from backend.views.admin.home import AdminRankingView
-from backend.views.admin.home import AdminContactView
-from backend.views.admin.home import AdminSettingView
+from backend.views.admin.home import *
 
-from backend.views.admin.problem import AdminListProblemView
-from backend.views.admin.problem import AdminEditProblemDeatailsview
-from backend.views.admin.problem import AdminEditProblemProblemSetterview
-from backend.views.admin.problem import AdminEditProblemSettingsview
-from backend.views.admin.problem import AdminEditProblemTestcasesview
-from backend.views.admin.problem import AdminEditProblemCustomCheckerview
-from backend.views.admin.problem import AdminEditProblemTestcasesUploadZipView
-from backend.views.admin.problem import AdminCreateProblemView
-from backend.views.admin.problem import AdminViewTestcase
+from backend.views.admin.problem import *
 
-from backend.views.admin.contest import AdminListContestView
-from backend.views.admin.contest import AdminCreateContestView
+from backend.views.admin.contest import *
 
-from backend.views.admin.categories import AdminCategoriesView
+from backend.views.admin.categories import *
 
-from backend.views.admin.usermanage import AdminListAdministratorsView
-from backend.views.admin.usermanage import AdminListUsersView
-from backend.views.admin.usermanage import AdminEditUserView
-from backend.views.admin.usermanage import AdminCreateUserView
-from backend.views.admin.usermanage import AdminDeleteUser
-from backend.views.admin.usermanage import AdminImportUser
-from backend.views.admin.usermanage import AdminImportUserResultViewer
+from backend.views.admin.usermanage import *
 
-from backend.views.admin.tag import AdminEditTagView
-from backend.views.admin.tag import AdminListTagView
+from backend.views.admin.tag import *
 
-from backend.views.admin.language import AdminListLanguageView
-from backend.views.admin.language import AdminEditLanguageView
-from backend.views.admin.language import AdminCreateNewLanguage
-from backend.views.admin.language import AdminDeleteLanguage
+from backend.views.admin.language import *
 
 from django.views.static import serve
 
@@ -106,8 +81,14 @@ url_patterns_admin_sub = [
     path('problems/edit/<str:problem_short_name>/customchecker', AdminEditProblemCustomCheckerview),
     path('problems/<str:id>/testcases/<str:test_name>/<str:io>', AdminViewTestcase),
 
-    path('contests/create/', AdminCreateContestView),
-    path('contests/', AdminListContestView),
+    path('contests/create', AdminCreateContestView),
+    path('contests', AdminListContestView),
+    path('contests/edit/<int:id>/', AdminEditContestView),
+    path('contests/edit/<int:id>/details', AdminEditContestView),
+    path('contests/edit/<int:id>/problems', AdminEditContestProblemsView),
+    path('contests/edit/<int:id>/api/problems', AdminContestFilterProblem),
+    path('contests/edit/<int:id>/problems/<str:shortname>/remove', AdminEditContestRemoveProblems),
+    path('contests/edit/<int:id>/problems/create', AdminEditContestCreateProblem),
 
     path('categories/', AdminCategoriesView),
 

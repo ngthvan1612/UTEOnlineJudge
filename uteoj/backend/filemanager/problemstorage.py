@@ -1,3 +1,4 @@
+from django.core.files import storage
 from django.core.files.storage import FileSystemStorage
 from backend.models.problem import ProblemModel
 from backend.filemanager.filemanager import OverwriteStorage
@@ -18,6 +19,9 @@ class ProblemStorage(FileSystemStorage):
 
     def __getStatementFilename(self):
         return os.path.join(self.__problem_dir, 'statement.pdf')
+    
+    def getStatementContent(self):
+        return self.open(self.__getStatementFilename())
 
     def saveStatement(self, content):
         self.save(self.__getStatementFilename(), content)
@@ -48,7 +52,10 @@ class ProblemStorage(FileSystemStorage):
 
     def loadTestcaseFile(self, test_name, file_name):
         return FileResponse(self.open(self.__getTestcaseFilename(test_name, file_name)), content_type='text/plain')
-
+    
+    def deleteTestCaseFile(self, test_name, file_name):
+        self.delete(self.__getTestcaseFilename(test_name, file_name))
+    
     # CHECKER
     def __getCheckerFilename(self):
         return os.path.join(self.__problem_dir, 'checker', 'checker.cpp')
@@ -65,4 +72,12 @@ class ProblemStorage(FileSystemStorage):
         if self.exists(name):
             os.remove(os.path.join(settings.PROBLEM_ROOT, name))
         return name
+    
+    # CLONE
+    @staticmethod
+    def copyProblem(source:ProblemModel, dest:ProblemModel):
+        dir_source = os.path.join(settings.PROBLEM_ROOT, source.hash_problem)
+        dir_dest = os.path.join(settings.PROBLEM_ROOT, dest.hash_problem)
+        print(f"copy from {dir_source} to {dir_dest}")
+        os.system(f"cp -Rf \"{dir_source}\" \"{dir_dest}\"")
 

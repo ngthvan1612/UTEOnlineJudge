@@ -110,18 +110,12 @@ def AdminEditProblemProblemSetterview(request, problem_short_name):
 @admin_member_required
 def AdminEditProblemTestcasesDeleteView(request, problem_short_name, testcase_pk):
     if request.method == 'POST':
-        filter_problem = ProblemModel.objects.filter(shortname=problem_short_name)
-        if not filter_problem.exists():
-            return HttpResponse(status=404)
-        for problem in filter_problem:
-            filter_testcase = problem.problemtestcasemodel_set.filter(pk=testcase_pk)
-            if filter_testcase.exists() == False:
-                return HttpResponse(status=404)
-            file_manager = OverwriteStorage(settings.PROBLEM_ROOT)
-            for test in filter_testcase:
-                file_manager.delete(test.input_file)
-                file_manager.delete(test.output_file)
-            filter_testcase.delete()
+        problem = get_object_or_404(ProblemModel, shortname=problem_short_name)
+        test = get_object_or_404(ProblemTestCaseModel, problem=problem, pk=testcase_pk)
+        file_manager = ProblemStorage(problem)
+        file_manager.deleteTestCaseFile(test.name, problem.input_filename)
+        file_manager.deleteTestCaseFile(test.name, problem.output_filename)
+        test.delete()
         return HttpResponse(status=200)
     else:
         return HttpResponse(status=405)
@@ -266,13 +260,10 @@ def AdminEditProblemTestcasesview(request, problem_short_name):
         list_testcases = [{
                 'pk': x.id,
                 'id': 0,
-                'tag': x.tag if x.tag and len(x.tag) != 0 else '',
                 'time_limit': x.time_limit,
                 'memory_limit': x.memory_limit,
                 'is_sample': x.is_sample,
                 'points': x.points,
-                'input_file': settings.MEDIA_URL + x.input_file,
-                'output_file': settings.MEDIA_URL + x.output_file,
                 'name': x.name,
             } for x in problem.problemtestcasemodel_set.all()]
         for id in range(0, len(list_testcases), 1):
@@ -514,7 +505,7 @@ def AdminCreateProblemView(request):
         shortname = str(request.POST['shortname'])
         fullname = str(request.POST['fullname'])
         if not re.match("^[A-Za-z0-9_-]*$", shortname) or len(shortname) == 0:
-            messages.add_message(request, messages.ERROR, 'Tên ngắn của bài chỉ được chứa các kí tự a-ZA-Z0-9 và _ và không được trống')
+            messages.add_message(request, messages.ERROR, 'ID của bài chỉ được chứa các kí tự a-ZA-Z0-9 và _ và không được trống')
         elif ProblemModel.objects.filter(shortname=shortname).exists():
             messages.add_message(request, messages.ERROR, 'Bài {} đã tồn tại'.format(shortname))
         elif len(fullname) == 0:
@@ -526,8 +517,6 @@ def AdminCreateProblemView(request):
             return redirect('/admin/problems/edit/{}'.format(shortname))
         return HttpResponseRedirect(request.path_info)
     elif request.method == 'GET':
-
-
 
         return render(request, 'admin-template/problem/createproblem.html')
     else:

@@ -1,3 +1,4 @@
+from backend.models.contest import ContestModel
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.query_utils import check_rel_lookup_compatibility
@@ -60,6 +61,8 @@ from django.utils import timezone
 class ProblemModel(models.Model):
     author = models.ForeignKey(User,on_delete=models.CASCADE, blank=False)
 
+    contest = models.ForeignKey(ContestModel, on_delete=models.CASCADE, blank=True, null=True)
+
     publish_date = models.DateTimeField(blank=False, default=timezone.localtime(timezone.now()))
 
     categories = models.ManyToManyField(ProblemCategoryModel, blank=True)
@@ -117,6 +120,7 @@ class ProblemModel(models.Model):
         problem.save()
 
         return problem
+
 
 class ProblemTestCaseModel(models.Model):
     problem = models.ForeignKey(ProblemModel, on_delete=models.CASCADE)
