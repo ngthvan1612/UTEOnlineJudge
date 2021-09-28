@@ -92,6 +92,7 @@ def AdminImportUserResultViewer(request, huid, token, name):
 
 @admin_member_required
 def AdminImportUser(request):
+    return HttpResponse('Xoa trang nay')
     if request.method == 'POST':
         if 'userexcelfile' not in request.FILES:
             messages.add_message(request, messages.WARNING, 'Bạn phải upload một file lên')

@@ -9,6 +9,13 @@ import re
 
 from django.views.decorators.csrf import csrf_exempt
 
+def countChar(pat, src):
+    res = 0
+    for c in src:
+        if c in pat:
+            res += 1
+    return res
+
 @csrf_exempt
 def SignupView(request):
     context = {
@@ -25,10 +32,11 @@ def SignupView(request):
         email = request.POST['email']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
-        if len(username) < 5:
-            messages.add_message(request, messages.ERROR, 'Tên đăng nhập phải có từ 5 kí tự trở lên')
-        elif not re.match("^[A-Za-z0-9_]*$", username):
-            messages.add_message(request, messages.ERROR, 'Tên đăng nhập chỉ gồm các kí tự A-Za-z0-9 và _')
+        pat = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
+        if len(username) < 5 or len(username) > 20:
+            messages.add_message(request, messages.ERROR, 'Tên đăng nhập phải có từ 5 đến 20 kí tự')
+        elif not re.match("^[A-Za-z0-9_]*$", username) or countChar(pat, username) == 0:
+            messages.add_message(request, messages.ERROR, 'Tên đăng nhập chỉ gồm các kí tự A-Za-z0-9_ và phải có ít nhất một ký tự a-z')
         elif User.objects.filter(username=username).exists():
             messages.add_message(request, messages.ERROR, 'Tên đăng nhập đã tồn tại')
         elif len(email) == 0:

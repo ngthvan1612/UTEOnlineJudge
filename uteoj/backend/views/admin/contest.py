@@ -1,6 +1,7 @@
+from io import BytesIO
 import re
 from backend.filemanager.problemstorage import ProblemStorage
-
+from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
 from django.views.decorators.csrf import csrf_exempt
 from numpy import short
@@ -18,6 +19,12 @@ from backend.models.contest import ContestModel
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from django.http import JsonResponse
+from backend.filemanager.importuser import ImportUserStorage
+from backend.models.usersetting import ImportUserFileModel
+import uuid
+
+import pandas as pd
+import numpy as np
 
 
 @admin_member_required # xíu xóa
@@ -102,20 +109,27 @@ def AdminEditContestProblemsView(request, id):
     if request.method == 'POST':
         shortname = request.POST.get('shortname')
         new_shortname = request.POST.get('new_shortname')
-
-        if not re.match("^[A-Za-z0-9_-]*$", new_shortname) or len(new_shortname) == 0:
-            messages.add_message(request, messages.ERROR, 'ID của bài chỉ được chứa các kí tự a-ZA-Z0-9 và _ và không được trống')
-            return HttpResponseRedirect(request.path_info)
-
-        if ProblemModel.objects.filter(shortname=new_shortname).exists():
-            messages.add_message(request, messages.ERROR, f"Bài tập với ID {new_shortname} đã có, vui lòng chọn tên khác")
-            return HttpResponseRedirect(request.path_info)
+        copy = True if 'copy' in request.POST else False
 
         problem = ProblemModel.objects.filter(shortname=shortname)
         if not problem.exists():
             messages.add_message(request, messages.ERROR, f"Không có bài tập này: {str(shortname)}")
             return HttpResponseRedirect(request.path_info)
         problem = problem[0]
+
+        if not copy:
+            problem.contest = contest
+            problem.save()
+            return HttpResponseRedirect(request.path_info)
+
+        if not re.match("^[A-Za-z0-9_-]*$", new_shortname) or len(new_shortname) == 0:
+            messages.add_message(request, messages.ERROR, 'ID của bài chỉ được chứa các kí tự a-ZA-Z0-9 và _ và không được trống')
+            return HttpResponseRedirect(request.path_info)
+        
+        if ProblemModel.objects.filter(shortname=new_shortname).exists():
+            messages.add_message(request, messages.ERROR, f"Bài tập với ID {new_shortname} đã có, vui lòng chọn tên khác")
+            return HttpResponseRedirect(request.path_info)
+
         new_problem = ProblemModel.CreateNewProblem(new_shortname, problem.fullname, problem.author)
         
         # check xong
@@ -183,11 +197,14 @@ def AdminEditContestRemoveProblems(request, id, shortname):
 
 @require_http_methods(['GET'])
 def AdminContestFilterProblem(request, id):
+    contest = get_object_or_404(ContestModel, pk=id)
     name = request.GET.get('name')
     if not name:
         name = ''
 
-    tmp = ProblemModel.objects.values('shortname', 'fullname').filter(Q(shortname__icontains=name) | Q(fullname__icontains=name))[:10]
+    tmp = ProblemModel.objects.values('shortname', 'fullname').filter(
+        (Q(shortname__icontains=name) | Q(fullname__icontains=name)) & 
+        (Q(contest__isnull=True) & (~Q(contest=contest))))[:10]
     response = {}
     for x in tmp:
         response[x['shortname']] = x['fullname']
@@ -221,3 +238,42 @@ def AdminEditContestCreateProblem(request, id):
         return render(request, 'admin-template/problem/createproblem.html')
     else:
         return HttpResponse(status=405)
+
+@require_http_methods(['GET', 'POST'])
+def AdminEditContestImportUser(request, id):
+    contest = get_object_or_404(ContestModel, pk=id)
+
+    if request.method == 'POST':
+        files = request.FILES.getlist('listUsersFile')
+        if not files:
+            messages.add_message(request, messages.ERROR, 'Bạn phải upload ít nhất một file')
+        
+        tmp = {}
+        lsSinhVien = []
+        for xls in files:
+            xls = request.FILES.get('userexcelfile')
+
+            try:
+                df = pd.read_excel(BytesIO(xls.read()))
+            except:
+                messages.add_message(request, messages.ERROR, 'Không đọc được file')
+                return HttpResponseRedirect(request.path_info)
+            
+            data = df.to_numpy()
+
+            for x in data:
+                mssv, ho, ten = str(x[1]), str(x[3]), str(x[4])
+                if mssv.isdigit() and ho != 'nan' and ten != 'nan':
+                    if mssv not in tmp:
+                        password = uuid.uuid4().hex[:8] # lát fix lại khúc này!!!
+                        username = mssv
+                        lsSinhVien.append((mssv, ho.strip(), ten.strip(), username, password))
+                        tmp[mssv] = 1
+        
+        lsContestUser = {user.username for user in contest.contestants.all()}
+        
+        return HttpResponseRedirect(request.path_info)
+
+    else: # GET
+        return render(request, 'admin-template/contest/edit/import.html')
+

@@ -27,6 +27,7 @@ class ContestModel(models.Model):
     description = models.TextField()
     startTime = models.DateTimeField()
     endTime = models.DateTimeField()
+    contestants = models.ManyToManyField(User)
 
     @staticmethod
     def prepareData(title, startTime, endTime):
@@ -73,9 +74,12 @@ class ContestModel(models.Model):
         return (True, 'Thêm thành công')
 
     def removeProblem(self, problem):
-        if not (problem in self.problem_set.all()):
+        if not (problem in self.problemmodel_set.all()):
             return (False, 'Bài tập này không có trong kỳ thi')
         
-        self.problem_set.remove(problem)
+        self.problemmodel_set.remove(problem)
         
         return (True, 'Xóa thành công')
+    
+    def addListContestant(self, list_contestants:User):
+        self.contestants.add(list_contestants)
