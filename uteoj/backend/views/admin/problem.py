@@ -33,6 +33,7 @@ def AdminEditProblemDeatailsview(request, problem_short_name):
     if request.method == 'POST':
         shortname = request.POST.get('shortname')
         fullname = request.POST.get('fullname')
+        is_public = True if 'is_public' in request.POST else False
 
         if len(shortname) == 0 or len(fullname) == 0:
             messages.add_message(request, messages.ERROR, 'Tên bài không được trống')
@@ -43,6 +44,7 @@ def AdminEditProblemDeatailsview(request, problem_short_name):
         else:
             problem.fullname = fullname
             problem.shortname = shortname
+            problem.is_public = is_public
 
             if 'statement' in request.FILES:
                 statement = request.FILES.get('statement')
@@ -60,8 +62,8 @@ def AdminEditProblemDeatailsview(request, problem_short_name):
             'fullname': problem.fullname,
             'publish_date': problem.publish_date,
         }
-        if problem.statement != None and len(problem.statement) > 0:
-            problem_context['statement'] = problem.statement
+        if problem.is_public:
+            problem_context['is_public'] = True
 
         context = {
             'problem': problem_context,

@@ -142,6 +142,7 @@ def AdminEditContestProblemsView(request, id):
         
         # clone settingss
         new_problem.categories.set(problem.categories.all())
+        new_problem.is_public = False
         new_problem.problem_type = problem.problem_type
         new_problem.difficult = problem.difficult
         new_problem.points_per_test = problem.points_per_test

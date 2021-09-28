@@ -2,7 +2,7 @@ from typing import final
 from backend.models.settings import OJSettingModel
 from backend.models.usersetting import UserProblemStatisticsModel
 from django.core.paginator import Paginator
-from django.http.response import HttpResponseNotAllowed, HttpResponseRedirect
+from django.http.response import Http404, HttpResponseNotAllowed, HttpResponseRedirect
 from backend.models.language import LanguageModel
 from django.contrib import messages
 from django.shortcuts import render
@@ -27,7 +27,7 @@ def ProblemStatementViewer(request, id):
 
 def UserListProblemView(request):
 
-    final_filter = ProblemModel.objects.all().order_by('-id')
+    final_filter = ProblemModel.objects.all().filter(is_public=True).order_by('-id')
 
     if 'category' in request.GET:
         category = str(request.GET['category'])
@@ -96,15 +96,14 @@ def UserListProblemView(request):
 
 
 def UserProblemView(request, shortname):
-    problems = ProblemModel.objects.filter(shortname=shortname)
+    problem = get_object_or_404(ProblemModel, shortname=shortname)
+    if not problem.is_public:
+        raise Http404()
 
-    if problems.exists() == False:
-        return HttpResponse(status=404)
-
-    list_submission = SubmissionModel.objects.filter(problem=problems[0],user=request.user).all()
+    list_submission = SubmissionModel.objects.filter(problem=problem,user=request.user).all()
 
     context = {
-        'problem': problems[0],
+        'problem': problem,
         'list_submission': list_submission,
     }
 
@@ -115,6 +114,9 @@ from django.utils import timezone
 @csrf_exempt
 def UserSubmitSolution(request, shortname):
     problem = get_object_or_404(ProblemModel, shortname=shortname)
+    if not problem.is_public:
+        raise Http404()
+
     if not request.user.is_authenticated:
         messages.add_message(request, messages.ERROR, 'Vui lòng đăng nhập để nộp bài')
         return redirect('/login')
@@ -175,57 +177,3 @@ def UserSubmitSolution(request, shortname):
     else:
         return HttpResponse(status=405)
 
-@csrf_exempt
-def UserSubmitSolutionTest(request, shortname):
-    problem = get_object_or_404(ProblemModel, shortname=shortname)
-    if not request.user.is_authenticated:
-        messages.add_message(request, messages.ERROR, 'Vui lòng đăng nhập để nộp bài')
-        return redirect('/login')
-    if not request.user.is_authenticated:
-        return redirect('/login')
-    
-    if request.method == 'POST':
-        if 'language' not in request.POST:
-            return HttpResponse('Thiếu ngôn ngữ')
-        if 'source' not in request.POST:
-            return HttpResponse('Thiếu source code')
-        language_filter = LanguageModel.objects.filter(name=request.POST['language'])
-        if not language_filter.exists():
-            return HttpResponse('Không có ngôn ngữ nào tên \'{}\''.format(request.POST['language']))
-        language=LanguageModel.objects.get(name=request.POST['language'])
-        source_code = request.POST['source']
-
-        if len(source_code) == 0:
-            messages.add_message(request, messages.ERROR, 'Mã nguồn không được để trống')
-            return HttpResponseRedirect(request.path_info)
-
-        submission = SubmissionModel.objects.create(
-            user=request.user,
-            problem=problem,
-            submission_date=timezone.localtime(timezone.now()),
-            source_code = source_code,
-            language=language)
-        submission.status = SubmissionStatusType.InQueued
-        submission.save()
-        
-        SubmitSolutionTest(submission.id)
-        return HttpResponse('<h2>Submit ok: id = {}</br>Bài tập: <font style="color:red;">{}</font> ({})</br>Người dùng: {}</br>Ngôn ngữ: {}</h2><br/>Có thể F5 để submit lại'
-            .format(submission.id, problem.shortname, problem.fullname, request.user.username, language.name))
-    elif request.method == 'GET':
-        content = '<h1>Trang này test submit (backend tạo)</h1><br/>'
-        context = {
-            'languages': [
-                {'value': x.name, 'display': x.name }
-                for x in LanguageModel.objects.all()
-            ]
-        }
-        list_language = ''
-        for x in LanguageModel.objects.all():
-            list_language += '<option value="{}">{}</option>\n'.format(x.name, x.name)
-        list_language = 'Ngôn ngữ: <select name="language">{}</select><br/>'.format(list_language)
-        source_code = 'Source code: <textarea name="source"></textarea><br/>'
-        submit_button = '<input type="submit" value="Nộp bài">'
-        content += '<form action="" method="post">{}</form>'.format(list_language + source_code + submit_button)
-        return HttpResponse(content=content)
-    else:
-        return HttpResponse(status=405)

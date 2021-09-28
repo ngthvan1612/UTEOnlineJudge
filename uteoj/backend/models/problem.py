@@ -112,6 +112,8 @@ class ProblemModel(models.Model):
 
     publish_date = models.DateTimeField(blank=False, default=timezone.localtime(timezone.now()))
 
+    is_public = models.BooleanField(default=False)
+
     categories = models.ManyToManyField(ProblemCategoryModel, blank=True)
 
     shortname = models.CharField(max_length=32, unique=True)
