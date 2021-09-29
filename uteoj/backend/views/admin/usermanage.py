@@ -26,10 +26,15 @@ def AdminFilterListUser(request, is_staff, template):
     list_user_filter = User.objects.all()
     if 'search' in request.GET:
         search = request.GET['search']
+        tmp = search.split(' ')
+        ho = ' '.join(tmp[::-1])
+        ten = tmp[-1]
         list_user_filter = list_user_filter.filter(
-            Q(username__contains=search) | 
-            Q(first_name__contains=search) | 
-            Q(last_name__contains=search)
+            Q(username__icontains=search) | 
+            Q(first_name__icontains=search) | 
+            Q(last_name__icontains=search) |
+            Q(first_name__icontains=ten) |
+            Q(last_name__icontains=ho)
         )
     list_users = [{
             'id': -1,

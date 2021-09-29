@@ -39,7 +39,7 @@ def AdminEditProblemDeatailsview(request, problem_short_name):
         if len(shortname) == 0 or len(fullname) == 0:
             messages.add_message(request, messages.ERROR, 'Tên bài không được trống')
         elif not re.match("^[A-Za-z0-9_-]*$", shortname) or len(shortname) == 0:
-            messages.add_message(request, messages.ERROR, 'Tên ngắn của bài chỉ được chứa các kí tự a-ZA-Z0-9 và _ - và không được trống')
+            messages.add_message(request, messages.ERROR, 'ID của bài chỉ được chứa các kí tự a-ZA-Z0-9 và _ - và không được trống')
         elif shortname != problem_short_name and ProblemModel.objects.filter(shortname=shortname).exists():
             messages.add_message(request, messages.ERROR, 'Tên bài này đã có, vui lòng chọn tên khác [shortname]')
         else:
@@ -179,7 +179,8 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
         
         # Lọc + xử lý + clean đàu vào
         if 'zip_testcases' not in request.FILES or 'filetype' not in request.POST:
-            return HttpResponse(status=500)
+            messages.add_message(request, messages.ERROR, 'Phải upload một file lên')
+            return redirect(f"/admin/problems/edit/{problem.shortname}/testcases")
         zip_testcases = request.FILES.get('zip_testcases')
         filetype = request.POST.get('filetype')
         if filetype not in ['themis', 'combine']:
@@ -270,6 +271,84 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
     else:
         return HttpResponse(status=405) # method is not allowed
 
+@require_http_methods(['POST'])
+def AdminEditProblemTestcasesImportSetting(request, problem_short_name):
+    problem = get_object_or_404(ProblemModel, shortname=problem_short_name)
+    if 'importSettingFile' not in request.FILES:
+        messages.add_message(request, messages.ERROR, 'Phải upload một file lên')
+        return redirect(f"/admin/problems/edit/{problem_short_name}/testcases")
+    importSettingFile = request.FILES.get('importSettingFile')
+    
+    # check file correct format (.json)
+    try:
+        data = importSettingFile.read().decode('utf-8')
+        data = json.loads(data)
+    except:
+        messages.add_message(request, messages.ERROR, 'Định dạng file lỗi')
+        return redirect(f"/admin/problems/edit/{problem_short_name}/testcases")
+    
+    list_requirements = {'name': str, 'time_limit':int, 'memory_limit': int, 'points': float}
+    name_of_type = {
+        str: 'chuỗi',
+        int: 'số nguyên',
+        float: 'số thực',
+    }
+
+    list_testcases = {}
+    # check testcases
+    for test in data['testcases']:
+        for key in list_requirements:
+            if key not in test:
+                if key != 'name':
+                    messages.add_message(request, messages.ERROR, f"Test {test['name']} không có trường {key}")
+                    return redirect(f"/admin/problems/edit/{problem_short_name}/testcases")
+                else:
+                    messages.add_message(request, messages.ERROR, f"Một hoặc nhiều testcase có không có tên")
+                    return redirect(f"/admin/problems/edit/{problem_short_name}/testcases")
+            elif type(test[key]) != list_requirements[key]:
+                messages.add_message(request, messages.ERROR, f"Trường {key} phải là một {name_of_type[list_requirements[key]]}")
+                return redirect(f"/admin/problems/edit/{problem_short_name}/testcases")
+        if test['name'] in list_testcases:
+            messages.add_message(request, messages.ERROR, f"Có 2 (hoặc nhiều) testcase có tên {test['name']}")
+            return redirect(f"/admin/problems/edit/{problem_short_name}/testcases")
+        list_testcases[test['name']] = test
+
+    # update to database
+
+    for testcase in problem.problemtestcasemodel_set.all():
+        if testcase.name in list_testcases:
+            test_json = list_testcases[testcase.name]
+            testcase.time_limit = test_json['time_limit']
+            testcase.memory_limit = test_json['memory_limit']
+            testcase.points = round(test_json['points'], settings.NUMBER_OF_DECIMAL)
+            testcase.save()
+    
+    messages.add_message(request, messages.SUCCESS, 'Nhập cấu hình thành công')
+    return redirect(f"/admin/problems/edit/{problem_short_name}/testcases")
+
+@require_http_methods(['GET'])
+def AdminEditProblemTestcasesExportSetting(request, problem_short_name):
+    
+    problem = get_object_or_404(ProblemModel, shortname=problem_short_name)
+    res = {}
+    tmp = []
+    for test in problem.problemtestcasemodel_set.all():
+        testcase_json = {
+            'name': test.name,
+            'time_limit': test.time_limit,
+            'memory_limit': test.memory_limit,
+            'points': test.points,
+        }
+        tmp.append(testcase_json)
+    
+    res['testcases'] = tmp
+    # sinh test có testcases rỗng: chưa làm
+
+    json_str = json.dumps(res, indent=4)
+    response = HttpResponse(json_str, content_type='application/json')
+    response['Content-Disposition'] = f"attachment; filename={problem.shortname}_config.json"
+
+    return response
 
 @admin_member_required
 @never_cache

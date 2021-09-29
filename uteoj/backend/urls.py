@@ -9,29 +9,23 @@ from django.conf.urls.static import static
 
 
 #authenticate
-from backend.views.auth.login import WhoView
-from backend.views.auth.login import LoginView
-from backend.views.auth.login import ForgotPasswordView
-from backend.views.auth.login import ForgotPasswordResetView
-from backend.views.auth.login import LogoutView
-from backend.views.auth.signup import SignupView
+from backend.views.auth.login import *
+from backend.views.auth.signup import *
 
 #user
-from backend.views.user.problem import UserProblemView
-from backend.views.user.problem import UserSubmitSolution
-from backend.views.user.problem import UserListProblemView
-from backend.views.user.rank import UserRankView
+from backend.views.user.problem import *
+from backend.views.user.rank import *
 
-from backend.views.user.profile import UserEditMyProfile
-from backend.views.user.profile import UserAvatarViewer
-from backend.views.user.changepassword import UserChangePassword
+from backend.views.user.profile import *
+from backend.views.user.changepassword import *
 
-from backend.views.user.submission import UserListSubmissionView
-from backend.views.user.submission import UserSubmissionView
+from backend.views.user.submission import *
 
-from backend.views.user.problem import ProblemStatementViewer
+from backend.views.user.problem import *
 
-from backend.views.user.home import UserHomeView
+from backend.views.user.home import *
+
+from backend.views.user.contest import *
 
 #admin
 from backend.views.admin.home import *
@@ -74,6 +68,8 @@ url_patterns_admin_sub = [
     path('problems/edit/<str:problem_short_name>/details', AdminEditProblemDeatailsview),
     path('problems/edit/<str:problem_short_name>/problemsetter', AdminEditProblemProblemSetterview),
     path('problems/edit/<str:problem_short_name>/testcases', AdminEditProblemTestcasesview),
+    path('problems/edit/<str:problem_short_name>/testcases/importsetting', AdminEditProblemTestcasesImportSetting),
+    path('problems/edit/<str:problem_short_name>/testcases/exportsetting', AdminEditProblemTestcasesExportSetting),
     path('problems/edit/<str:problem_short_name>/testcases/uploadzip/', AdminEditProblemTestcasesUploadZipView),
     path('problems/edit/<str:shortname>/testcases/uploadtestcase', AdminEditProblemTestcaseUploadTestcase),
     path('problems/edit/<str:problem_short_name>/testcases/delete/<int:testcase_pk>/', AdminEditProblemTestcasesDeleteView),
@@ -145,6 +141,8 @@ url_patterns_user = [
     path('submissions/', UserListSubmissionView),
     path('submissions/<int:submission_id>', UserSubmissionView),
     path('ranks', UserRankView),
+    path('contests', UserContestListView),
+    path('contests/<int:id>', UserContestView),
     path('profile',UserEditMyProfile),
     path('changepassword', UserChangePassword),
     path('media/user/<int:token>/<str:sha>/avatar', UserAvatarViewer),

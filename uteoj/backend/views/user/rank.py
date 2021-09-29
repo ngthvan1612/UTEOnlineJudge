@@ -1,5 +1,7 @@
 from typing import final
 
+from django.views.decorators.http import require_http_methods
+
 from backend.models.usersetting import UserProblemStatisticsModel
 from django.core.paginator import Paginator
 from django.http.response import HttpResponseNotAllowed, HttpResponseRedirect
@@ -22,7 +24,7 @@ from django.http import HttpResponse
 from django.core import serializers
 from django.db.models import F, Sum, Count
 
-
+@require_http_methods(['GET'])
 def UserRankView(request):
 
     final_filter = UserProblemStatisticsModel.objects.values(username=F('user__username')).annotate(total_solvedCount=Count('solvedCount')).order_by('-total_solvedCount')
@@ -44,3 +46,4 @@ def UserRankView(request):
     }
 
     return render(request, 'user-template/rank.html', context)
+
