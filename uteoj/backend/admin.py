@@ -15,6 +15,8 @@ from backend.models.settings import OJSettingModel
 from backend.models.usersetting import UserSetting
 from backend.models.usersetting import UserProblemStatisticsModel
 
+from backend.models.contest import ContestModel
+
 
 #from backend.models.usersetting import ??
 
@@ -26,4 +28,5 @@ admin.site.register(SubmissionModel)
 admin.site.register(SubmissionTestcaseResultModel)
 admin.site.register(OJSettingModel)
 admin.site.register(UserSetting)
+admin.site.register(ContestModel)
 admin.site.register(UserProblemStatisticsModel)

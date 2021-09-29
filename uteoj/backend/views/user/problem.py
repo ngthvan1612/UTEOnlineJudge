@@ -22,6 +22,22 @@ from backend.task.submit import SubmitSolution
 from backend.filemanager.problemstorage import ProblemStorage
 
 def ProblemStatementViewer(request, id):
+    problem = get_object_or_404(ProblemModel, shortname=id)
+
+    # nếu bài này đang ở riêng tư
+    if not problem.is_public:
+        # nếu không phải admin
+        if not request.user.is_staff:
+            # nếu bài tập này ở trong 1 contest nào đó -> kiểm tra người dùng hiện tại có trong danh sách không
+            if problem.contest:
+                currentTime = timezone.localtime(timezone.now())
+                if not request.user in problem.contest.contestants.all():
+                    raise Http404()
+                elif currentTime < problem.contest.startTime or currentTime > problem.contest.endTime:
+                    raise Http404()
+            else:
+                raise Http404()
+
     file_manager = ProblemStorage(problem=get_object_or_404(ProblemModel, shortname=id))
     return file_manager.loadStatement()
 
@@ -97,11 +113,27 @@ def UserListProblemView(request):
 
 def UserProblemView(request, shortname):
     problem = get_object_or_404(ProblemModel, shortname=shortname)
+    # nếu bài này đang ở riêng tư
     if not problem.is_public:
-        raise Http404()
+        # nếu không phải admin
+        if not request.user.is_staff:
+            # nếu bài tập này ở trong 1 contest nào đó -> kiểm tra người dùng hiện tại có trong danh sách không
+            if problem.contest:
+                currentTime = timezone.localtime(timezone.now())
+                if not request.user in problem.contest.contestants.all():
+                    messages.add_message(request, messages.ERROR, 'Bạn không nằm trong danh sách được tham gia kì thi này')
+                    return redirect('/problems')
+                elif currentTime < problem.contest.startTime or currentTime > problem.contest.endTime:
+                    messages.add_message(request, messages.ERROR, 'Hiện tại không nằm trong thời gian thi')
+                    return redirect('/problems')
+            else:
+                messages.add_message(request, messages.ERROR, 'Bài tập này đang ở chế độ riêng tư, bạn không có quyền submit bài tập này')
+                return redirect('/problems')
 
-    list_submission = SubmissionModel.objects.filter(problem=problem,user=request.user).all()
-
+    if request.user.is_authenticated:
+        list_submission = SubmissionModel.objects.filter(problem=problem,user=request.user).all()
+    else:
+        list_submission = None
     context = {
         'problem': problem,
         'list_submission': list_submission,
@@ -114,14 +146,27 @@ from django.utils import timezone
 @csrf_exempt
 def UserSubmitSolution(request, shortname):
     problem = get_object_or_404(ProblemModel, shortname=shortname)
-    if not problem.is_public:
-        raise Http404()
 
     if not request.user.is_authenticated:
         messages.add_message(request, messages.ERROR, 'Vui lòng đăng nhập để nộp bài')
         return redirect('/login')
-    if not request.user.is_authenticated:
-        return redirect('/login')
+    
+    # nếu bài này đang ở riêng tư
+    if not problem.is_public:
+        # nếu không phải admin
+        if not request.user.is_staff:
+            # nếu bài tập này ở trong 1 contest nào đó -> kiểm tra người dùng hiện tại có trong danh sách không
+            if problem.contest:
+                currentTime = timezone.localtime(timezone.now())
+                if not request.user in problem.contest.contestants.all():
+                    messages.add_message(request, messages.ERROR, 'Bạn không nằm trong danh sách được tham gia kì thi này')
+                    return redirect('/problems')
+                elif currentTime < problem.contest.startTime or currentTime > problem.contest.endTime:
+                    messages.add_message(request, messages.ERROR, 'Hiện tại không nằm trong thời gian được nộp bài')
+                    return redirect('/problems')
+            else:
+                messages.add_message(request, messages.ERROR, 'Bài tập này đang ở chế độ riêng tư, bạn không có quyền submit bài tập này')
+                return redirect('/problems')
 
     if problem.problemtestcasemodel_set.count() == 0:
         messages.add_message(request, messages.ERROR, 'Không thể chấm bài này, hiện tại không có testcase nào!')

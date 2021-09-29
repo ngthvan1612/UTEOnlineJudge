@@ -1,5 +1,7 @@
 from io import BytesIO
+from random import randint
 import re
+from backend.views.admin.tools import Remove_accents
 from backend.filemanager.problemstorage import ProblemStorage
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
@@ -21,6 +23,8 @@ from django.shortcuts import redirect
 from django.http import JsonResponse
 from backend.filemanager.importuser import ImportUserStorage
 from backend.models.usersetting import ImportUserFileModel
+from django.db.models.functions import Length
+from django.utils import timezone
 import uuid
 
 import pandas as pd
@@ -245,36 +249,102 @@ def AdminEditContestImportUser(request, id):
     contest = get_object_or_404(ContestModel, pk=id)
 
     if request.method == 'POST':
-        files = request.FILES.getlist('listUsersFile')
-        if not files:
+        files = request.FILES.getlist('listUsersFile[]')
+        options = int(request.POST.get('mdImport'))
+        if not files or len(files) == 0:
             messages.add_message(request, messages.ERROR, 'Bạn phải upload ít nhất một file')
+            return HttpResponseRedirect(request.path_info)
         
         tmp = {}
         lsSinhVien = []
         for xls in files:
-            xls = request.FILES.get('userexcelfile')
-
             try:
                 df = pd.read_excel(BytesIO(xls.read()))
             except:
-                messages.add_message(request, messages.ERROR, 'Không đọc được file')
+                messages.add_message(request, messages.ERROR, f"Không đọc được file {xls.name}")
                 return HttpResponseRedirect(request.path_info)
             
             data = df.to_numpy()
 
             for x in data:
-                mssv, ho, ten = str(x[1]), str(x[3]), str(x[4])
+                mssv, ho, ten, ns = str(x[1]), str(x[3]), str(x[4]), str(x[5])
                 if mssv.isdigit() and ho != 'nan' and ten != 'nan':
                     if mssv not in tmp:
-                        password = uuid.uuid4().hex[:8] # lát fix lại khúc này!!!
+                        ns = pd.to_datetime(ns)
+                        password = mssv + '_' + Remove_accents(ten).lower()
                         username = mssv
                         lsSinhVien.append((mssv, ho.strip(), ten.strip(), username, password))
                         tmp[mssv] = 1
         
-        lsContestUser = {user.username for user in contest.contestants.all()}
-        
+        list_users = []
+        if options == 0:
+            contest.contestants.clear()
+        for mssv, ho, ten, username, password in lsSinhVien:
+            users = User.objects.filter(username=mssv)
+            if users.exists():
+                if options == 1 or options == 0:
+                    users[0].set_password(password)
+                    users[0].save()
+                list_users.append(users[0])
+            else:
+                user = User.objects.create_user(username=username, first_name=ten, last_name=ho, password=password)
+                user.save()
+                list_users.append(user)
+
+        contest.contestants.add(*list_users)
+
+        # fileModel = ImportUserFileModel.objects.create(
+        #     contest=contest,
+        #     name=f"UTEOJ_IMPORT_USERS_{timezone.localtime(timezone.now()).strftime('%m-%d-%Y__%H-%M-%S')}.xls",
+        #     token=uuid.uuid4().hex + uuid.uuid4().hex)
+        # fileModel.save()
+
+        # messages.add_message(request, messages.SUCCESS, f"Đang nhập")
+        # lsOutput = np.array(lsSinhVien)
+        # stream = BytesIO()
+
+        # pdOutput = pd.DataFrame(lsOutput, columns=('Mã số SV', 'Họ và tên lót', 'Tên', 'Tên đăng nhập', 'Mật khẩu'))
+        # pdOutput.index += 1
+        # pdOutput.to_excel(stream, engine='xlwt')
+
+        # file_manager = ImportUserStorage()
+        # file_manager.saveImportUser(fileModel.name, stream)
+
+        messages.add_message(request, messages.SUCCESS, f"Nhập xong {len(lsSinhVien)} thí sinh")
         return HttpResponseRedirect(request.path_info)
 
     else: # GET
-        return render(request, 'admin-template/contest/edit/import.html')
+        options = [
+            {
+                'name': 'Thay thế hoàn bằng danh sách mới',
+                'value': 0
+            },
+            {
+                'name': 'Ghi đè dữ liệu mới vào (nếu thí sinh không có trong danh sách mới thì giữa nguyên)',
+                'value': 1
+            },
+            {
+                'name': 'Không thay thế / ghi đè, nếu thí sinh không có trong danh sách thì thêm vào',
+                'value': 2
+            }
+        ]
+        return render(request, 'admin-template/contest/edit/import.html', {
+            'options': options,
+        })
+
+
+@require_http_methods(['GET'])
+def AdminEditContestExportView(request, id):
+
+    return render(request, 'admin-template/contest/edit/export.html')
+
+@require_http_methods(['GET'])
+def AdminEditContestExportContestantView(request, id):
+
+    return HttpResponse('OK - LIST CONTESTANTS')
+
+@require_http_methods(['GET'])
+def AdminEditContestExportResultView(request, id):
+
+    return HttpResponse('OK - RESULT')
 
