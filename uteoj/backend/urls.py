@@ -90,6 +90,8 @@ url_patterns_admin_sub = [
     path('contests/edit/<int:id>/problems/create', AdminEditContestCreateProblem),
     path('contests/edit/<int:id>/import', AdminEditContestImportUser),
     path('contests/edit/<int:id>/export', AdminEditContestExportView),
+    path('contests/edit/<int:id>/export/contestants', AdminEditContestExportContestantView),
+    path('contests/edit/<int:id>/export/result', AdminEditContestExportResultView),
 
     path('categories/', AdminCategoriesView),
 

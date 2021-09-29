@@ -1,5 +1,7 @@
 from io import BytesIO
+from random import randint
 import re
+from backend.views.admin.tools import Remove_accents
 from backend.filemanager.problemstorage import ProblemStorage
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
@@ -269,7 +271,7 @@ def AdminEditContestImportUser(request, id):
                 if mssv.isdigit() and ho != 'nan' and ten != 'nan':
                     if mssv not in tmp:
                         ns = pd.to_datetime(ns)
-                        password = ns.strftime('%d%m%Y')
+                        password = mssv + '_' + Remove_accents(ten).lower()
                         username = mssv
                         lsSinhVien.append((mssv, ho.strip(), ten.strip(), username, password))
                         tmp[mssv] = 1
@@ -291,24 +293,22 @@ def AdminEditContestImportUser(request, id):
 
         contest.contestants.add(*list_users)
 
-        fileModel = ImportUserFileModel.objects.create(
-            contest=contest,
-            name=f"UTEOJ_IMPORT_USERS_{timezone.localtime(timezone.now()).strftime('%m-%d-%Y__%H-%M-%S')}.xls",
-            token=uuid.uuid4().hex + uuid.uuid4().hex)
-        fileModel.save()
+        # fileModel = ImportUserFileModel.objects.create(
+        #     contest=contest,
+        #     name=f"UTEOJ_IMPORT_USERS_{timezone.localtime(timezone.now()).strftime('%m-%d-%Y__%H-%M-%S')}.xls",
+        #     token=uuid.uuid4().hex + uuid.uuid4().hex)
+        # fileModel.save()
 
-        messages.add_message(request, messages.SUCCESS, f"Đang nhập")
-        lsOutput = np.array(lsSinhVien)
-        stream = BytesIO()
+        # messages.add_message(request, messages.SUCCESS, f"Đang nhập")
+        # lsOutput = np.array(lsSinhVien)
+        # stream = BytesIO()
 
-        pdOutput = pd.DataFrame(lsOutput, columns=('Mã số SV', 'Họ và tên lót', 'Tên', 'Tên đăng nhập', 'Mật khẩu'))
-        pdOutput.index += 1
-        pdOutput.to_excel(stream, engine='xlwt')
+        # pdOutput = pd.DataFrame(lsOutput, columns=('Mã số SV', 'Họ và tên lót', 'Tên', 'Tên đăng nhập', 'Mật khẩu'))
+        # pdOutput.index += 1
+        # pdOutput.to_excel(stream, engine='xlwt')
 
-        file_manager = ImportUserStorage()
-        file_manager.saveImportUser(fileModel.name, stream)
-
-        #'exportFile': f"/admin/contests/export/{ImportUserFileModel.EncryptId(fileModel.id)}/{fileModel.token}/{fileModel.name}"
+        # file_manager = ImportUserStorage()
+        # file_manager.saveImportUser(fileModel.name, stream)
 
         messages.add_message(request, messages.SUCCESS, f"Nhập xong {len(lsSinhVien)} thí sinh")
         return HttpResponseRedirect(request.path_info)
@@ -332,7 +332,19 @@ def AdminEditContestImportUser(request, id):
             'options': options,
         })
 
-@require_http_methods(['GET'])
-def AdminEditContestExportView(request):
 
-    pass
+@require_http_methods(['GET'])
+def AdminEditContestExportView(request, id):
+
+    return render(request, 'admin-template/contest/edit/export.html')
+
+@require_http_methods(['GET'])
+def AdminEditContestExportContestantView(request, id):
+
+    return HttpResponse('OK - LIST CONTESTANTS')
+
+@require_http_methods(['GET'])
+def AdminEditContestExportResultView(request, id):
+
+    return HttpResponse('OK - RESULT')
+

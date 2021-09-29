@@ -115,3 +115,4 @@ class ImportUserFileModel(models.Model):
     @staticmethod
     def DecryptId(token:int) -> int:
         return (token ^ 123456) // 347329
+
