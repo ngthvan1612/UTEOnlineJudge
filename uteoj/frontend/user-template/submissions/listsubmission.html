@@ -29,7 +29,8 @@
                             {%for submission in page_obj%}
                             <tr>
                                 <td class="text-center"><a style="text-decoration:none;" href="/submissions/{{submission.id}}" target="_blank">{{submission.id}}</a></td>
-                                <td class="text-center"><a style="text-decoration:none;" href="/profile/{{submission.user_name}}">{{submission.user_name}}</a></td>
+                                {% comment %} <td class="text-center"><a style="text-decoration:none;" href="/profile/{{submission.user_name}}">{{submission.user_name}}</a></td> {% endcomment %}
+                                <td class="text-center"><a style="text-decoration:none;">{{submission.user_name}}</a></td>
                                 <td class="text-center"><a style="text-decoration:none;"  href="/problem/{{submission.problem_shortname}}">{{submission.problem_fullname}}</a></td>
                                 <td class="text-center">
                                     {%if submission.judge_date%}
