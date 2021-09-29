@@ -1,20 +1,84 @@
 {%extends 'admin-template/_layout/base.html' %}
 {%block website_content %}
-	<!-- Content Header (Page header) -->
-	<div class="content-header">
-		<div class="container-fluid">
-			<div class="row mb-2">
-				<div class="col-sm-6">
-					<ol class="breadcrumb float-sm-left">
-						<li class="breadcrumb-item"><a href="/admin/">Home</a></li>
-						<li class="breadcrumb-item active"><a href="/admin/contests/">Contest</a></li>
-                        <li class="breadcrumb-item active"><a href="/admin/contests/create">Create</a></li>
-					</ol>
-				</div>
+
+	{%include 'admin-template/_layout/error_handle.html' %} 
+	{%block error_handle%}{%endblock%}
+	<!--begin::Subheader-->
+	<div class="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
+		<div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+			<!--begin::Info-->
+			<div class="d-flex align-items-center flex-wrap mr-2" style="font-family: 'Roboto';">
+				<!--begin::Page Title-->
+				<h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Trang chủ</h5>
+				<!--end::Page Title-->
+				<!--begin::Actions-->
+				<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
+				<!--end::Actions-->
+				<!--begin::Page Title-->
+				<h6 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Tạo kỳ thi mới</h6>
+				<!--end::Page Title-->
+				<!--begin::Actions-->
+				<div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
+				<!--end::Actions-->
 			</div>
-			{%include 'admin-template/_layout/error_handle.html' %} 
-			{%block error_handle %}{%endblock%}
+			<!--end::Info-->
 		</div>
 	</div>
+	<!--end::Subheader-->
+
 	<!-- /.content-header -->
+	<div class="content">
+		<div class="container-fluid">
+			<div class="row justify-content-md-center">
+				<div class="col-xl-6">
+					<div class=""></div>
+					<div class="mt-40">
+						<form action="" method="post">
+							{% csrf_token %}
+							<div class="row">
+								<div class="input-group">
+									<div class="input-group-prepend">
+										<div class="input-group-text">Tên kỳ thi</div>
+									</div>
+									<input type="text" class="form-control" id="inlineFormInputGroupUsername" name="title" placeholder="Tên kỳ thi">
+								</div>
+							</div>
+							<div class="row mt-3">
+								<div class="input-group">
+									<div class="input-group-prepend">
+										<div class="input-group-text">Thông tin</div>
+									</div>
+									<input type="text" class="form-control" id="inlineFormInputGroupUsername" name="desc" placeholder="Description">
+								</div>
+							</div>
+							<div class="row mt-3">
+								<div class="col col-6">
+									<div class="row">
+										<div class="input-group">
+											<div class="input-group-prepend">
+												<div class="input-group-text">Ngày bắt đầu</div>
+											</div>
+											<input type="datetime-local" class="form-control" name="startTime">
+										</div>
+									</div>
+								</div>
+								<div class="col col-6 float-right">
+									<div class="row">
+										<div class="input-group">
+											<div class="input-group-prepend">
+												<div class="input-group-text">Ngày kết thúc</div>
+											</div>
+											<input type="datetime-local" class="form-control" name="endTime">
+										</div>
+									</div>
+								</div>
+							</div>
+							<button type="submit" class="btn btn-primary mt-3 float-right" type="submit">Submit</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 {%endblock%}

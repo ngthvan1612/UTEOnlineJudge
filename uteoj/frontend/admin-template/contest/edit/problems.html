@@ -1,0 +1,129 @@
+{%extends 'admin-template/contest/edit/_layout/base.html' %}
+{%load static%}
+{%block contestcontent %}
+	
+	<link href="{% static 'plugins/bootstrap4-toggle/bootstrap4-toggle.min.css' %}" rel="stylesheet">
+	<div class="row justify-content-md-center">
+		<div class="col col-xl-8">
+			<table class="table table-hover table-borderred">
+				<thead>
+					<th>ID</th>
+					<th>Tên bài</th>
+					<th style="width: 70px;">&nbsp;</th>
+					<th style="width: 70px;">&nbsp;</th>
+				</thead>
+				<tbody>
+					{%for problem in list_problems%}
+						<tr>
+							<td>{{problem.shortname}}</td>
+							<td>{{problem.fullname}}</td>
+							<td><a class = "btn btn-warning" href="/admin/problems/edit/{{problem.shortname}}">Sửa</a></td>
+							<td><button class = "btn btn-danger" onClick="deleteProblem('{{problem.shortname}}')">Xóa</button></td>
+						</tr>
+					{%endfor%}
+				</tbody>
+			</table>
+			<hr>
+			<div>
+				<form action="" method="post">
+					<div class="frmSearch">
+						{% csrf_token %}
+						<div class="input-group mt-3">
+							<div class="input-group-prepend">
+								<div class="input-group-text" style="width: 200px">Tên bài:</div>
+							</div>
+							<input type="text" class="form-control" id="search-box"  autocomplete="off" placeholder="Tên bài">
+						</div>
+
+						<div class="col-11"><div class="list-group" role="tablist" id="suggesstion-box"></div></div><br>
+
+						<div class="row">
+							<div class="col col-6">
+								<label for="allow_register" style="font-size: 20px;">Sao chép toàn bộ dữ liệu qua một bài khác</label>
+							</div>
+							<div class="col col-6">
+								<!--<input type="checkbox" id ="allow_register" {%if allow_register%}checked{%endif%}} name="allow_register" data-toggle="toggle" data-on="Allow" data-off="Not Allow" data-onstyle="success" data-offstyle="danger">-->
+								<!---Không biết ghi từ nào cho đúng nữa kiểu gán bài đó vô test luôn-->
+								<input type="checkbox" name="copy" data-toggle="toggle" data-on="Sao chép" data-off="Mặc định" data-onstyle="success" data-offstyle="info" style="width:400px">
+							</div>
+						</div>
+
+						<input name="shortname" id="shortname" type="hidden">
+
+						<!-- Khi nào cái checkbox ở trên nó checked thì cái input này mới hiện ra cho người dùng nhập vô-->
+						<div class="input-group mt-3 mb-6">
+							<div class="input-group-prepend">
+								<div class="input-group-text" style="width: 200px">ID mới của bài:</div>
+							</div>
+							<input type="text" class="form-control" name="new_shortname" placeholder="Tên bài mới">
+						</div>
+						<div>
+							<input class = "btn btn-primary float-right" type="submit" >
+						</div>
+					</div>
+				</form>
+				<form action="" method="get">
+					<a class="btn btn-warning" href="/admin/contests/edit/{{contest.id}}/problems/create">Tạo bài tập mới</a>
+				</form>
+			</div>
+		</div>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="{% static 'plugins/bootstrap4-toggle/bootstrap4-toggle.min.js'%}"></script>
+	<script>
+	$(document).ready(function(){
+		$("#search-box").keyup(function(){
+			if ($('#search-box').val() == '') {
+				$("#shortname").val('');
+				$("#suggesstion-box").html('');
+				return;
+			}
+
+			$.ajax({
+				type: "GET",
+				url: "/admin/contests/edit/{{contest.id}}/api/problems",
+				data:'name='+$(this).val(),
+				beforeSend: function(){
+					$("#search-box").css("background","#FFF no-repeat 165px");
+					$("#shortname").val('');
+				},
+				success: function(data){
+					$("#suggesstion-box").show();
+
+					let result = '';
+					let first = true;
+					for (shortname in data) {
+						if (first) {
+							$("#shortname").val(shortname);
+							first = false;
+						}
+						fullname = data[shortname];
+						result += '<li class="list-group-item list-group-item-action" onClick="selectProblem(\'' + shortname + '\')">' + shortname + ' - ' + fullname + '</li>';
+					}
+					
+					$("#suggesstion-box").html(result);
+					$("#search-box").css("background","#FFF");
+				}
+			});
+		});
+	});
+
+	function deleteProblem(shortname) {
+		$.ajax('/admin/contests/edit/{{contest.id}}/problems/' + shortname + '/remove', {
+			type: 'post',
+			success: function (data,status,xhr) {
+				location.reload();
+			},
+			error: function (jqXhr, textStatus, errorMessage) {
+				//alert('that bai');
+			}
+		});
+	}
+
+	function selectProblem(val) {
+		$("#search-box").val(val);
+		$("#suggesstion-box").hide();
+		$("#shortname").val(val);
+	}
+	</script>
+{%endblock%}
