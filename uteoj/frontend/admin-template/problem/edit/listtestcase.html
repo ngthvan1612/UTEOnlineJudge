@@ -87,6 +87,48 @@
                             </div>
                         </div>
                     </form>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="row justify-content-center" style="margin-top: 20px;">
+                                <div class="col-8">                    
+                                    <div class="container">
+                                        <form method="post" action="testcases/importsetting" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div>
+                                                <div class="custom-file" style="margin-top: 10px;">
+                                                    <div class="col-12">>
+                                                        <input type="file" name="importSettingFile" class="custom-file-input" accept=".json">
+                                                        <label class="custom-file-label text-truncate">Import cài đặt testcases</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12" style="margin-top: 10px">
+                                                <div class="text-center">
+                                                    <input class="btn btn-primary" type="submit" value="Upload">
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row justify-content-center" style="margin-top: 20px;">
+                                <div class="col-8">                    
+                                    <div class="container">
+                                        <form method="get" action="testcases/exportsetting">
+                                            <div class="col-12" style="margin-top: 10px">
+                                                <div class="text-center">
+                                                    <input class="btn btn-primary" type="submit" value="Export cài đặt testcases">
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <hr>
@@ -99,16 +141,22 @@
                                     {% csrf_token %}
                                     <div>
                                         <label class="form-label">Tải testcase lên</label>
-                                        <div class="input-group">
+                                        <div class="input-group text-center">
                                             <input name="test_name" type="text" class="form-control" placeholder="Tên testcase">
                                         </div>
-                                        <div class="custom-file" style="margin-top: 10px;">
-                                            <input type="file" name="test_input" class="custom-file-input" id="customFile">
-                                            <label class="custom-file-label text-truncate" for="customFile">File input</label>
-                                        </div>
-                                        <div class="custom-file" style="margin-top: 10px;">
-                                            <input type="file" name="test_output" class="custom-file-input" id="customFile">
-                                            <label class="custom-file-label text-truncate" for="customFile">File output</label>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="custom-file" style="margin-top: 10px;">
+                                                    <input type="file" name="test_input" class="custom-file-input">
+                                                    <label class="custom-file-label text-truncate" for="customFile">Đầu vào</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="custom-file" style="margin-top: 10px;">
+                                                    <input type="file" name="test_output" class="custom-file-input">
+                                                    <label class="custom-file-label text-truncate" for="customFile">Đầu ra</label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-12" style="margin-top: 10px">

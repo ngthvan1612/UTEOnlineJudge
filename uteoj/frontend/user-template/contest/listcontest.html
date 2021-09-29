@@ -1,0 +1,81 @@
+{%extends 'user-template/_layout/base.html' %}
+{%load static%}
+{%block website_content %}
+    <link href="{% static 'plugins/bootstrap4-toggle/bootstrap4-toggle.min.css' %}" rel="stylesheet">
+    <!-- Content Header (Page header) -->
+	<div class="row">
+    </div>
+	<!-- /.content-header -->
+    <div class="content" style="margin-top: 2rem;">
+		<div class="container">
+            <div class="justify-content-md-center">
+                <div class="">
+                    {%include 'admin-template/_layout/error_handle.html' %} 
+				    {%block error_handle %}{%endblock%}
+                    <div id="root-list-contests">
+                        {%for contest in list_contests%}
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    {{contest.title}}
+                                    {%if contest.status == 'notstarted'%}
+                                        (Chưa bắt đầu)
+                                    {%elif contest.status == 'running'%}
+                                        (Cuộc thi đang diễn ra)
+                                    {%else%}
+                                        (Cuộc thi đã kết thúc)
+                                    {%endif%}
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">{{contest.description}}</p>
+                                </div>
+                                <div class="card-footer text-muted">
+                                    <div class="row">
+                                        <div class="col-12 text-center">
+                                            <a class="btn btn-primary" href="/contests/{{contest.id}}"> Truy cập </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {%endfor%}
+                    </div>
+                </div>
+            </div>
+            <div class="row  justify-content-md-center">
+                <div>
+                    <input type="hidden" id="page_current" value="{{page_obj.number}}">
+                    <input type="hidden" id="page_total" value="{{page_obj.paginator.num_pages}}">
+                    <nav aria-label="Page navigation example" style="margin-top: 2rem;">
+                        <ul class="pagination justify-content-center" id="Pagination">
+                            <li class="page-item" id="first" onclick="goFirst()">
+                                <a class="page-link" href = "javascript:;" tabindex="-1" style="height: 38px;">
+                                    <i class="fas fa-angle-double-left" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" id="previous" onclick="previous()">
+                                <a class="page-link" href="javascript:;" style="height: 38px;">
+                                    <i class="fas fa-angle-left" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" id="next" onclick="next()">
+                                <a class="page-link" href = "javascript:;" tabindex="-1" style="height: 38px;">
+                                    <i class="fas fa-angle-right" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" id="end" onclick="goEnd()">
+                                <a class="page-link" href="javascript:;" style="height: 38px;">
+                                    <i class="fas fa-angle-double-right" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+    <script src="{% static 'plugins/bootstrap4-toggle/bootstrap4-toggle.min.js'%}"></script>
+    <script src="{% static 'user-static/js/submissions.js' %}"></script>
+{% endblock %}
