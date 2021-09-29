@@ -24,6 +24,7 @@
 						<form class="form sign-in" action="/login/" method="POST">
                             {% csrf_token %}
 
+							<input type="hidden" name="next" value="{{request.GET.next}}">
 							<div class="input-group">
 								<i class="bx bxs-user"></i>
 								<input type="text" placeholder="Username" name="username"/>

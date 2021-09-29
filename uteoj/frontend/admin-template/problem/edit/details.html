@@ -46,6 +46,10 @@
 										<div class="col-12 mb-3">
 											<div class="row">
 												<div class="input-group mb-3 text-center" style="margin-top: 15px">
+													<span class="input-group-text" style="width: 15%;">Công khai??</span>
+													<input type="checkbox"  class="form-control" placeholder="Short name" {%if problem.is_public%}checked{%endif%} name="is_public" />
+												</div>
+												<div class="input-group mb-3 text-center" style="margin-top: 15px">
 													<span class="input-group-text" style="width: 15%;">ID</span>
 													<input type="text"  class="form-control" placeholder="Short name" value="{{problem.shortname}}" name="shortname" />
 												</div>
