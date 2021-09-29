@@ -49,8 +49,8 @@
 								<tr>
 									<td id="{{x.fullname}}" style="text-align: center"><a href="/admin/users/edit/{{x.username}}/">{{x.id}}</a></td>
 									<td style="text-align: center"><a href="/admin/users/edit/{{x.username}}/" style="float: left; font-size: 18px;">{{x.username}}</a></td>
-									<td style="text-align: center">{{x.first_name}}</td>
 									<td style="text-align: center">{{x.last_name}}</td>
+									<td style="text-align: center">{{x.first_name}}</td>
 									<td style="text-align: center;color: darkgrey">{{x.date_joined}}</td>
 									<td style="text-align: center">
 										{% if x.is_active %} <p style="color: blueviolet">{{x.is_active}}</p>
@@ -85,15 +85,15 @@
 					<div class="card">
 						<div class="card-header text-center"><b>Lọc thí sinh</b></div>
 						<div class="card-body">
-							<form>
+							<form method="get" action="">
 								<div class="filterByName">
-									<label for="search">Tên đăng nhập</label>
-									<span style="float: right; width: 50%">
-										<input type="text" id="search" placeholder="User Name" style="width: 100%;">
+									{% comment %} <label>Tên đăng nhập</label> {% endcomment %}
+									<span style="float: center; width: 100%">
+										<input autofocus name="search" class="form-control" type="text" id="search" placeholder="ID / tên người dùng" style="width: 100%;">
 									</span>
 								</div>
 								
-								<div id = "listNumber">
+								{% comment %} <div id = "listNumber">
 									<label class="mt-3">Số lượng:</label>
 									<select class="custom-select float-right" style="width: 50%; font-size: 14px; height: 40px">
 										<option selected value="0"> 10 người</option>
@@ -102,8 +102,12 @@
 										<option value="3">25 người</option>
 										<option value="4">30 người</option>
 									</select>
+								</div> {% endcomment %}
+								<div class="row">
+									<div class="col-12 text-center">
+										<input class="btn btn-primary" style="margin-top: 10px" type="submit" value="Tìm kiếm">
+									</div>
 								</div>
-								<a class="btn btn-primary" style="margin-top: 10px" onclick="goNewPage(1)">Tìm kiếm</a>
 							</form>
 						</div>
 					</div>
@@ -114,5 +118,8 @@
 	</div>
 	
 	<script src="{% static 'user/js/listContestants.js' %}"></script>
+	<script>
+
+	</script>
 	<!-- /.content -->
 {%endblock%}

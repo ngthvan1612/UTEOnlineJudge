@@ -20,33 +20,33 @@
                     <div class="alert alert-danger fade show">
                         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
                         {{message}}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        {% comment %} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
-                        </button>
+                        </button> {% endcomment %}
                     </div>
                 {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
                     <div class="alert alert-warning fade show" role="alert">
                         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
                         {{message}}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        {% comment %} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
-                        </button>
+                        </button> {% endcomment %}
                     </div>
                 {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
                     <div class="alert alert-primary fade show" role="alert">
                         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
                         {{message}}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        {% comment %} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
-                        </button>
+                        </button> {% endcomment %}
                     </div>
                 {% else %}
                     <div class="alert alert-success" role="alert">
                         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
                         {{message}}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        {% comment %} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span style="color:black;">&times;</span>
-                        </button>
+                        </button> {% endcomment %}
                     </div>
                 {% endif %}
             </div>
