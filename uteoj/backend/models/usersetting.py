@@ -1,3 +1,4 @@
+from backend.models.contest import ContestModel
 from django.contrib.auth.decorators import user_passes_test
 from django.core.files.base import ContentFile
 from django.http.response import FileResponse
@@ -105,6 +106,7 @@ class UserProblemStatisticsModel(models.Model):
 class ImportUserFileModel(models.Model):
     name = models.CharField(max_length=512, unique=True)
     token = models.CharField(max_length=4096)
+    contest = models.ForeignKey(ContestModel, on_delete=models.CASCADE, null=True)
 
     @staticmethod
     def EncryptId(id:int) -> int:

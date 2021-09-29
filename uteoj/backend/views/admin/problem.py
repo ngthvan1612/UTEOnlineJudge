@@ -1,12 +1,13 @@
 import zipfile
 import os.path
 from io import BytesIO
+from django.views.decorators.http import require_http_methods
 from natsort import natsorted, ns
 
 from django.views.decorators.cache import never_cache
 from django.conf import settings
 from django.contrib import messages
-from django.http.response import Http404, HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http.response import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -118,6 +119,8 @@ def AdminEditProblemTestcasesDeleteView(request, problem_short_name, testcase_pk
         file_manager = ProblemStorage(problem)
         file_manager.deleteTestCaseFile(test.name, problem.input_filename)
         file_manager.deleteTestCaseFile(test.name, problem.output_filename)
+        problem.total_points -= test.points
+        problem.save()
         test.delete()
         return HttpResponse(status=200)
     else:
@@ -134,7 +137,42 @@ def AdminViewTestcase(request, id, test_name, io):
     else:
         return HttpResponse(status=405)
 
-@admin_member_required
+
+@require_http_methods(['POST'])
+def AdminEditProblemTestcaseUploadTestcase(request, shortname):
+    problem = get_object_or_404(ProblemModel, shortname=shortname)
+    testcase_name = request.POST.get('test_name')
+    input_testcase = request.FILES.get('test_input')
+    output_testcase = request.FILES.get('test_output')
+    if testcase_name is None or len(testcase_name) == 0:
+        messages.add_message(request, messages.ERROR, f"Thiếu tên testcase")
+    elif problem.problemtestcasemodel_set.filter(name=testcase_name).exists():
+        messages.add_message(request, messages.ERROR, f"Testcase {testcase_name} đã có, vui lòng chọn tên khác")
+    elif not re.match("^[A-Za-z0-9_]*$", testcase_name):
+        messages.add_message(request, messages.ERROR, f"Tên testcase chỉ bao gồm các kí tự, số hoặc _")
+    elif input_testcase is None:
+        messages.add_message(request, messages.ERROR, f"Thiếu file input")
+    elif output_testcase is None:
+        messages.add_message(request, messages.ERROR, f"Thiếu file output")
+    else:
+        file_manager = ProblemStorage(problem)
+        file_manager.saveTestcaseFile(testcase_name, problem.input_filename, input_testcase)
+        file_manager.saveTestcaseFile(testcase_name, problem.output_filename, output_testcase)
+
+        problem.problemtestcasemodel_set.create(
+            time_limit=problem.time_limit,
+            memory_limit=problem.memory_limit,
+            points=problem.points_per_test,
+            name=testcase_name
+        ).save()
+
+        problem.total_points += problem.points_per_test
+        problem.save()
+
+        messages.add_message(request, messages.SUCCESS, f"Upload thành công")
+    return redirect(f"/admin/problems/edit/{problem.shortname}/testcases")
+
+@require_http_methods(['POST'])
 def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
     problem = get_object_or_404(ProblemModel, shortname=problem_short_name)
     if request.method == 'POST':
@@ -215,9 +253,7 @@ def AdminEditProblemTestcasesUploadZipView(request, problem_short_name):
                         time_limit=problem.time_limit,
                         memory_limit=problem.memory_limit,
                         points=problem.points_per_test,
-                        name=test_name,
-                        input_file="", # fix
-                        output_file="") # fix
+                        name=test_name)
                     prepare_db.append(testdb)
 
                     # ghi file input + output

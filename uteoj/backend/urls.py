@@ -75,6 +75,7 @@ url_patterns_admin_sub = [
     path('problems/edit/<str:problem_short_name>/problemsetter', AdminEditProblemProblemSetterview),
     path('problems/edit/<str:problem_short_name>/testcases', AdminEditProblemTestcasesview),
     path('problems/edit/<str:problem_short_name>/testcases/uploadzip/', AdminEditProblemTestcasesUploadZipView),
+    path('problems/edit/<str:shortname>/testcases/uploadtestcase', AdminEditProblemTestcaseUploadTestcase),
     path('problems/edit/<str:problem_short_name>/testcases/delete/<int:testcase_pk>/', AdminEditProblemTestcasesDeleteView),
     path('problems/edit/<str:problem_short_name>/settings', AdminEditProblemSettingsview),
     path('problems/edit/<str:problem_short_name>/customchecker', AdminEditProblemCustomCheckerview),
@@ -91,6 +92,8 @@ url_patterns_admin_sub = [
     path('contests/edit/<int:id>/api/problems', AdminContestFilterProblem),
     path('contests/edit/<int:id>/problems/<str:shortname>/remove', AdminEditContestRemoveProblems),
     path('contests/edit/<int:id>/problems/create', AdminEditContestCreateProblem),
+    path('contests/edit/<int:id>/import', AdminEditContestImportUser),
+    path('contests/edit/<int:id>/export', AdminEditContestExportView),
 
     path('categories/', AdminCategoriesView),
 
