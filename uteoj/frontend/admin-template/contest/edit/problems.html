@@ -7,63 +7,79 @@
 		<div class="col col-xl-8">
 			<table class="table table-hover table-borderred">
 				<thead>
-					<th>ID</th>
-					<th>Tên bài</th>
-					<th style="width: 70px;">&nbsp;</th>
-					<th style="width: 70px;">&nbsp;</th>
+					<tr class="bg-light">
+						<th class="text-center">ID</th>
+						<th class="text-center">Tên bài</th>
+						<th class="text-center">Chế độ</th>
+						<th class="text-center end-text">Sửa</th>
+						<th class="text-center end-text">Xóa</th>
+					</tr>
 				</thead>
 				<tbody>
 					{%for problem in list_problems%}
 						<tr>
-							<td>{{problem.shortname}}</td>
-							<td>{{problem.fullname}}</td>
-							<td><a class = "btn btn-warning" href="/admin/problems/edit/{{problem.shortname}}">Sửa</a></td>
-							<td><button class = "btn btn-danger" onClick="deleteProblem('{{problem.shortname}}')">Xóa</button></td>
+							<td class="text-center">{{problem.shortname}}</td>
+							<td class="text-center">{{problem.fullname}}</td>
+							<td class="text-center">{%if problem.is_public%}Công khai{%else%}Riêng tư{%endif%}</td>
+							<td class="text-center"><a class = "btn btn-warning" href="/admin/problems/edit/{{problem.shortname}}">Sửa</a></td>
+							<td class="text-center"><button class = "btn btn-danger" onClick="deleteProblem('{{problem.shortname}}')">Xóa</button></td>
 						</tr>
 					{%endfor%}
 				</tbody>
 			</table>
 			<hr>
 			<div>
-				<form action="" method="post">
-					<div class="frmSearch">
-						{% csrf_token %}
-						<div class="input-group mt-3">
-							<div class="input-group-prepend">
-								<div class="input-group-text" style="width: 200px">Tên bài:</div>
+				<div class="row">
+					<form class="col-12" action="" method="post">
+						<div class="frmSearch">
+							{% csrf_token %}
+							<div class="input-group mt-3">
+								<div class="input-group-prepend">
+									<div class="input-group-text" style="width: 200px">Tên bài:</div>
+								</div>
+								<input type="text" class="form-control" id="search-box"  autocomplete="off" placeholder="Tên bài">
 							</div>
-							<input type="text" class="form-control" id="search-box"  autocomplete="off" placeholder="Tên bài">
-						</div>
 
-						<div class="col-11"><div class="list-group" role="tablist" id="suggesstion-box"></div></div><br>
+							<div class="col-11"><div class="list-group" role="tablist" id="suggesstion-box"></div></div><br>
 
-						<div class="row">
-							<div class="col col-6">
-								<label for="allow_register" style="font-size: 20px;">Sao chép toàn bộ dữ liệu qua một bài khác</label>
+							<div class="input-group mt-3 mb-6">
+								<div class="input-group-prepend">
+									<div class="input-group-text" style="width: 200px">Phương thức</div>
+								</div>
+								<input type="checkbox" onchange="onChange()" id="pmethod" name="copy" data-toggle="toggle" data-on="Sao chép ra một bài khác" data-off="Gán bài tập này vào kỳ thi" data-onstyle="success" data-offstyle="info" style="width:400px">
 							</div>
-							<div class="col col-6">
-								<!--<input type="checkbox" id ="allow_register" {%if allow_register%}checked{%endif%}} name="allow_register" data-toggle="toggle" data-on="Allow" data-off="Not Allow" data-onstyle="success" data-offstyle="danger">-->
-								<!---Không biết ghi từ nào cho đúng nữa kiểu gán bài đó vô test luôn-->
-								<input type="checkbox" name="copy" data-toggle="toggle" data-on="Sao chép" data-off="Mặc định" data-onstyle="success" data-offstyle="info" style="width:400px">
-							</div>
-						</div>
 
-						<input name="shortname" id="shortname" type="hidden">
+							<input name="shortname" id="shortname" type="hidden">
 
-						<!-- Khi nào cái checkbox ở trên nó checked thì cái input này mới hiện ra cho người dùng nhập vô-->
-						<div class="input-group mt-3 mb-6">
-							<div class="input-group-prepend">
-								<div class="input-group-text" style="width: 200px">ID mới của bài:</div>
+							<!-- Khi nào cái checkbox ở trên nó checked thì cái input này mới hiện ra cho người dùng nhập vô-->
+							<div class="input-group mt-3 mb-6">
+								<div class="input-group-prepend">
+									<div class="input-group-text" style="width: 200px">ID mới của bài:</div>
+								</div>
+								<input type="text" disabled class="form-control" id="new_shortname" name="new_shortname">
 							</div>
-							<input type="text" class="form-control" name="new_shortname" placeholder="Tên bài mới">
+							<div class="row">
+								<div class="col-12">
+									<div style="text-align:center;">
+										<input class = "btn btn-primary" type="submit" value="Thực thi">
+									</div>
+								</div>
+							</div>
+
+							<script>
+								function onChange() {
+									document.getElementById('new_shortname').disabled = !document.getElementById('pmethod').checked;
+								}
+								onChange();
+							</script>
 						</div>
-						<div>
-							<input class = "btn btn-primary float-right" type="submit" >
-						</div>
-					</div>
-				</form>
+					</form>
+				</div>
+				<hr>
 				<form action="" method="get">
-					<a class="btn btn-warning" href="/admin/contests/edit/{{contest.id}}/problems/create">Tạo bài tập mới</a>
+					<div class="text-center">
+						<a class="btn btn-warning text-center" href="/admin/contests/edit/{{contest.id}}/problems/create">Tạo bài tập mới</a>
+					</div>
 				</form>
 			</div>
 		</div>
