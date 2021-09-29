@@ -39,9 +39,9 @@
                 <div class="col-12" id="content">
                     <h2 style="margin-top:10px; text-align:center;">{{problem.fullname}}</h2>
                     <form method="post" url="">
-                        <table class="table table-hover table-bordered w-auto" style="margin-top: 20px;">
+                        <table class="table table-hover table-bordered" style="margin-top: 20px;">
                             <thead>
-                                <tr class="text-center">
+                                <tr class="text-center bg-light">
                                     <th scope="col">ID</th>
                                     <th scope="col">Đầu vào</th>
                                     <th scope="col">Đầu ra</th>
@@ -54,9 +54,9 @@
                             <tbody>
                                 {%for x in list_testcases %}
                                     <tr style="align-items: center;">
-                                        <td scope="row">{{x.name}}</td>
-                                        <td><a href="/admin/problems/{{problem.shortname}}/testcases/{{x.name}}/input" target="_blank">Xem</a></td>
-                                        <td><a href="/admin/problems/{{problem.shortname}}/testcases/{{x.name}}/output" target="_blank">Xem</a></td>
+                                        <td class="text-center" scope="row">{{x.name}}</td>
+                                        <td class="text-center"><a href="/admin/problems/{{problem.shortname}}/testcases/{{x.name}}/input" target="_blank">Xem</a></td>
+                                        <td class="text-center"><a href="/admin/problems/{{problem.shortname}}/testcases/{{x.name}}/output" target="_blank">Xem</a></td>
                                         <td>
                                             <div class="input-group">
                                                 <input name="list_time_limit[]" type="number" class="form-control text-center" value="{{x.time_limit}}" min="1" required onfocusout="validity.valid||(value='{{problem.time_limit}}');">
@@ -89,29 +89,64 @@
                     </form>
                 </div>
             </div>
-            <div class="row justify-content-center" style="margin-top: 20px;">
-                <div class="col-8">                    
-                    <div class="container">
-                        <form method="post" action="testcases/uploadzip/" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div>
-                                <label class="form-label">Tải lên file zip</label>
-                                <select class="custom-select" name="filetype">
-                                    {% for x in list_formats%}
-                                        <option value="{{x.value}}">{{x.display}}</option>
-                                    {%endfor%}
-                                </select>
-                                <div class="custom-file" style="margin-top: 10px;">
-                                    <input type="file" name="zip_testcases" class="custom-file-input" id="customFile" accept=".zip">
-                                    <label class="custom-file-label text-truncate" for="customFile">Choose file</label>
-                                </div>
+            <hr>
+            <div class="row">
+                <div class="col-6">
+                    <div class="row justify-content-center" style="margin-top: 20px;">
+                        <div class="col-8">                    
+                            <div class="container">
+                                <form method="post" action="testcases/uploadtestcase" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div>
+                                        <label class="form-label">Tải testcase lên</label>
+                                        <div class="input-group">
+                                            <input name="test_name" type="text" class="form-control" placeholder="Tên testcase">
+                                        </div>
+                                        <div class="custom-file" style="margin-top: 10px;">
+                                            <input type="file" name="test_input" class="custom-file-input" id="customFile">
+                                            <label class="custom-file-label text-truncate" for="customFile">File input</label>
+                                        </div>
+                                        <div class="custom-file" style="margin-top: 10px;">
+                                            <input type="file" name="test_output" class="custom-file-input" id="customFile">
+                                            <label class="custom-file-label text-truncate" for="customFile">File output</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12" style="margin-top: 10px">
+                                        <div class="text-center">
+                                            <input class="btn btn-primary" type="submit" value="Upload">
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                            <div class="col-12" style="margin-top: 10px">
-                                <div class="text-center">
-                                    <input class="btn btn-primary" type="submit" value="Upload">
-                                </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row justify-content-center" style="margin-top: 20px;">
+                        <div class="col-8">                    
+                            <div class="container">
+                                <form method="post" action="testcases/uploadzip/" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div>
+                                        <label class="form-label">Tải lên file zip</label>
+                                        <select class="custom-select" name="filetype">
+                                            {% for x in list_formats%}
+                                                <option value="{{x.value}}">{{x.display}}</option>
+                                            {%endfor%}
+                                        </select>
+                                        <div class="custom-file" style="margin-top: 10px;">
+                                            <input type="file" name="zip_testcases" class="custom-file-input" id="customFile" accept=".zip">
+                                            <label class="custom-file-label text-truncate" for="customFile">Choose file</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12" style="margin-top: 10px">
+                                        <div class="text-center">
+                                            <input class="btn btn-primary" type="submit" value="Upload">
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -155,6 +190,8 @@
         }
 
         function deleteTestCase(pk) {
+            if (!confirm('Bạn có chắc muốn xóa'))
+                return;
             addr = '/admin/problems/edit/{{problem.shortname}}/testcases/delete/' + '' + pk + '/';
             console.log(addr);
             $.ajax(addr, {
