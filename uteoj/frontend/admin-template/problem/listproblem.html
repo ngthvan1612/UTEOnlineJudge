@@ -114,11 +114,11 @@
 								<div class="filterByName">
 									<label for="search" class = "mt-2">Tên bài</label>
 									<span style="float: right; width: 60%">
-										<input type="text" id="search" placeholder="Search Problem" style="width: 100%;"">
+										<input type="text" id="search" placeholder="Tên bài" style="width: 100%;">
 									</span>
 								</div>
 
-								<div class="filterByDifficult mt-2">
+								<div class="filterByDifficult mt-2" hidden>
 									<label class = "mt-1"> Độ khó:</label>
 									<span style="float: right; width: 60%" >
 										<input type="text" id="maxDifficult" placeholder="Max" style="width: 50%; float: right">
@@ -148,7 +148,7 @@
 											<option value="{{x}}" title="{{x}}">{{x}}</option>
 										{% endfor %}
 									</select>
-									<a id="addCatetory" href="#" style="float: right;" onclick="showSelect()">Thêm danh mục</a>
+									<a id="addCatetory" href="#" style="float: right;" onclick="showSelect()">Dạng bài</a>
 								</div>
 								<a class="btn btn-primary" style="margin-top: 10px" onclick="goNewPage(1,'')">Tìm kiếm</a>
 							</form>
