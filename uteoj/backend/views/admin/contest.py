@@ -6,12 +6,12 @@ from backend.filemanager.problemstorage import ProblemStorage
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
 from django.views.decorators.csrf import csrf_exempt
-from numpy import short
+from numpy import less, short
 from backend.models.problem import ProblemModel, ProblemTestCaseModel
 from django.contrib import messages
 from django.db.models.fields import DateTimeField
 from django.http.request import HttpRequest
-from django.http.response import Http404, HttpResponse, HttpResponseRedirect
+from django.http.response import FileResponse, Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators import http
@@ -283,32 +283,16 @@ def AdminEditContestImportUser(request, id):
             users = User.objects.filter(username=mssv)
             if users.exists():
                 if options == 1 or options == 0:
-                    users[0].set_password(password)
-                    users[0].save()
-                list_users.append(users[0])
+                    for user in users:
+                        user.set_password(password)
+                        user.save()
+                        list_users.append(user)
             else:
                 user = User.objects.create_user(username=username, first_name=ten, last_name=ho, password=password)
                 user.save()
                 list_users.append(user)
 
         contest.contestants.add(*list_users)
-
-        # fileModel = ImportUserFileModel.objects.create(
-        #     contest=contest,
-        #     name=f"UTEOJ_IMPORT_USERS_{timezone.localtime(timezone.now()).strftime('%m-%d-%Y__%H-%M-%S')}.xls",
-        #     token=uuid.uuid4().hex + uuid.uuid4().hex)
-        # fileModel.save()
-
-        # messages.add_message(request, messages.SUCCESS, f"Đang nhập")
-        # lsOutput = np.array(lsSinhVien)
-        # stream = BytesIO()
-
-        # pdOutput = pd.DataFrame(lsOutput, columns=('Mã số SV', 'Họ và tên lót', 'Tên', 'Tên đăng nhập', 'Mật khẩu'))
-        # pdOutput.index += 1
-        # pdOutput.to_excel(stream, engine='xlwt')
-
-        # file_manager = ImportUserStorage()
-        # file_manager.saveImportUser(fileModel.name, stream)
 
         messages.add_message(request, messages.SUCCESS, f"Nhập xong {len(lsSinhVien)} thí sinh")
         return HttpResponseRedirect(request.path_info)
@@ -340,8 +324,24 @@ def AdminEditContestExportView(request, id):
 
 @require_http_methods(['GET'])
 def AdminEditContestExportContestantView(request, id):
+    contest = get_object_or_404(ContestModel, pk=id)
 
-    return HttpResponse('OK - LIST CONTESTANTS')
+    lsSinhVien = []
+    for sv in contest.contestants.all():
+        lsSinhVien.append((sv.username, sv.last_name, sv.first_name, sv.username, sv.username + '_' + Remove_accents(sv.first_name).lower()))
+
+    lsOutput = np.array(lsSinhVien)
+    stream = BytesIO()
+
+    pdOutput = pd.DataFrame(lsOutput, columns=('Mã số SV', 'Họ và tên lót', 'Tên', 'Tên đăng nhập', 'Mật khẩu'))
+    pdOutput.index += 1
+    pdOutput.to_excel(stream, engine='xlwt')
+    stream.seek(0)
+
+    fileResponse = FileResponse(stream)    
+    fileResponse['Content-Disposition'] = f"attachment; filename=UTEOJ_DANH_SACH_THI_SINH_{timezone.localtime(timezone.now()).strftime('%d-%m-%Y_%H-%M-%S')}.xls"
+
+    return fileResponse
 
 @require_http_methods(['GET'])
 def AdminEditContestExportResultView(request, id):
