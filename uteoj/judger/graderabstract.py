@@ -292,23 +292,23 @@ class GraderAbstract(ABC):
                     scorer.onRunTimeError()
                 if result == SubmissionResultType.SYS_ERROR: # SYSTEM ERROR ---------------------------------------------------------
                     raise Exception('SYSTEM ERROR')
-        
-        scorer.onCompleted()
 
         submission.status = SubmissionStatusType.Completed
         submission.result = scorer.getSubmissionResult()
         submission.points = scorer.getTotalScore()
 
         if submission.result == SubmissionResultType.TLE:
-            submission.executed_time = submission_result.executed_time # lấy test cuối
+            submission.executed_time = submission_result.executed_time
         else:
             submission.executed_time = sumExecuteTime // numberOfAC if numberOfAC else 0
         
         if submission.result == SubmissionResultType.MLE:
-            submission.memory_usage = submission_result.memory_usage # lấy test cuối
+            submission.memory_usage = submission_result.memory_usage
         else:
             submission.memory_usage = sumMemoryUsage // numberOfAC if numberOfAC else 0
         
         submission.save()
+
+        scorer.onCompleted()
         return (status, result, 0, 0, '')
 

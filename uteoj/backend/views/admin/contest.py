@@ -1,15 +1,13 @@
 from io import BytesIO
 from random import randint
 import re
-
-from django.db.models.aggregates import Max, Sum
 from backend.views.admin.tools import Remove_accents
 from backend.filemanager.problemstorage import ProblemStorage
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
 from django.views.decorators.csrf import csrf_exempt
 from numpy import less, short
-from backend.models.problem import ProblemModel, ProblemTestCaseModel, ProblemType
+from backend.models.problem import ProblemModel, ProblemTestCaseModel
 from django.contrib import messages
 from django.db.models.fields import DateTimeField
 from django.http.request import HttpRequest
@@ -20,7 +18,6 @@ from django.views.decorators import http
 from backend.views.auth.login import LoginView
 from backend.views.admin.require import admin_member_required
 from backend.models.contest import ContestModel
-from backend.models.submission import SubmissionModel
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from django.http import JsonResponse
@@ -28,7 +25,6 @@ from backend.filemanager.importuser import ImportUserStorage
 from backend.models.usersetting import ImportUserFileModel
 from django.db.models.functions import Length
 from django.utils import timezone
-from django.db.models import F
 import uuid
 
 import pandas as pd
@@ -326,14 +322,6 @@ def AdminEditContestExportView(request, id):
 
     return render(request, 'admin-template/contest/edit/export.html')
 
-def compareFuncUser(u):
-    hoten = (u[1] + ' ' + u[2]).split()[::-1]
-    result = []
-    for x in hoten:
-        result.append(Remove_accents(x).lower())
-        result.append(x.lower())
-    return result
-
 @require_http_methods(['GET'])
 def AdminEditContestExportContestantView(request, id):
     contest = get_object_or_404(ContestModel, pk=id)
@@ -341,7 +329,6 @@ def AdminEditContestExportContestantView(request, id):
     lsSinhVien = []
     for sv in contest.contestants.all():
         lsSinhVien.append((sv.username, sv.last_name, sv.first_name, sv.username, sv.username + '_' + Remove_accents(sv.first_name).lower()))
-    lsSinhVien.sort(key=compareFuncUser)
 
     lsOutput = np.array(lsSinhVien)
     stream = BytesIO()
@@ -358,50 +345,6 @@ def AdminEditContestExportContestantView(request, id):
 
 @require_http_methods(['GET'])
 def AdminEditContestExportResultView(request, id):
-    contest = get_object_or_404(ContestModel, pk=id)
 
-    headers = ['Mã số SV', 'Họ và tên lót', 'Tên']
-    lsMSSV = {x.username for x in contest.contestants.all()}
-    lsSinhVien = []
-    for sv in contest.contestants.all():
-        lsSinhVien.append((sv.username, sv.last_name, sv.first_name))
-    lsSinhVien.sort(key=compareFuncUser)
-
-    df = pd.DataFrame(lsSinhVien, columns=headers)
-    
-    for problem in contest.problemmodel_set.all():
-        list_submission = SubmissionModel.objects.filter(problem=problem).all()
-        result = {}
-        if problem.problem_type == ProblemType.OI:
-            # get max
-            for sub in list_submission:
-                if sub.user.username not in result:
-                    result[sub.user.username] = sub.points
-                else:
-                    result[sub.user.username] = max(result[sub.user.username], sub.points)
-            pass
-        else: #ACM
-            # chua lam
-            pass
-        
-        col = []
-        for sv in lsSinhVien:
-            if sv[0] in result:
-                col.append(result[sv[0]])
-            else:
-                col.append('Không có bài')
-            
-        df[problem.shortname] = col
-
-    stream = BytesIO()
-    
-    df.index += 1
-    df.to_excel(stream, engine='xlwt')
-    stream.seek(0)
-
-    fileResponse = FileResponse(stream)    
-    fileResponse['Content-Disposition'] = f"attachment; filename=TEST_{timezone.localtime(timezone.now()).strftime('%d-%m-%Y_%H-%M-%S')}.xls"
-
-    return fileResponse
-
+    return HttpResponse('OK - RESULT')
 

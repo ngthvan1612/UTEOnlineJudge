@@ -64,7 +64,6 @@ class ProblemStorage(FileSystemStorage):
         return os.path.join(self.__problem_dir, 'checker')
     
     def saveCheckerFile(self, content):
-        os.system('/bin/mkdir -p "{}"'.join(os.path.join(settings.PROBLEM_ROOT, self.__problem_dir, 'checker')))
         os.system('cp checker/testlib.h ' + os.path.join(settings.PROBLEM_ROOT, self.__problem_dir, 'checker', 'testlib.h'))
         self.save(self.__getCheckerFilename(), content)
 
@@ -79,5 +78,6 @@ class ProblemStorage(FileSystemStorage):
     def copyProblem(source:ProblemModel, dest:ProblemModel):
         dir_source = os.path.join(settings.PROBLEM_ROOT, source.hash_problem)
         dir_dest = os.path.join(settings.PROBLEM_ROOT, dest.hash_problem)
+        print(f"copy from {dir_source} to {dir_dest}")
         os.system(f"cp -Rf \"{dir_source}\" \"{dir_dest}\"")
 

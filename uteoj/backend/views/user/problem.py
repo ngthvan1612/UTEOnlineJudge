@@ -210,7 +210,7 @@ def UserSubmitSolution(request, shortname):
         SubmitSolution.apply_async(
             args=[submission.id],
             queue='uteoj_judger')
-        return redirect('/submissions?my=on')
+        return redirect('/submissions')
     elif request.method == 'GET':
         if not OJSettingModel.getAllowSubmission():
             messages.add_message(request, messages.ERROR, 'Hiện tại không thể nộp bài')
