@@ -264,7 +264,8 @@ def AdminEditContestImportUser(request, id):
         for xls in files:
             try:
                 df = pd.read_excel(BytesIO(xls.read()))
-            except:
+            except Exception as e:
+                print(e)
                 messages.add_message(request, messages.ERROR, f"Không đọc được file {xls.name}")
                 return HttpResponseRedirect(request.path_info)
             

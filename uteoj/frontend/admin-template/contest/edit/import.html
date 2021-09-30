@@ -10,7 +10,7 @@
                         {%csrf_token%}   
 						<div class="input-group mb-3">
 							<span class="input-group-text" style="width: 150px;">Cách upload</span>
-							<select class="custom-select" name="mdInput">
+							<select class="custom-select" name="mdImport">
 								{%for x in options%}
 									<option value="{{x.value}}">{{x.name}}</option>
 								{%endfor%}

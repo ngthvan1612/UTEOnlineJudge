@@ -38,11 +38,18 @@ timezone = 'Asia/Ho_Chi_Minh'
 
 # Media backend ----------------------------------------------------------------------
 
-MEDIA_ROOT = '../../uteoj_data/media'
-PROBLEM_ROOT = '../../uteoj_data/problems'
-USER_ROOT = '../../uteoj_data/user'
-IMPORT_USER_ROOT = '../../uteoj_data/importuser'
-MEDIA_URL = '/media/'
+if DEBUG:
+    MEDIA_ROOT = '../../uteoj_data/media'
+    PROBLEM_ROOT = '../../uteoj_data/problems'
+    USER_ROOT = '../../uteoj_data/user'
+    IMPORT_USER_ROOT = '../../uteoj_data/importuser'
+    MEDIA_URL = '/media/'
+else:
+    MEDIA_ROOT = '/uteoj_data/media'
+    PROBLEM_ROOT = '/uteoj_data/problems'
+    USER_ROOT = '/uteoj_data/user'
+    IMPORT_USER_ROOT = '/uteoj_data/importuser'
+    MEDIA_URL = '/media/'
 
 
 # Email backend ----------------------------------------------------------------------

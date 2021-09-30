@@ -14,7 +14,7 @@ services:
       && gunicorn uteoj.wsgi:application --timeout=1000 --bind 0.0.0.0:8000
       "
     volumes:
-      - ./webdata/media:/code/judge_data/
+      - ./webdata/media:/uteoj_data/
       - static_volume:/code/static
       - libjudger:/code/libjudger
     expose:
