@@ -1,13 +1,15 @@
+from django.db.models.fields import BooleanField
 from backend.models.settings import OJSettingModel
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib.admin.views.decorators import staff_member_required
 from backend.views.auth.login import LoginView
 from backend.views.admin.require import admin_member_required
-from backend.models.problem import ProblemModel
+from backend.models.problem import PROBLEM_DIFFICULT_CHOICES, PROBLEM_TYPE_CHOICES, SUBMISSION_VISIBLE_MODE_CHOICES, ProblemModel
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.contrib import messages
+from django.conf import settings
 
 def Error404Page(request, exception):
 
@@ -95,15 +97,67 @@ def AdminSettingSTMP(request):
 @admin_member_required
 def AdminSettingProblemDetault(request):
     if request.method == 'POST':
+        try:
+            _ = int(request.POST.get('time_limit'))
+        except:
+            messages.add_message(request, messages.ERROR, 'Giới hạn thời gian phải là số nguyên')
+            return redirect('/admin/setting/problemdefault')
         
-        return HttpResponse('OK')
-    elif request.method == 'GET':
-        context = {
-            'server': OJSettingModel.getSTMPServer(),
-            'email': OJSettingModel.getSTMPEmail(),
-            'port': OJSettingModel.getSTMPPort(),
-            'tls': OJSettingModel.getSTMPEnableTLS()
+        try:
+            _ = int(request.POST.get('memory_limit'))
+        except:
+            messages.add_message(request, messages.ERROR, 'Giới hạn bộ nhớ phải là số nguyên')
+            return redirect('/admin/setting/problemdefault')
+        
+        try:
+            _ = float(request.POST.get('points_per_test'))
+        except:
+            messages.add_message(request, messages.ERROR, 'Điểm mỗi test phải là số thực')
+            return redirect('/admin/setting/problemdefault')
+
+        data = {
+            'is_public': True if 'is_public' in request.POST else False,
+            'problem_type': int(request.POST.get('problem_type')),
+            'time_limit': int(request.POST.get('time_limit')),
+            'memory_limit': int(request.POST.get('memory_limit')),
+            'submission_visible_mode': int(request.POST.get('submission_visible_mode')),
+            'difficult': int(request.POST.get('difficult')),
+            'points_per_test': round(float(request.POST.get('points_per_test')), settings.NUMBER_OF_DECIMAL),
         }
+
+        OJSettingModel.setDefaultProblemConfig(data)
+        messages.add_message(request, messages.SUCCESS, 'Cập nhật thành công')
+        return redirect('/admin/setting/problemdefault')
+    elif request.method == 'GET':
+        data = OJSettingModel.getDefaultProblemConfig()
+        context = {
+            'problem_type': data['problem_type'],
+            'time_limit': data['time_limit'],
+            'memory_limit': data['memory_limit'],
+            'submission_visible_mode': data['submission_visible_mode'],
+            'difficult': data['difficult'],
+            'points_per_test': data['points_per_test'],
+            'list_difficult': [
+                {
+                    'name': x[1],
+                    'value': x[0]
+                }
+            for x in PROBLEM_DIFFICULT_CHOICES],
+            'list_submode': [
+                {
+                    'value': x[0],
+                    'name': x[1],
+                } for x in SUBMISSION_VISIBLE_MODE_CHOICES
+            ],
+            'list_problemtype': [
+                {
+                    'value': x[0],
+                    'name': x[1]
+                } for x in PROBLEM_TYPE_CHOICES
+            ],
+        }
+        if data['is_public']:
+            context['is_public'] = True
         return render(request, 'admin-template/Setting/problemdefault.html', context)
     else:
         return HttpResponse(status=405) # method is not allowed

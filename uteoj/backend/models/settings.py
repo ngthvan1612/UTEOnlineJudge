@@ -1,7 +1,7 @@
 import json
 from django.db import models
 
-from backend.models.problem import ProblemModel
+from backend.models.problem import ProblemDifficultType, ProblemModel, ProblemType, SubmissionVisibleModeType
 
 SUPPORT_EMAIL_HANDLE_SETTING_NAME = 'support.email.handle'
 SUPPORT_EMAIL_PASSWORD_SETTING_NAME = 'support.email.password'
@@ -92,15 +92,20 @@ class OJSettingModel(models.Model):
     
     @staticmethod
     def setDefaultProblemConfig(data):
-        # data = {
-        #     'is_public': problem.is_public,
-        #     'input_filename': problem.input_filename,
-        #     'output_filename': problem.output_filename,
-        #     'problem_type': problem.problem_type,
-        #     'time_limit': problem.time_limit,
-        #     'memory_limit': problem.memory_limit,
-        #     'submission_visible_mode': problem.submission_visible_mode,
-        #     'difficult': problem.difficult,
-        #     'points_per_test': problem.points_per_test
-        # }
         OJSettingModel.set('problem.defaultconfig', json.dumps(data))
+    
+    @staticmethod
+    def getDefaultProblemConfig():
+        try:
+            data = json.loads(OJSettingModel.get('problem.defaultconfig').value)
+            return data
+        except Exception as e:
+            return {
+                'is_public': False,
+                'problem_type': ProblemType.OI,
+                'time_limit': 1000,
+                'memory_limit': 65536,
+                'submission_visible_mode': SubmissionVisibleModeType.OnlySolved,
+                'difficult': ProblemDifficultType.Medium,
+                'points_per_test': 1.0
+            }
