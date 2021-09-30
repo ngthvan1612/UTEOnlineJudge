@@ -16,6 +16,7 @@ from django.core.paginator import Paginator
 from django.core.files.base import ContentFile
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
+from numpy import short
 
 from backend.models.problem import PROBLEM_TYPE_CHOICES, PROBLEM_DIFFICULT_CHOICES, ProblemDifficultType, ProblemTestCaseModel, ProblemType, SubmissionVisibleModeType
 from backend.models.problem import ProblemModel
@@ -547,10 +548,7 @@ def AdminEditProblemCustomCheckerview(request, problem_short_name):
     else:
         return HttpResponse(status=405)
 
-
 from time import time
-from datetime import datetime
-from django.db.models import Max, Count
 
 @admin_member_required
 def AdminListProblemView(request):
@@ -640,7 +638,7 @@ def AdminCreateProblemView(request):
     else:
         return HttpResponse(status=405)
 
-def AdminExportProblemConfigDownload(request, shortname):
+def AdminExportProblemConfig(request, shortname):
     
     problem = get_object_or_404(ProblemModel, shortname=shortname)
 
@@ -651,21 +649,8 @@ def AdminExportProblemConfigDownload(request, shortname):
     res['time_limit'] = problem.time_limit
     res['memory_limit'] = problem.memory_limit
     res['submission_visible_mode'] = SubmissionVisibleModeType.getModeName(problem.submission_visible_mode)
-    res['difficult'] = ProblemDifficultType.getModeName(problem.problem_type)
+    res['difficult'] = ProblemDifficultType.getModeName(problem.difficult)
     res['points_per_test'] = problem.points_per_test
-
-    tmp = []
-    for test in problem.problemtestcasemodel_set.all():
-        testcase_json = {
-            'name': test.name,
-            'time_limit': test.time_limit,
-            'memory_limit': test.memory_limit,
-            'points': test.points,
-        }
-        tmp.append(testcase_json)
-    
-    res['testcases'] = tmp
-    # sinh test có testcases rỗng: chưa làm
 
     json_str = json.dumps(res, indent=4)
     response = HttpResponse(json_str, content_type='application/json')
@@ -673,18 +658,10 @@ def AdminExportProblemConfigDownload(request, shortname):
 
     return response
 
-def AdminExportProblemConfigView(request, shortname):
-    return render(request, 'admin-template/problem/edit/export.html')
-
 def AdminImportProblemConfig(request, shortname):
     problem = get_object_or_404(ProblemModel, shortname=shortname)
 
     if request.method == 'POST':
-        """
-            check dấu của số: chưa làm
-            check chuỗi có rỗng hay không: chưa làm
-        """
-
         config = request.FILES.get('config')
         if not config:
             messages.add_message(request, messages.ERROR, 'Bạn phải chọn một file')
@@ -700,7 +677,7 @@ def AdminImportProblemConfig(request, shortname):
         
         # check file correct format (web) [name & datatype]
         list_requirements = {'input_filename' : str, 'output_filename': str, 'problem_type': str, 'time_limit': int, 'memory_limit': int,
-            'submission_visible_mode': str, 'difficult': str, 'points_per_test':float, 'testcases':list}
+            'submission_visible_mode': str, 'difficult': str, 'points_per_test':float,}
         name_of_type = {str: 'chuỗi', int: 'số nguyên', list: 'danh sách', float: 'số thực'}
         accept_values = {
             'problem_type': ['ACM', 'OI'],
@@ -718,28 +695,6 @@ def AdminImportProblemConfig(request, shortname):
                 if data[key] not in accept_values[key]:
                     messages.add_message(request, messages.ERROR, f"Không rõ giá trị \"{data[key]}\" của trường {key}")
                     return HttpResponseRedirect(request.path_info)
-
-        list_requirements = {'name': str, 'time_limit':int, 'memory_limit': int, 'points': float}
-
-        list_testcases = {}
-        # check testcases
-        for test in data['testcases']:
-            for key in list_requirements:
-                if key not in test:
-                    if key != 'name':
-                        messages.add_message(request, messages.ERROR, f"Test {test['name']} không có trường {key}")
-                        return HttpResponseRedirect(request.path_info)
-                    else:
-                        messages.add_message(request, messages.ERROR, f"Một hoặc nhiều testcase có không có tên")
-                        return HttpResponseRedirect(request.path_info)
-                elif type(test[key]) != list_requirements[key]:
-                    messages.add_message(request, messages.ERROR, f"Trường {key} phải là một {name_of_type[list_requirements[key]]}")
-                    return HttpResponseRedirect(request.path_info)
-            if test['name'] in list_testcases:
-                messages.add_message(request, messages.ERROR, f"Có 2 (hoặc nhiều) testcase có tên {test['name']}")
-                return HttpResponseRedirect(request.path_info)
-            list_testcases[test['name']] = test
-
         # update to database
 
         problem.input_filename = data['input_filename']
@@ -749,18 +704,9 @@ def AdminImportProblemConfig(request, shortname):
         problem.memory_limit = data['memory_limit']
         problem.submission_visible_mode = SubmissionVisibleModeType.getValueFromName(data['submission_visible_mode'])
         problem.difficult = ProblemDifficultType.getValueFromName(data['difficult'])
-        problem.points_per_test = data['points_per_test']
+        problem.points_per_test = round(data['points_per_test'], settings.NUMBER_OF_DECIMAL)
         problem.save()
-
-        for testcase in problem.problemtestcasemodel_set.all():
-            if testcase.name in list_testcases:
-                test_json = list_testcases[testcase.name]
-                testcase.time_limit = test_json['time_limit']
-                testcase.memory_limit = test_json['memory_limit']
-                testcase.points = test_json['points']
-                testcase.save()
         
         messages.add_message(request, messages.SUCCESS, 'Nhập cấu hình thành công')
-        return HttpResponseRedirect(request.path_info)
-    return render(request, 'admin-template/problem/edit/import.html')
+    return redirect(f"/admin/problems/edit/{shortname}/settings")
 
