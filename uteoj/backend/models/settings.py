@@ -1,4 +1,7 @@
+import json
 from django.db import models
+
+from backend.models.problem import ProblemModel
 
 SUPPORT_EMAIL_HANDLE_SETTING_NAME = 'support.email.handle'
 SUPPORT_EMAIL_PASSWORD_SETTING_NAME = 'support.email.password'
@@ -86,3 +89,18 @@ class OJSettingModel(models.Model):
     @staticmethod
     def setAllowSubmission(value):
         OJSettingModel.set('submission.allow_submission', value)
+    
+    @staticmethod
+    def setDefaultProblemConfig(data):
+        # data = {
+        #     'is_public': problem.is_public,
+        #     'input_filename': problem.input_filename,
+        #     'output_filename': problem.output_filename,
+        #     'problem_type': problem.problem_type,
+        #     'time_limit': problem.time_limit,
+        #     'memory_limit': problem.memory_limit,
+        #     'submission_visible_mode': problem.submission_visible_mode,
+        #     'difficult': problem.difficult,
+        #     'points_per_test': problem.points_per_test
+        # }
+        OJSettingModel.set('problem.defaultconfig', json.dumps(data))

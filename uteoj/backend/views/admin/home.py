@@ -91,3 +91,19 @@ def AdminSettingSTMP(request):
         return render(request, 'admin-template/Setting/stmp.html', context)
     else:
         return HttpResponse(status=405) # method is not allowed
+
+@admin_member_required
+def AdminSettingProblemDetault(request):
+    if request.method == 'POST':
+        
+        return HttpResponse('OK')
+    elif request.method == 'GET':
+        context = {
+            'server': OJSettingModel.getSTMPServer(),
+            'email': OJSettingModel.getSTMPEmail(),
+            'port': OJSettingModel.getSTMPPort(),
+            'tls': OJSettingModel.getSTMPEnableTLS()
+        }
+        return render(request, 'admin-template/Setting/problemdefault.html', context)
+    else:
+        return HttpResponse(status=405) # method is not allowed

@@ -112,6 +112,7 @@ url_patterns_admin_sub = [
     path('topics/<str:topic_name>/', AdminEditTagView),
     path('setting/', AdminSettingView),
     path('setting/stmp', AdminSettingSTMP),
+    path('setting/problemdefault', AdminSettingProblemDetault),
 
     path('language/', AdminListLanguageView),
     path('language/edit/<int:lang_id>/', AdminEditLanguageView),
