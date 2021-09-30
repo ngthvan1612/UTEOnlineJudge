@@ -1,28 +1,49 @@
 {%extends 'admin-template/contest/edit/_layout/base.html' %}
+{%load static%}
 {%block contestcontent %}
-		
+
 	<div class="content">
 		<div class="container-fluid">
 			<div class="row justify-content-md-center">
-				<div class="col-xl-6">
-					<div class=""></div>
-					<div class="mt-40">
-						<form action="" method="post" enctype='multipart/form-data'>
-							{% csrf_token %}
-							Tùy chọn: 
-                            <select name="mdImport">
-                                {%for x in options%}
-                                    <option value="{{x.value}}">{{x.name}}</option>
-                                {%endfor%}
-                            </select>
-                            <br>
-                            <input type="file" name="listUsersFile[]" multiple accept=".xls">
-                            <br>
-							<button type="submit" class="btn btn-primary mt-3 float-right" type="submit">Submit</button>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                <div class="col-xl-7">                  
+                    <form method="post" enctype="multipart/form-data">
+                        {%csrf_token%}   
+						<div class="input-group mb-3">
+							<span class="input-group-text" style="width: 150px;">Cách upload</span>
+							<select class="custom-select" name="mdInput">
+								{%for x in options%}
+									<option value="{{x.value}}">{{x.name}}</option>
+								{%endfor%}
+							</select>
+						</div>
+                        <hr>
+
+                        <div class="custom-file mb-3">
+                            <label class="custom-file-label">Tải lên danh sách thí sinh</label>
+                            <input type="file" id="fileCatcher" class="custom-file-input" accept=".xls, .xlsx" name="listUsersFile[]" multiple>
+                        </div>
+                        <hr>
+
+                        <button class="btn btn-primary float-right" type="submit">Upload</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+	<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+    <script>
+        var fileInput = document.getElementById("fileCatcher");
+        var fileList =[]
+
+        fileInput.addEventListener('change', function(e){
+            fileList=[];
+            for (var i=0; i<fileInput.files.length; i++){
+                fileList.push(`"${fileInput.files[i].name}"`);
+            }
+            console.log(fileList.join(','))
+            document.getElementsByClassName("custom-file-label")[0].textContent = fileList.join(',');
+
+        })
+    </script>
 {%endblock%}

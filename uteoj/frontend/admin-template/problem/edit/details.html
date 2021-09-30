@@ -48,7 +48,7 @@
 												<div class="input-group mb-3 text-center" style="margin-top: 15px">
 													<span class="input-group-text" style="width: 15%;">Công khai</span>
 													<input type="checkbox"  class="form-control" placeholder="Short name" {%if problem.is_public%}checked{%endif%} name="is_public" />
-												</div>
+												</div>	
 												<div class="input-group mb-3 text-center" style="margin-top: 15px">
 													<span class="input-group-text" style="width: 15%;">ID</span>
 													<input type="text"  class="form-control" placeholder="Short name" value="{{problem.shortname}}" name="shortname" />
@@ -61,7 +61,7 @@
 													<span class="input-group-text" style="width: 15%;">Ngày đăng bài</span>
 													<input type="text"  class="form-control" value="{{problem.publish_date}}" readonly/>
 												</div>
-												<div class="custom-file">
+												<div class="custom-file mb-3">
 													<label class="custom-file-label">Tải đề bài lên</label>
 													<input type="file" id="uploadSta" class="custom-file-input" accept=".pdf" name="statement">
 												</div>
