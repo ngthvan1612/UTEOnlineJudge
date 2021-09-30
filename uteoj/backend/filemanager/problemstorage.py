@@ -64,7 +64,7 @@ class ProblemStorage(FileSystemStorage):
         return os.path.join(self.__problem_dir, 'checker')
     
     def saveCheckerFile(self, content):
-        os.system('/bin/mkdir -p "{}"'.join(os.path.join(settings.PROBLEM_ROOT, self.__problem_dir, 'checker')))
+        os.system('mkdir -p "{}"'.format(os.path.join(settings.PROBLEM_ROOT, self.__problem_dir, 'checker')))
         os.system('cp checker/testlib.h ' + os.path.join(settings.PROBLEM_ROOT, self.__problem_dir, 'checker', 'testlib.h'))
         self.save(self.__getCheckerFilename(), content)
 
