@@ -7,6 +7,7 @@ from backend.models.language import LanguageModel
 
 class SubmissionResultType:
     AC = 0
+    ParialAC = -5
     WA = 1
     TLE = 2
     MLE = 3
