@@ -40,7 +40,7 @@
 								<a class="nav-link" href="stmp">Cài đặt mail</a>
 							</li>
                             <li class="nav-item">
-								<a class="nav-link active" href="problemdefault">Thêm bài tập</a>
+								<a class="nav-link active" href="problemdefault">Cài đặt bài tập</a>
 							</li>
 						</ul>
 
@@ -79,13 +79,10 @@
                                                     </div>
                                                 </div>
                                             -->
-                                                <div class="row">
-                                                    <div class="col col-4">
-                                                        <div class="input-group mb-3">
-                                                            <input type="checkbox" name="public" data-toggle="toggle" data-on="Công khai" data-off="Riêng tư" data-onstyle="success" data-offstyle="info">
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            <div class="input-group mb-3 text-center" style="margin-top: 15px">
+                                                <span class="input-group-text" style="width: 150px;">Công khai</span>
+                                                <input type="checkbox" {%if is_public%}checked{%endif%} name="is_public" data-toggle="toggle" data-on="Công khai" data-off="Riêng tư" data-onstyle="success" data-offstyle="info" style="width:400px">
+                                            </div>
                                                 <div class="input-group mb-3">
                                                     <span class="input-group-text" style="width: 150px;">Loại bài tập</span>
                                                     <select  name="problem_type" class="custom-select">
@@ -154,5 +151,8 @@
             </div>
         </div>
     </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="{% static 'plugins/bootstrap4-toggle/bootstrap4-toggle.min.js'%}"></script>
 
 {%endblock%}
