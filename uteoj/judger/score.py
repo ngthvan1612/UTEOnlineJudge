@@ -100,6 +100,8 @@ class OIScore(ScoreAbstract):
     def onCompleted(self):
         problemScore = self._problem.total_points
         eps = 0.00005
+        if abs(problemScore - self._totalScore) > eps:
+            self._result = SubmissionResultType.ParialAC
         with transaction.atomic():
             UserProblemStatisticsModel.createStatIfNotExists(self._user)
             userStatisticEntries = UserProblemStatisticsModel.objects.select_for_update().filter(user=self._user)

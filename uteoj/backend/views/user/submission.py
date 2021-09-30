@@ -68,7 +68,6 @@ def UserSubmissionView(request, submission_id):
 
         allow = False
 
-        #check visible
         submission = submission[0]
         vs_mode = submission.problem.submission_visible_mode
         if vs_mode == SubmissionVisibleModeType.AllowedFromAll:
@@ -80,10 +79,12 @@ def UserSubmissionView(request, submission_id):
             if submission_entries.exists():
                 allow = True
         elif vs_mode == SubmissionVisibleModeType.OnlyMe:
-            # Người giải bài này có phải người đăng nhập hiện tại hay không?
-            if request.user.id == submission.user.id:
-                allow = True
-
+            pass
+            
+        # Người giải bài này có phải người đăng nhập hiện tại hay không?
+        if request.user.id == submission.user.id:
+            allow = True
+        
         context = {}
 
         if allow:
