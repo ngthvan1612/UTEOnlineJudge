@@ -131,11 +131,35 @@
 									
 									<hr>
 								</form>
+
+								<div class="row justify-content-md-center">
+									<div class="col col-3 mt-3" style="font-size: 20px;">Import cài đặt</div>
+									<div class="col col-3">
+										<form method="post" action="settings/import" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div>
+                                                <div class="custom-file" style="margin-top: 10px;">
+                                                    <div class="col-12">>
+                                                        <input type="file" name="config" class="custom-file-input" accept=".json">
+                                                        <label class="custom-file-label text-truncate">Import JSON</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12" style="margin-top: 10px">
+                                                <div class="text-center">
+                                                    <input class="btn btn-primary" type="submit" value="Upload">
+                                                </div>
+                                            </div>
+                                        </form>
+									</div>
+								</div>
+
+								<br>
 							
 								<div class="row justify-content-md-center">
-									<div class="col col-3 mt-3" style="font-size: 20px;">Xuất ra cài đặt cuộc thi</div>
+									<div class="col col-3 mt-3" style="font-size: 20px;">Xuất ra cài đặt</div>
 									<div class="col col-3">
-										<a href="export/contestants" class="btn btn-info">
+										<a href="settings/export" class="btn btn-info">
 											<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 												<g id="Stockholm-icons-/-Files-/-Export" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 													<rect id="bound" x="0" y="0" width="24" height="24"></rect>
