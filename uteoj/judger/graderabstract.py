@@ -96,7 +96,7 @@ class GraderAbstract(ABC):
         for key, value in command_parse.items():
             exe = exe.replace(key, value)
         
-        os.system('cp ' + os.path.join(self._compiler_workdir, exe) + ' ' + dest)
+        os.system('cp -r ' + os.path.join(self._compiler_workdir, '.') + ' ' + dest)
 
     def _predict(self, input, output, workDir, time_limit, mem_limit) -> Tuple[bool, str, int, int, int]:
         file_name_without_ext, ext = os.path.splitext(self._source_file_name)
