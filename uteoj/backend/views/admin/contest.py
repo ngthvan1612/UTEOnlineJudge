@@ -371,7 +371,7 @@ def AdminEditContestExportResultView(request, id):
     df = pd.DataFrame(lsSinhVien, columns=headers)
     
     for problem in contest.problemmodel_set.all():
-        list_submission = SubmissionModel.objects.filter(problem=problem).all()
+        list_submission = SubmissionModel.objects.filter(problem=problem, submission_date__range=[contest.startTime, contest.endTime]).all()
         result = {}
         if problem.problem_type == ProblemType.OI:
             # get max

@@ -325,7 +325,7 @@ def AdminEditProblemTestcasesImportSetting(request, problem_short_name):
             testcase.time_limit = test_json['time_limit']
             testcase.memory_limit = test_json['memory_limit']
             testcase.points = round(test_json['points'], settings.NUMBER_OF_DECIMAL)
-            total_points += round(list_points[it], settings.NUMBER_OF_DECIMAL)
+            total_points += round(testcase.points, settings.NUMBER_OF_DECIMAL)
             testcase.save()
     
     problem.total_points = total_points
