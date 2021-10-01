@@ -1,7 +1,7 @@
 import json
 from django.db import models
 
-from backend.models.problem import ProblemDifficultType, ProblemModel, ProblemType, SubmissionVisibleModeType
+from backend.models.problem import ProblemDifficultType, ProblemType, SubmissionVisibleModeType
 
 SUPPORT_EMAIL_HANDLE_SETTING_NAME = 'support.email.handle'
 SUPPORT_EMAIL_PASSWORD_SETTING_NAME = 'support.email.password'

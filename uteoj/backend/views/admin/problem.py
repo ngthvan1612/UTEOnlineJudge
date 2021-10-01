@@ -27,6 +27,8 @@ from backend.models.problem import SUBMISSION_VISIBLE_MODE_CHOICES
 
 import json
 
+from backend.models.settings import OJSettingModel
+
 @admin_member_required
 def AdminEditProblemDeatailsview(request, problem_short_name):
     problem = get_object_or_404(ProblemModel, shortname=problem_short_name)
@@ -315,6 +317,7 @@ def AdminEditProblemTestcasesImportSetting(request, problem_short_name):
         list_testcases[test['name']] = test
 
     # update to database
+    total_points = 0.0
 
     for testcase in problem.problemtestcasemodel_set.all():
         if testcase.name in list_testcases:
@@ -322,7 +325,11 @@ def AdminEditProblemTestcasesImportSetting(request, problem_short_name):
             testcase.time_limit = test_json['time_limit']
             testcase.memory_limit = test_json['memory_limit']
             testcase.points = round(test_json['points'], settings.NUMBER_OF_DECIMAL)
+            total_points += round(list_points[it], settings.NUMBER_OF_DECIMAL)
             testcase.save()
+    
+    problem.total_points = total_points
+    problem.save()
     
     messages.add_message(request, messages.SUCCESS, 'Nhập cấu hình thành công')
     return redirect(f"/admin/problems/edit/{problem_short_name}/testcases")
@@ -347,7 +354,7 @@ def AdminEditProblemTestcasesExportSetting(request, problem_short_name):
 
     json_str = json.dumps(res, indent=4)
     response = HttpResponse(json_str, content_type='application/json')
-    response['Content-Disposition'] = f"attachment; filename={problem.shortname}_config.json"
+    response['Content-Disposition'] = f"attachment; filename={problem.shortname}_testcases.json"
 
     return response
 
@@ -627,7 +634,7 @@ def AdminCreateProblemView(request):
         elif len(fullname) == 0:
             messages.add_message(request, messages.ERROR, 'Tên đầy đủ của bài không được trống')
         else:
-            problem = ProblemModel.CreateNewProblem(shortname, fullname, request.user)
+            problem = ProblemModel.CreateNewProblem(shortname, fullname, request.user, OJSettingModel.getDefaultProblemConfig())
             problem.save()
             messages.add_message(request, messages.SUCCESS, 'Tạo thành công')
             return redirect('/admin/problems/edit/{}'.format(shortname))
