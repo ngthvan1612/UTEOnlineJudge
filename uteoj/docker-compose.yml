@@ -2,6 +2,7 @@ version: '3.7'
 
 services:
   web:
+    restart: always
     build:
       context: .
       dockerfile: 'Dockerfile'
@@ -22,6 +23,7 @@ services:
     depends_on:
       - db
   db:
+    restart: always
     image: mysql:5.7
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci
     ports:
@@ -32,8 +34,10 @@ services:
     volumes:
       - ./webdata/db:/var/lib/mysql
   redis:
+    restart: always
     image: redis:alpine
   nginx:
+    restart: always
     build: ./nginx
     ports:
       - 1337:80
