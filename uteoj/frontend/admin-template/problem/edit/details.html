@@ -44,11 +44,11 @@
 								<form method="post" enctype="multipart/form-data" id="frmMain">
 									{% csrf_token %}
 									<div class="row">
-										<div class="col-12 mb-3">
+										<div class="col-12">
 											<div class="row">
 												<div class="input-group mb-3 text-center" style="margin-top: 15px">
 													<span class="input-group-text" style="width: 15%;">Công khai</span>
-													<input type="checkbox" {%if is_public%}checked{%endif%} name="is_public" data-toggle="toggle" data-on="Công khai" data-off="Riêng tư" data-onstyle="success" data-offstyle="info" style="width:400px">
+													<input class="form-control" type="checkbox" {%if problem.is_public%}checked{%endif%} name="is_public" data-toggle="toggle" data-on="Công khai" data-off="Riêng tư" data-onstyle="success" data-offstyle="info" style="width:400px">
 												</div>
 												<div class="input-group mb-3 text-center" style="margin-top: 15px">
 													<span class="input-group-text" style="width: 15%;">ID</span>

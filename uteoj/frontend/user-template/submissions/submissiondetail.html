@@ -2,50 +2,64 @@
 {%load static%}
 {%block website_content %}
     {%include 'admin-template/_layout/error_handle.html' %} <!--có thể không xem được source, cài đặt ở /admin/problem/edit/../setting dòng cuối-->
-    {%if submission.status != SUBMISSION_STATUS_TYPE.Completed%}
-        Bài hiện đang chấm. Vui lòng đợi
-    {%else%}
-        {%if submission.result == SUBMISSION_RESULT_TYPE.CE%}
-            Dịch lỗi<br>
-            <textarea rows="10" cols="80">{{submission.compile_message}}</textarea>
+    <div class="container-fluid">
+        <div class="row justify-content-md-center">
+            <div class="col col-xl-8">
+                <div class=""></div>
+                <table class="table table-hover table-bordered mt-4">
+                    <thead>
+                        <tr class="text-center">
+                            <th scope="col" style="width: 4.5rem">ID</th>
+                            <th scope="col">Người dùng</th>
+                            <th scope="col">Bài tập</th>
+                            <th scope="col">Ngôn ngữ</th>
+                            <th scope="col">Thời gian chấm</th>
+                            <th scope="col">Thời gian</th>
+                            <th scope="col">Bộ nhớ</th>
+                        </tr>
+                    </thead>
+                    <tbody>    
+                        <tr class="text-center">
+                            <td>{{submission.id}}</td>
+                            <td>{{submission.user.username}}</td>
+                            <td><a href="/problem/{{submission.problem.shortname}}">{{submission.problem.fullname}}</a></td>
+                            <td>{{submission.language.name}}</td>
+                            <td>{{submission.submission_judge_date}}</td>
+                            <td>{{submission.executed_time}} ms</td>
+                            <td>{{submission.memory_usage}} KB</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row justify-content-md-center mt-8" >
+            <div class="col col-xl-8 mt-2">
+                <div id="editor" name="source2" style="height: 400px; font-size: 24px;"></div>
+            </div>
+            <textarea name="source" style="display: none" id="source" readonly>{{submission.source_code}}</textarea>
+        </div>
+        {%if submission.status != SUBMISSION_STATUS_TYPE.Completed%}
+            <div class="row">
+                <div class="col-12 text-center">
+                    <br>
+                        <h4 style="color:blue;font-size:20x;">Đang chấm bài</h4>
+                    <br>
+                </div>
+            <div>
         {%else%}
-            {%if submission%}
-                <div class="container-fluid">
-                    <div class="row justify-content-md-center">
-                        <div class="col col-xl-8">
-                            <div class=""></div>
-                            <table class="table table-hover table-bordered mt-4">
-                                <thead>
-                                    <tr class="text-center">
-                                        <th scope="col" style="width: 4.5rem">ID</th>
-                                        <th scope="col">Người dùng</th>
-                                        <th scope="col">Bài tập</th>
-                                        <th scope="col">Ngôn ngữ</th>
-                                        <th scope="col">Thời gian chấm</th>
-                                        <th scope="col">Thời gian</th>
-                                        <th scope="col">Bộ nhớ</th>
-                                    </tr>
-                                </thead>
-                                <tbody>    
-                                    <tr class="text-center">
-                                        <td>{{submission.id}}</td>
-                                        <td>{{submission.user.username}}</td>
-                                        <td><a href="/problem/{{submission.problem.shortname}}">{{submission.problem.fullname}}</a></td>
-                                        <td>{{submission.language.name}}</td>
-                                        <td>{{submission.submission_judge_date}}</td>
-                                        <td>{{submission.executed_time}}ms</td>
-                                        <td>{{submission.memory_usage}}KB</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+            {%if submission.result == SUBMISSION_RESULT_TYPE.CE%}
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <br>
+                            <h4 style="color:red;font-size:20x;">Dịch lỗi</h4>
+                        <br>
                     </div>
-                    <div class="row justify-content-md-center mt-8" >
-                        <div class="col col-xl-8 mt-2">
-                            <div id="editor" name="source2" style="height: 400px; font-size: 24px;"></div>
-                        </div>
-                        <textarea name="source" style="display: none" id="source">{{submission.source_code}}</textarea>
+                    <div class="col-12 text-center">
+                        <textarea readonly style="color:red;font-family:Consolas;" rows="10" cols="80">{{submission.compile_message}}</textarea>
                     </div>
+                </div>
+            {%else%}
+                {%if submission%}
                     <div class="row justify-content-md-center">
                         <div class="col col-xl-8 mt-4">
                             <div class="font-weight-bold">Danh sách testcase</div>
@@ -91,11 +105,10 @@
                             </table>
                         </div>
                     </div>
-                </div>
+                {%endif%}
             {%endif%}
         {%endif%}
-    {%endif%}
-
+    </div>
     <script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
 	<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
     <script src="{% static 'plugins/aceJS/lib/ace.js' %}"></script>
