@@ -155,16 +155,26 @@ class ProblemModel(models.Model):
         return self.shortname + ' - ' + self.fullname
 
     @staticmethod
-    def CreateNewProblem(shortname:str, fullname:str, first_author:User) -> None:
+    def CreateNewProblem(shortname:str, fullname:str, first_author:User, default_setting:dict) -> None:
         problem = ProblemModel.objects.create(shortname = shortname,fullname = fullname, author=first_author)
         problem.hash_problem = str(uuid.uuid4().hex) + '_' + shortname
 
-        #setting
+        # setting
         problem.statement = ""
 
-        #Grader
+        # grader
         problem.input_filename = shortname.upper() + '.INP'
         problem.output_filename = shortname.upper() + '.OUT'
+
+        # default
+        if default_setting:
+            problem.is_public = default_setting['is_public']
+            problem.problem_type = default_setting['problem_type']
+            problem.time_limit = default_setting['time_limit']
+            problem.memory_limit = default_setting['memory_limit']
+            problem.submission_visible_mode = default_setting['submission_visible_mode']
+            problem.difficult = default_setting['difficult']
+            problem.points_per_test = default_setting['points_per_test']
 
         problem.save()
 

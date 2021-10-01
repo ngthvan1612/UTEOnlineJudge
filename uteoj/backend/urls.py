@@ -110,6 +110,7 @@ url_patterns_admin_sub = [
     path('topics/', AdminListTagView),
     path('topics/<str:topic_name>/', AdminEditTagView),
     path('setting/', AdminSettingView),
+    path('setting/details', AdminSettingView),
     path('setting/stmp', AdminSettingSTMP),
     path('setting/problemdefault', AdminSettingProblemDetault),
 
