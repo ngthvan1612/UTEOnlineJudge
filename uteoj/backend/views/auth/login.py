@@ -17,6 +17,7 @@ from backend.task.sendmail import SendMail
 from backend.models.settings import OJSettingModel
 from backend.models.settings import CHANGE_PASSWORD_EMAIL_HANDLE_SETTING_NAME, CHANGE_PASSWORD_EMAIL_PASSWORD_SETTING_NAME
 from backend.views.settings import REDIRECT_FIELD_NAME
+from backend.models.usersetting import UserSetting
 
 
 def WhoView(request):
@@ -46,13 +47,18 @@ def LoginView(request):
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user)
-            next_url = request.POST.get('next')
-            if not next_url or len(next_url) == 0:
-                next_url = '/admin' if user.is_staff else '/'
-            print('redir to ' + str(next_url))
-            return redirect(next_url)
-        messages.add_message(request, messages.ERROR, 'Tên đăng nhập hoặc mật khẩu sai')
+            UserSetting.createSettingIfNotExists(user)
+            if not user.usersetting.verified:
+                messages.add_message(request, messages.ERROR, 'Tài khoản này chưa được xác thực')
+            else:
+                login(request, user)
+                next_url = request.POST.get('next')
+                if not next_url or len(next_url) == 0:
+                    next_url = '/admin' if user.is_staff else '/'
+                print('redir to ' + str(next_url))
+                return redirect(next_url)
+        else:
+            messages.add_message(request, messages.ERROR, 'Tên đăng nhập hoặc mật khẩu sai')
     return render(request, 'auth-template/login.html', context)
 
 

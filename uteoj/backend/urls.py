@@ -130,6 +130,7 @@ url_patterns_admin = [
 url_patterns_auth = [
     path('login/', LoginView),
     path('forgotpassword/', ForgotPasswordView),
+    path('verifyEmail/<uidb64>/<token>/', VerifyEmailView, name='verifyEmail'),
     path('forgotpassword/<uidb64>/<token>/', ForgotPasswordResetView, name='password_reset_confirm'),
     path('logout/', LogoutView),
     path('signup/', SignupView),

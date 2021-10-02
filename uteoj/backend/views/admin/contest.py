@@ -293,7 +293,7 @@ def AdminEditContestImportUser(request, id):
                         user.save()
                         list_users.append(user)
             else:
-                user = User.objects.create_user(username=username, first_name=ten, last_name=ho, password=password)
+                user = User.objects.create_user(username=username, first_name=ten, last_name=ho, password=password, email=username+'@student.hcmute.edu.vn')
                 user.save()
                 list_users.append(user)
 

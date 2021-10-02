@@ -1,0 +1,11 @@
+{% autoescape off %}
+Xin chào
+
+Vui lòng click vào link dưới đây để xác nhận đăng ký tài khoản
+
+{{ protocol }}://{{ domain }}{% url 'verifyEmail' uidb64=uid token=token %}
+
+Trân trọng,
+HCMUTE Online Judge Team
+
+{% endautoescape %}
