@@ -40,7 +40,7 @@ services:
     restart: always
     build: ./nginx
     ports:
-      - 1337:80
+      - 8000:80
     volumes:
       - static_volume:/code/static
     depends_on:
