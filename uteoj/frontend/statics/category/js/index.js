@@ -24,8 +24,8 @@ function showProblem() {
 }
 
 function getCategoryInfo(value) {
-  oldName = listActive[1].textContent;
-  var oldDescription = listActive[2].textContent;
+  oldName = listActive[0].textContent;
+  var oldDescription = '';
   if (value === 0) {
     console.log("+++++");
     document.getElementById("inputEditName").value = oldName;
