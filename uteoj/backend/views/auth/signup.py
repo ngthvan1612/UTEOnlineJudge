@@ -38,10 +38,12 @@ def SignupView(request):
             if x not in request.POST:
                 return HttpResponse(status=500)
         email = request.POST['email']
+        email_addr, domain = email.split('@')
         password1 = request.POST['password1']
         password2 = request.POST['password2']
-        pat = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
-        if len(email) == 0:
+        if User.objects.filter(username=email_addr).exists():
+            messages.add_message(request, messages.ERROR, 'Tên người dùng ' + email_addr + ' đã được đăng ký')
+        elif len(email) == 0:
             messages.add_message(request, messages.ERROR, 'Email không được trống')
         elif User.objects.filter(email=email).exists():
             messages.add_message(request, messages.ERROR, 'Email này đã được đăng ký')
@@ -50,7 +52,6 @@ def SignupView(request):
         elif password1 != password2:
             messages.add_message(request, messages.ERROR, 'Mật khẩu không khớp')
         else:
-            email_addr, domain = email.split('@')
             if domain not in ['student.hcmute.edu.vn', 'hcmute.edu.vn']:
                 messages.add_message(request, messages.ERROR, 'Vui lòng sử dụng email trường để đăng ký tài khoản')
             else:
