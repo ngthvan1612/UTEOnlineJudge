@@ -34,6 +34,8 @@ import uuid
 import pandas as pd
 import numpy as np
 
+from backend.models.settings import OJSettingModel
+
 
 @admin_member_required # xíu xóa
 @require_http_methods(['GET', 'POST'])
@@ -138,7 +140,7 @@ def AdminEditContestProblemsView(request, id):
             messages.add_message(request, messages.ERROR, f"Bài tập với ID {new_shortname} đã có, vui lòng chọn tên khác")
             return HttpResponseRedirect(request.path_info)
 
-        new_problem = ProblemModel.CreateNewProblem(new_shortname, problem.fullname, problem.author)
+        new_problem = ProblemModel.CreateNewProblem(new_shortname, problem.fullname, problem.author, problem.getSetting())
         
         # check xong
         
@@ -235,7 +237,7 @@ def AdminEditContestCreateProblem(request, id):
         elif len(fullname) == 0:
             messages.add_message(request, messages.ERROR, 'Tên đầy đủ của bài không được trống')
         else:
-            problem = ProblemModel.CreateNewProblem(shortname, fullname, request.user)
+            problem = ProblemModel.CreateNewProblem(shortname, fullname, request.user, OJSettingModel.getDefaultProblemConfig())
             problem.contest = contest
             problem.save()
             messages.add_message(request, messages.SUCCESS, 'Tạo thành công')

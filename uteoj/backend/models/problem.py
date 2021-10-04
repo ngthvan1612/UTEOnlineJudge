@@ -179,6 +179,17 @@ class ProblemModel(models.Model):
         problem.save()
 
         return problem
+    
+    def getSetting(self):
+        return {
+            'is_public': self.is_public,
+            'problem_type': self.problem_type,
+            'time_limit': self.time_limit,
+            'memory_limit': self.memory_limit,
+            'submission_visible_mode': self.submission_visible_mode,
+            'difficult': self.difficult,
+            'points_per_test': self.points_per_test
+        }
 
 
 class ProblemTestCaseModel(models.Model):
