@@ -75,7 +75,7 @@ def SignupView(request):
                     settings.EMAIL_HOST_PASSWORD = OJSettingModel.getSTMPPassword()
                     settings.EMAIL_USE_TLS = OJSettingModel.getSTMPEnableTLS()
                     settings.EMAIL_HOST = OJSettingModel.getSTMPServer()
-                    settings.EMAIL_POST = OJSettingModel.getSTMPPort()
+                    settings.EMAIL_PORT = OJSettingModel.getSTMPPort()
                     print('port = ' + str(settings.EMAIL_PORT))
                     send_mail(subject, render_to_string(email_template, c), settings.EMAIL_HOST_USER, [email], fail_silently=False)
                 except:
