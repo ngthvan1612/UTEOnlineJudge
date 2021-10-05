@@ -109,3 +109,11 @@ class OJSettingModel(models.Model):
                 'difficult': ProblemDifficultType.Medium,
                 'points_per_test': 1.0
             }
+    
+    @staticmethod
+    def getDeployAddr():
+        return OJSettingModel.get('deploy.server.addr').value
+    
+    @staticmethod
+    def setDeployAddr(value):
+        OJSettingModel.set('deploy.server.addr', value)
