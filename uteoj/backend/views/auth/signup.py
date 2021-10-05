@@ -63,7 +63,7 @@ def SignupView(request):
                 email_template = 'auth-template/verifyEmail.txt'
                 c = {
                     "email": user.email,
-                    "domain": "127.0.0.1:" + str(request.get_port()),
+                    "domain": OJSettingModel.getDeployAddr(),
                     "site_name": "UTE ONLINE JUDGE",
                     "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                     "user": "user",
