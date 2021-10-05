@@ -15,7 +15,7 @@ def SendMail(subject, email, user_email):
     settings.EMAIL_HOST_PASSWORD = OJSettingModel.getSTMPPassword()
     settings.EMAIL_USE_TLS = OJSettingModel.getSTMPEnableTLS()
     settings.EMAIL_HOST = OJSettingModel.getSTMPServer()
-    settings.EMAIL_POST = OJSettingModel.getSTMPPort()
+    settings.EMAIL_PORT = OJSettingModel.getSTMPPort()
     send_mail(subject, email, settings.EMAIL_HOST_USER, [user_email], fail_silently=False)
     print(f"Gửi mail cho {user_email} xong!")
 
