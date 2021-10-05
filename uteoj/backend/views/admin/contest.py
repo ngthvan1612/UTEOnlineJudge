@@ -25,7 +25,7 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from django.http import JsonResponse
 from backend.filemanager.importuser import ImportUserStorage
-from backend.models.usersetting import ImportUserFileModel
+from backend.models.usersetting import ImportUserFileModel, UserSetting
 from django.db.models.functions import Length
 from django.utils import timezone
 from django.db.models import F
@@ -294,9 +294,16 @@ def AdminEditContestImportUser(request, id):
                         user.set_password(password)
                         user.save()
                         list_users.append(user)
+
+                        usersetting = UserSetting.createSettingIfNotExists(user)
+                        usersetting.verified = True
+                        usersetting.save()
             else:
                 user = User.objects.create_user(username=username, first_name=ten, last_name=ho, password=password, email=username+'@student.hcmute.edu.vn')
                 user.save()
+                usersetting = UserSetting.createSettingIfNotExists(user)
+                usersetting.verified = True
+                usersetting.save()
                 list_users.append(user)
 
         contest.contestants.add(*list_users)
