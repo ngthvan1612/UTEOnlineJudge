@@ -50,8 +50,8 @@ services:
     build:
       context: .
     command: >
-      bash -c "celery -A uteoj worker -Q uteoj_judger -Ofair
-      & celery -A uteoj worker -Q uteoj_system -Ofair
+      bash -c "celery -A uteoj worker -Q uteoj_judger -c 16 -Ofair
+      & celery -A uteoj worker -Q uteoj_system -c 16 -Ofair
       "
     volumes:
       - ./webdata/media:/uteoj_data/
